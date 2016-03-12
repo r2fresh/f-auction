@@ -1,0 +1,23 @@
+{
+  "name": "f-auction",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "r2fresh <r2fresh78@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/r2fresh/f-auction",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/lib/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
