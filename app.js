@@ -15,6 +15,10 @@ app.get('/preAuction',function(req, res){
     res.sendFile(path.join(__dirname + '/preAuction.html'))
 })
 
+app.get('/login',function(req, res){
+    res.sendFile(path.join(__dirname + '/login.html'))
+})
+
 app.listen(app.get('port'), function () {
   console.log('Example app listening on port 5000!');
 });
