@@ -6,43 +6,12 @@
 
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
         <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
+        <link rel="stylesheet" href="/css/login.css" charset="utf-8">
 
         <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
-        <style>
-            /**
-             * panel navy color set
-             */
-            .panel-navy {
-              border-color: #455C68;
-            }
-            .panel-navy > .panel-heading {
-              color: #fff;
-              background-color: #455C68;
-              border-color: #455C68;
-            }
-            .panel-navy > .panel-heading + .panel-collapse > .panel-body {
-              border-top-color: #455C68;
-            }
-            .panel-navy > .panel-heading .badge {
-              color: #2C3E50;
-              background-color: #000;
-            }
-            .panel-navy > .panel-footer + .panel-collapse > .panel-body {
-              border-bottom-color: #455C68;
-          }
 
-            .login {
-                max-width: 500px;
-                padding: 15px;
-                margin: 10% auto;
-            }
-
-            .kt-logo {
-                width : 20%;
-                height : 20%;
-            }
-        </style>
+        <script src="/js/login.js" charset="utf-8"></script>
     </head>
     <body style="background-color:#2D3E4F">
 
@@ -56,7 +25,13 @@
                   <div class="form-group">
                     <label for="inputEmail3" class="col-md-3 control-label"><i class="fa fa-user"></i> 입찰자 :</label>
                     <div class="col-md-9">
-                      <input type="email" class="form-control" id="inputEmail3" placeholder="입찰자">
+                      <select class="form-control">
+                        <option>입찰자선택</option>
+                        <option>ADMIN</option>
+                        <option>KT</option>
+                        <option>SK</option>
+                        <option>LG</option>
+                      </select>
                     </div>
                   </div>
 

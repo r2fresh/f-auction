@@ -11,12 +11,16 @@ app.get('/',function(req, res){
     res.sendFile(path.join(__dirname + '/index.html'))
 })
 
-app.get('/preAuction',function(req, res){
+app.get('/auction',function(req, res){
     res.sendFile(path.join(__dirname + '/preAuction.html'))
 })
 
 app.get('/login',function(req, res){
     res.sendFile(path.join(__dirname + '/login.html'))
+})
+
+app.get('/insert',function(req, res){
+    res.sendFile(path.join(__dirname + '/insertAuction.html'))
 })
 
 app.listen(app.get('port'), function () {
