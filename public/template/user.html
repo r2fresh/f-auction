@@ -9,46 +9,46 @@
                     <thead>
                         <tr>
                             <th>구분</th>
-                            <th style="text-align:center;">700Mhz</th>
-                            <th style="text-align:center;">2.1Ghz</th>
-                            <th style="text-align:center;">2.6Ghz</th>
-                            <th style="text-align:center;">1.8Ghz(협)</th>
-                            <th style="text-align:center;">2.6Ghz(협)</th>
+                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>최저경쟁가격</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr class="auction_start_price">
+                            <script class="auction_start_price_tpl" type="text/x-handlebars-template">
+                                <td>최저경쟁가격</td>
+                                {{#prices}}
+                                <td>{{price}}</td>
+                                {{/prices}}
+                            </script>
                         </tr>
-                        <tr>
-                            <td>최소입찰액</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr class="lowest_bid_prices">
+                            <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
+                                <td>최소입찰액</td>
+                                <{{#prices}}
+                                <td><span class="lowest_bid_price">{{price}}<span></td>
+                                {{/prices}}
+                            </script>
                         </tr>
-                        <tr>
+                        <tr class="bid_prices">
                             <td>입찰금액</td>
                             <td>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="bid_price form-control" placeholder="">
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="bid_price form-control" placeholder="">
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="bid_price form-control" placeholder="">
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="bid_price form-control" placeholder="">
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="bid_price form-control" placeholder="">
                             </td>
                         </tr>
                         <tr>
@@ -82,9 +82,11 @@
             </div>
             <div class="row">
                 <div class="col-md-12" style="text-align:center">
-                    <button type="button" class="btn btn-default" style="margin-right:10px;"><strong><i class="fa fa-check"></i> 입찰</strong></button>
-                    <button type="button" class="btn btn-default" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 유예</strong></button>
-                    <button type="button" class="btn btn-default"><strong><i class="fa fa-times"></i> 포기</strong></button>
+                    <button type="button" class="btn btn-default bid_btn" style="margin-right:10px;"><strong><i class="fa fa-check"></i> 입찰</strong></button>
+                    <button type="button" class="btn btn-default delay_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 유예</strong></button>
+                    <button type="button" class="btn btn-default giveup_btn"><strong><i class="fa fa-times"></i> 포기</strong></button>
+
+                    <button type="button" class="btn btn-default test_btn"><strong><i class="fa fa-times"></i> 테스트</strong></button>
                 </div>
             </div>
         </div>
@@ -144,7 +146,16 @@
 
                         </tr>
                         <tr>
-                            <th>시작가</th>
+                            <script class="list_bid_prices_tpl" type="text/x-handlebars-template">
+                                <th>시작가</th>
+                                <{{#frequency}}
+                                    <{{#user}}
+                                    <th style="text-align:center;"><span>{{price}}</span></th>
+                                    {{/user}}
+                                {{/frequency}}
+
+                            </script>
+
                             <th style="text-align:center;"><span>3980</span></th>
                             <th style="text-align:center;"><span>3980</span></th>
                             <th style="text-align:center;"><span>3980</span></th>
