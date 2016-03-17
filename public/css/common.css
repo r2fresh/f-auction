@@ -21,3 +21,8 @@
 .text-gray {
      color: #C1C1C1;
 }
+
+._accordion_btn {
+    float: right;
+    margin-top: -4px;
+}

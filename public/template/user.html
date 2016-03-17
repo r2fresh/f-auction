@@ -1,329 +1,369 @@
 <div class="container-fluid">
-    <!--  최저경쟁가격-->
-    <div class="row">
 
-        <div class="col-md-12">
-            <div class="panel panel-navy">
-                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 최저경쟁가격</strong></div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>구분</th>
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="auction_start_price">
-                            <script class="auction_start_price_tpl" type="text/x-handlebars-template">
-                                <td>최저경쟁가격</td>
-                                {{#prices}}
-                                <td>{{price}}</td>
-                                {{/prices}}
-                            </script>
-                        </tr>
-                        <tr class="lowest_bid_prices">
-                            <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
-                                <td>최소입찰액</td>
-                                <{{#prices}}
-                                <td><span class="lowest_bid_price">{{price}}<span></td>
-                                {{/prices}}
-                            </script>
-                        </tr>
-                        <tr class="bid_prices">
-                            <td>입찰금액</td>
-                            <td>
-                                <input type="text" class="bid_price form-control" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" class="bid_price form-control" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" class="bid_price form-control" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" class="bid_price form-control" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" class="bid_price form-control" placeholder="">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>블록별가격증가율</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>블록별가격증가율</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>1순위 블록 필요입찰액</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">오름차순</a></li>
+        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">밀봉입찰</a></li>
+    </ul>
 
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="home">
+
+            <!--  최저경쟁가격-->
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="panel panel-navy _insert_bidder">
+                        <div class="panel-heading">
+                            <i class="fa fa-arrow-circle-right"></i><strong> 최저경쟁가격</strong>
+                            <button type="button" class="btn btn-default btn-sm _accordion_btn">
+                                <i class="fa fa-arrow-up"></i>
+                            </button>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>구분</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="lowest_race_prices">
+                                    <script class="lowest_race_prices_tpl" type="text/x-handlebars-template">
+                                        <td>최저경쟁가격</td>
+                                        {{#frequency}}
+                                        <td>{{winPrice}}</td>
+                                        {{/frequency}}
+                                    </script>
+                                </tr>
+                                <tr class="lowest_bid_prices">
+                                    <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
+                                        <td>최소입찰액</td>
+                                        <{{#frequency}}
+                                        <td><span class="lowest_bid_price">{{winPrice}}<span></td>
+                                        {{/frequency}}
+                                    </script>
+                                </tr>
+                                <tr class="bid_prices">
+                                    <td>입찰금액</td>
+                                    <td>
+                                        <input type="text" class="bid_price form-control" placeholder="">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="bid_price form-control" placeholder="">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="bid_price form-control" placeholder="">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="bid_price form-control" placeholder="">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="bid_price form-control" placeholder="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>블록별가격증가율</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>블록별가격증가율</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>1순위 블록 필요입찰액</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="text-align:center">
+                            <button type="button" class="btn btn-default bid_btn" style="margin-right:10px;"><strong><i class="fa fa-check"></i> 입찰</strong></button>
+                            <button type="button" class="btn btn-default delay_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 유예</strong></button>
+                            <button type="button" class="btn btn-default giveup_btn"><strong><i class="fa fa-times"></i> 포기</strong></button>
+
+                            <button type="button" class="btn btn-default test_btn"><strong><i class="fa fa-times"></i> 테스트</strong></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="col-md-2">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 최소입찰증분</strong></div>
+                        <h1 class="text-center">
+                            4%
+                        </h1>
+                    </div>
+                </div> -->
 
             </div>
-            <div class="row">
-                <div class="col-md-12" style="text-align:center">
-                    <button type="button" class="btn btn-default bid_btn" style="margin-right:10px;"><strong><i class="fa fa-check"></i> 입찰</strong></button>
-                    <button type="button" class="btn btn-default delay_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 유예</strong></button>
-                    <button type="button" class="btn btn-default giveup_btn"><strong><i class="fa fa-times"></i> 포기</strong></button>
 
-                    <button type="button" class="btn btn-default test_btn"><strong><i class="fa fa-times"></i> 테스트</strong></button>
+            <!--  /오름입찰-->
+            <div class="row" style="margin-top:20px">
+                <div class="col-md-12">
+                    <div class="panel panel-navy">
+                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
+                        <table class="table table-bordered">
+                            <thead>
+
+                            </thead>
+                            <tbody class="ascending_bid">
+
+                                <tr>
+                                    <th>구분</th>
+                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                </tr>
+                                <tr class="user_list">
+                                    <th>사업자</th>
+                                    <th style="text-align:center;"><span>KT</span></th>
+                                    <th style="text-align:center;"><span>SK</span></th>
+                                    <th style="text-align:center;"><span>LG</span></th>
+
+                                    <th style="text-align:center;"><span>KT</span></th>
+                                    <th style="text-align:center;"><span>SK</span></th>
+                                    <th style="text-align:center;"><span>LG</span></th>
+
+                                    <th style="text-align:center;"><span>KT</span></th>
+                                    <th style="text-align:center;"><span>SK</span></th>
+                                    <th style="text-align:center;"><span>LG</span></th>
+
+                                    <th style="text-align:center;"><span>KT</span></th>
+                                    <th style="text-align:center;"><span>SK</span></th>
+                                    <th style="text-align:center;"><span>LG</span></th>
+
+                                    <th style="text-align:center;"><span>KT</span></th>
+                                    <th style="text-align:center;"><span>SK</span></th>
+                                    <th style="text-align:center;"><span>LG</span></th>
+
+                                </tr>
+
+                                <script class="round_list_prices_tpl" type="text/x-handlebars-template">
+                                    {{#round}}
+                                    <tr class="round_prices">
+                                        <th>{{roundNum}}라운드</th>
+                                        {{#frequency}}
+                                            <{{#bidders}}
+                                            <th style="text-align:center;"><span>{{price}}</span></th>
+                                            {{/bidders}}
+                                        {{/frequency}}
+                                    </tr>
+                                    {{/round}}
+                                </script>
+
+                                <!-- <tr class="round_prices">
+                                    <script class="round_prices_tpl" type="text/x-handlebars-template">
+                                        <th>1라운드</th>
+                                        {{#frequency}}
+                                            <{{#user}}
+                                            <th style="text-align:center;"><span>{{price}}</span></th>
+                                            {{/user}}
+                                        {{/frequency}}
+
+                                    </script>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                </tr>
+                                <tr>
+                                    <th>1</th>
+                                    <th style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                </tr>
+                                <tr>
+                                    <th>2</th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-primary" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-primary" style="font-size:100%">3980</span></th>
+
+                                </tr> -->
+                                <!-- <tr>
+                                    <th>시작가</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr> -->
+
+                                <!-- <tr>
+                                    <th>입찰액</th>
+                                    <th>사업자</th>
+                                    <th>입찰액</th>
+                                    <th>사업자</th>
+                                    <th>입찰액</th>
+                                    <th>사업자</th>
+                                    <th>입찰액</th>
+                                    <th>사업자</th>
+                                    <th>입찰액</th>
+                                    <th>사업자</th>
+                                </tr> -->
+                                <!-- <tr>
+                                    <td>1</td>
+
+                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
+
+                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
+
+                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
+
+                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
+
+                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
+                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
+
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>승자</th>
+                                    <th style="text-align:center;" colspan="3">KT</th>
+                                    <th style="text-align:center;" colspan="3">SK</th>
+                                    <th style="text-align:center;" colspan="3">LG</th>
+                                    <th style="text-align:center;" colspan="3"></th>
+                                    <th style="text-align:center;" colspan="3"></th>
+                                    <th>승자</th>
+                                    <th>페지</th>
+                                </tr> -->
+                                <tr>
+                                    <th>현재가</th>
+                                    <th style="text-align:center;"><span class="text-warning">3980</span></th>
+                                    <th style="text-align:center;"><span class="text-warning">3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span class="text-warning">3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+                                    <th style="text-align:center;"><span>3980</span></th>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
         </div>
+        <div role="tabpanel" class="tab-pane" id="profile">
 
-        <!-- <div class="col-md-2">
-            <div class="panel panel-default">
-                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 최소입찰증분</strong></div>
-                <h1 class="text-center">
-                    4%
-                </h1>
-            </div>
-        </div> -->
 
-    </div>
 
-    <!--  /오름입찰-->
-    <div class="row" style="margin-top:20px">
-        <div class="col-md-12">
-            <div class="panel panel-navy">
-                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
-                <table class="table table-bordered">
-                    <thead>
-
-                    </thead>
-                    <tbody>
-
-                        <tr>
-                            <th>구분</th>
-                            <th style="text-align:center;" colspan="3">700Mhz</th>
-                            <th style="text-align:center;" colspan="3">2.1Ghz</th>
-                            <th style="text-align:center;" colspan="3">2.6Ghz</th>
-                            <th style="text-align:center;" colspan="3">1.8Ghz(협)</th>
-                            <th style="text-align:center;" colspan="3">2.6Ghz(협)</th>
-
-                        </tr>
-                        <tr>
-                            <th>사업자</th>
-                            <th style="text-align:center;"><span>KT</span></th>
-                            <th style="text-align:center;"><span>SK</span></th>
-                            <th style="text-align:center;"><span>LG</span></th>
-
-                            <th style="text-align:center;"><span>KT</span></th>
-                            <th style="text-align:center;"><span>SK</span></th>
-                            <th style="text-align:center;"><span>LG</span></th>
-
-                            <th style="text-align:center;"><span>KT</span></th>
-                            <th style="text-align:center;"><span>SK</span></th>
-                            <th style="text-align:center;"><span>LG</span></th>
-
-                            <th style="text-align:center;"><span>KT</span></th>
-                            <th style="text-align:center;"><span>SK</span></th>
-                            <th style="text-align:center;"><span>LG</span></th>
-
-                            <th style="text-align:center;"><span>KT</span></th>
-                            <th style="text-align:center;"><span>SK</span></th>
-                            <th style="text-align:center;"><span>LG</span></th>
-
-                        </tr>
-                        <tr>
-                            <script class="list_bid_prices_tpl" type="text/x-handlebars-template">
-                                <th>시작가</th>
-                                <{{#frequency}}
-                                    <{{#user}}
-                                    <th style="text-align:center;"><span>{{price}}</span></th>
-                                    {{/user}}
-                                {{/frequency}}
-
-                            </script>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                        </tr>
-                        <tr>
-                            <th>1</th>
-                            <th style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                        </tr>
-                        <tr>
-                            <th>2</th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span class="label label-primary" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span class="label label-primary" style="font-size:100%">3980</span></th>
-
-                        </tr>
-                        <!-- <tr>
-                            <th>시작가</th>
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                            <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                            <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                            <th></th>
-                            <th></th>
-                        </tr> -->
-
-                        <!-- <tr>
-                            <th>입찰액</th>
-                            <th>사업자</th>
-                            <th>입찰액</th>
-                            <th>사업자</th>
-                            <th>입찰액</th>
-                            <th>사업자</th>
-                            <th>입찰액</th>
-                            <th>사업자</th>
-                            <th>입찰액</th>
-                            <th>사업자</th>
-                        </tr> -->
-                        <!-- <tr>
-                            <td>1</td>
-
-                            <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                            <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                            <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                            <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                            <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                            <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>승자</th>
-                            <th style="text-align:center;" colspan="3">KT</th>
-                            <th style="text-align:center;" colspan="3">SK</th>
-                            <th style="text-align:center;" colspan="3">LG</th>
-                            <th style="text-align:center;" colspan="3"></th>
-                            <th style="text-align:center;" colspan="3"></th>
-                            <th>승자</th>
-                            <th>페지</th>
-                        </tr> -->
-                        <tr>
-                            <th>현재가</th>
-                            <th style="text-align:center;"><span class="text-warning">3980</span></th>
-                            <th style="text-align:center;"><span class="text-warning">3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span class="text-warning">3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-                            <th style="text-align:center;"><span>3980</span></th>
-
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
+
+
+
 
 
 </div>
