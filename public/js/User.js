@@ -153,7 +153,7 @@ define([
 
             // 광대역은 하나만 신청가능하다는 것을 체크
             var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
-                return AuctionData.auctionStartPrices[index].type === 'wideBand'
+                return AuctionData.startPrices.frequency[index].type === 'wideBand'
             })
             var limitWideBandArr = _.filter(wideBandArr,function(element){
                 return $(element).val() != '';
@@ -171,7 +171,7 @@ define([
                 if($(element).val() === ''){
                     result = true;
                 } else {
-                    result = ( this.lowestBidPrices[index].price <= parseInt($(element).val(),10) ) ? true : false
+                    result = ( this.lowestBidPrices[index].winPrice <= parseInt($(element).val(),10) ) ? true : false
                 }
 
                 return result;
@@ -181,14 +181,14 @@ define([
                 return;
             }
 
-            Model.postElkEvent({
-                 url: Elkplus.HOST + '/logmon/events' + eventId,
-                 method : (this.writeType === 'edit') ? 'PUT' : 'POST',
-                 contentType:"application/json; charset=UTF-8",
-                 data : JSON.stringify(this.content),
-                 success : Function.prototype.bind.call(this.postElkEventSuccess,this),
-                 error : Function.prototype.bind.call(this.postElkEventError,this)
-             })
+            // Model.postElkEvent({
+            //      url: Elkplus.HOST + '/logmon/events' + eventId,
+            //      method : (this.writeType === 'edit') ? 'PUT' : 'POST',
+            //      contentType:"application/json; charset=UTF-8",
+            //      data : JSON.stringify(this.content),
+            //      success : Function.prototype.bind.call(this.postElkEventSuccess,this),
+            //      error : Function.prototype.bind.call(this.postElkEventError,this)
+            //  })
 
             // var wideBandArr =  _.filter(AuctionData.auctionStartPrices,Function.prototype.bind.call(function(frequency, index){
             //
@@ -527,20 +527,62 @@ define([
             //     ]}
             // ]
 
+
+            //className
+
+
+            //this.setRoundUI(roundData);
+
+            this.setRoundUI(roundData)
+
+            //cloneData.ksyname = 'kkkk'
+
+            //console.log(cloneData)
+
             var template = Handlebars.compile(this.roundListPricesTpl);
             this.$el.find('.user_list').after(template(roundData));
 
             var lastRound = _.last(roundData.round)
-            console.log(lastRound)
+
             var lastRound2 = _.map(lastRound.frequency,function(frequency){
-                //console.log(frequency.user)
+
                 frequency.price = (_.max(frequency.bidders, function(bidder){ return bidder.price; })).price;
 
                 return frequency
             })
-            console.log(lastRound2)
+
             this.setLowestBidPrices({'frequency':lastRound2});
         },
+
+        setRoundUI : function(data){
+
+            _.each(data.round, function(round){
+
+                var frequency = _.map(round.frequency,function(frequency){
+
+                    var price = _.max(_.pluck(frequency.bidders,'price'));
+
+                    var bidders = _.map(frequency.bidders,function(bidder){
+
+                        var className = '';
+
+                        if(bidder.price === price){
+                            className = 'label label-' + bidder.name + '-l';
+                        } else {
+                            className = 'text-gray';
+                        }
+
+                        return _.extend(bidder,{'className':className})
+                    })
+
+                    //frequency.bidders = bidders;
+
+                    return bidders;
+
+                })
+
+            })
+        }
  	}))
 
 })

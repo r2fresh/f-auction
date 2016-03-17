@@ -121,6 +121,24 @@
             <!--  /오름입찰-->
             <div class="row" style="margin-top:20px">
                 <div class="col-md-12">
+                    <div style="text-align:center">
+                        <ul style="padding:0">
+                            <li style="display: inline-block"><h3><span class="label label-KT-l">KT</span></h3></li>
+                            <li style="display: inline-block"><h3><span class="label label-SK-l">SK</span></h3></li>
+                            <li style="display: inline-block"><h3><span class="label label-LG-l">LG</span></h3></li>
+                            <!--
+                            <li style="display: inline-block">
+                                <img style="width:20%;height;20%" src="img/kt.jpg" alt="" />
+                            </li>
+                            <li style="display: inline-block">
+                                <img style="width:20%;height;20%" src="img/sk_logo.png" alt="" />
+                            </li>
+                            <li style="display: inline-block">
+                                <img style="width:20%;height;20%" src="img/lg_logo.png" alt="" />
+                            </li> -->
+                        </ul>
+                    </div>
+
                     <div class="panel panel-navy">
                         <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
                         <table class="table table-bordered">
@@ -139,25 +157,25 @@
                                 </tr>
                                 <tr class="user_list">
                                     <th>사업자</th>
-                                    <th style="text-align:center;"><span>KT</span></th>
-                                    <th style="text-align:center;"><span>SK</span></th>
-                                    <th style="text-align:center;"><span>LG</span></th>
+                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
+                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
+                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
 
-                                    <th style="text-align:center;"><span>KT</span></th>
-                                    <th style="text-align:center;"><span>SK</span></th>
-                                    <th style="text-align:center;"><span>LG</span></th>
+                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
+                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
+                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
 
-                                    <th style="text-align:center;"><span>KT</span></th>
-                                    <th style="text-align:center;"><span>SK</span></th>
-                                    <th style="text-align:center;"><span>LG</span></th>
+                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
+                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
+                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
 
-                                    <th style="text-align:center;"><span>KT</span></th>
-                                    <th style="text-align:center;"><span>SK</span></th>
-                                    <th style="text-align:center;"><span>LG</span></th>
+                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
+                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
+                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
 
-                                    <th style="text-align:center;"><span>KT</span></th>
-                                    <th style="text-align:center;"><span>SK</span></th>
-                                    <th style="text-align:center;"><span>LG</span></th>
+                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
+                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
+                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
 
                                 </tr>
 
@@ -167,7 +185,10 @@
                                         <th>{{roundNum}}라운드</th>
                                         {{#frequency}}
                                             <{{#bidders}}
-                                            <th style="text-align:center;"><span>{{price}}</span></th>
+                                            <th style="text-align:center;">
+                                                <!--  label label-{{name}}-l -->
+                                                <span class="{{className}}">{{price}}</span>
+                                            </th>
                                             {{/bidders}}
                                         {{/frequency}}
                                     </tr>

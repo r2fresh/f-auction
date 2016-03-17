@@ -6,16 +6,25 @@
     background-color:#2D3E4F
 }
 
-.label-kt {
+.label-KT-l,
+.label-KT-s {
     background-color: #ED1F27;
 }
 
-.label-sk {
+.label-SK-l,
+.label-SK-s {
     background-color: #F58026;
 }
 
-.label-lg {
+.label-LG-l ,
+.label-LG-s {
     background-color: #E40080;
+}
+
+.label-KT-l,
+.label-SK-l,
+.label-LG-l {
+    font-size : 100%
 }
 
 .text-gray {
