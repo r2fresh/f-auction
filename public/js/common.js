@@ -1,5 +1,8 @@
 (function(){
 	window.Auction = window.Auction || {};
+
+	Auction.HOST = 'http://hidden-wildwood-10621.herokuapp.com'
+	//Auction.HOST = ''
 })();
 
 (function(Auction){

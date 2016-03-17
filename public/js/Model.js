@@ -4,8 +4,13 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function getRoundList(data){
+		$.ajax(data);
+	}
+
 	module.exports = new (Backbone.Model.extend({
-		postBid:postBid
+		postBid:postBid,
+		getRoundList : getRoundList
 	}))
 
 })
