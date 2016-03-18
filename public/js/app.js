@@ -68,12 +68,7 @@ function(Login, Admin, Bidder){
 
 		Backbone.history.start({pushstate:true})
 
-		if(!store.get('user_info')) {
-			window.location = '/#login';
-		} else {
-			var type = (store.get('user_info')).type;
-			window.location = '/#' + type;
-		}
+
 	}
 
 	/**
@@ -81,6 +76,14 @@ function(Login, Admin, Bidder){
 	 * @param {String} guideType 		선택된 가이드
 	 */
 	function changeHash( guideType){
+
+		if(!store.get('user_info')) {
+			console.log("1212")
+			window.location = '/#login';
+		} else {
+			var type = (store.get('user_info')).type;
+			window.location = '/#' + type;
+		}
 
 		if(prevView != null){
 			prevView.hide();
@@ -126,6 +129,5 @@ function(Login, Admin, Bidder){
 	//if(Management.)
 
 	init();
-
 
 })

@@ -12,7 +12,6 @@ define([
             'click ._login_btn' : 'onLogin'
  		},
  		initialize:function(){
-
 		},
         render:function(){
             this.$el.html(Login);
@@ -31,10 +30,13 @@ define([
             //입찰전략
             var bid_strategy = this.$el.find('._login_bidder_strategy').val();
 
+            //로그인 유저 타입
             var type = (bidder === 'admin') ? 'admin' : 'bidder';
 
             //localstorage 저장
-            store.set('user_info',{'type':type, 'user':bidder, 'strategy':bid_strategy})
+            store.set('user_info',{'type':type, 'user':bidder, 'strategy':bid_strategy});
+
+            window.location = '/#' + type;
 
         },
         hide : function(){

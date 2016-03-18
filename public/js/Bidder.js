@@ -1,15 +1,15 @@
 define([
    'module',
-   'text!tpl/user.html',
+   'text!tpl/bidder.html',
    'js/AuctionData',
    'js/Model',
    ],
-   function(module, User, AuctionData, Model){
+   function(module, Bidder, AuctionData, Model){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
-        bidder: 'KT',
+        bidder_company: 'KT',
 
         //최소입찰증분 (단위는 퍼센트)
         lowestBidAdd : 4,
@@ -34,7 +34,7 @@ define([
 
         roundListPricesTpl : null,
 
- 		el: '.user',
+ 		el: '.bidder',
  		events :{
             'click .bid_btn' : 'onBid',
             'click .test_btn' : 'postBidSuccess',
@@ -44,13 +44,18 @@ define([
 
 		},
         render:function(){
-            this.$el.html(User);
+            this.$el.html(Bidder);
 
             this.setTpl();
 
+            this.setBidderLogo();
+
             this.setLowestRacePrices(AuctionData.startPrices);
+        },
 
-
+        setBidderLogo:function(){
+            var userInfo = store.get('user_info')
+            this.$el.find('._bidder_info img').attr('src','img/' + userInfo.user + '_logo.jpg')
         },
 
         /**
@@ -98,7 +103,7 @@ define([
                 Function.prototype.bind.call(
                     function(frequency,index){
                         //현재 해당되는 입찰
-                        if(frequency.winBidder != '' && frequency.winBidder === this.bidder) {
+                        if(frequency.winBidder != '' && frequency.winBidder === this.bidder_company) {
                             $(this.$el.find('.bid_price')[index]).prop('disabled',true)
                         } else {
                             $(this.$el.find('.bid_price')[index]).prop('disabled',false)
