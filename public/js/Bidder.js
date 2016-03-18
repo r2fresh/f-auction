@@ -48,11 +48,33 @@ define([
 
             this.setTpl();
 
+            this.getAuctionList();
+
             this.setBidderLogo();
+
+        },
+
+        getAuctionList:function(){
+            Model.getAuctionList({
+                 url:Auction.HOST + '/api/auction',
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getAuctionListSuccess,this),
+                 error : Function.prototype.bind.call(this.getAuctionListError,this)
+             })
+        },
+        getAuctionListSuccess:function(data, textStatus, jqXHR){
+            console.log(data);
+
+            console.log(_.max(data, function(auction){ return auction.id; }));
 
             this.setLowestRacePrices(AuctionData.startPrices);
         },
+        getAuctionListError:function(jsXHR, textStatus, errorThrown){
 
+            console.log(jsXHR)
+
+        },
         setBidderLogo:function(){
             var userInfo = store.get('user_info')
             this.$el.find('._bidder_info img').attr('src','img/' + userInfo.user + '_logo.jpg')

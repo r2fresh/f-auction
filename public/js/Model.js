@@ -8,9 +8,14 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function getAuctionList(data){
+		$.ajax(data);
+	}
+
 	module.exports = new (Backbone.Model.extend({
 		postBid:postBid,
-		getRoundList : getRoundList
+		getRoundList : getRoundList,
+		getAuctionList : getAuctionList
 	}))
 
 })

@@ -17,8 +17,11 @@ define([
 		},
         render:function(){
             this.$el.html(Admin);
-            console.log("121221");
-
+            //this.getRoundList();
+            this.intervalRoundList();
+        },
+        intervalRoundList:function(){
+            //var intervalID = window.setInterval(Function.prototype.bind.call(this.getRoundList,this), 500);
             this.getRoundList();
         },
         getRoundList:function(){
@@ -33,7 +36,7 @@ define([
         },
         getRoundListSuccess:function(data, textStatus, jqXHR){
             console.log(data);
-            console.log(Pro.getRoundList())
+            console.log(Pro.getRoundList(data))
         },
         getRoundListError:function(){
 
