@@ -582,6 +582,13 @@ define([
                 })
 
             })
+        },
+        hide : function(){
+            this.$el.addClass('displayNone');
+        },
+        show : function(){
+            this.$el.removeClass('displayNone');
+            $('body').css({'background-color':'#FFFFFF'})
         }
  	}))
 

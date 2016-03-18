@@ -30,9 +30,13 @@ requirejs.config({
 requirejs([
 	'js/Login',
 	'js/Admin',
-	'js/User'
+	'js/Bidder'
 ],
-function(Login, Admin, User){
+function(Login, Admin, Bidder){
+
+	var prevView = null;
+
+	var routers = null;
 
 	/**
 	 * 초기 실행 함수
@@ -64,6 +68,12 @@ function(Login, Admin, User){
 
 		Backbone.history.start({pushstate:true})
 
+		if(!store.get('user_info')) {
+			window.location = '/#login';
+		} else {
+			var type = (store.get('user_info')).type;
+			window.location = '/#' + type;
+		}
 	}
 
 	/**
@@ -72,20 +82,50 @@ function(Login, Admin, User){
 	 */
 	function changeHash( guideType){
 
+		if(prevView != null){
+			prevView.hide();
+		}
+
+
+		// else {
+		// 	var type = (store.get('user_info')).type;
+		// 	window.location = '/#' + type;
+		// }
+
+
+
 		switch(guideType){
+			case 'login' :
+				Login.render();
+				prevView = Login;
+				Login.show();
+			break;
 			case 'admin' :
 				Admin.render();
+				prevView = Admin;
+				Admin.show();
 			break;
-			case 'user' :
-				User.render();
+			case 'bidder' :
+				Bidder.render();
+				prevView = Bidder;
+				Bidder.show();
 			break;
 			default :
 				Login.render();
+				prevView = Login;
+				Login.show();
 			break;
 		}
 	}
 
+	//Management.bind('LOGIN_CHECK',guideRender);
+
 	//Login.render();
+	//init();
+
+	//if(Management.)
+
 	init();
+
 
 })
