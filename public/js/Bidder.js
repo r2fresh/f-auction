@@ -38,7 +38,8 @@ define([
  		events :{
             'click .bid_btn' : 'onBid',
             'click .test_btn' : 'postBidSuccess',
-            'click ._accordion_btn' : 'onAccordion'
+            'click ._accordion_btn' : 'onAccordion',
+            'click ._logout_btn' : 'onLogout'
  		},
  		initialize:function(){
 
@@ -144,6 +145,12 @@ define([
         /**
          * 과거 최고 입찰액 (본인이 쓴 과거 최고 입찰액)
          */
+
+         onLogout : function(e){
+             e.preventDefault();
+             store.remove('user_info')
+             window.location.reload(true);
+         },
 
         /**
           * 1순위 블록 필요 입찰액
