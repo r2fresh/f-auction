@@ -9,6 +9,10 @@ define([
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
+        auctionID : null,
+
+        roundNum : 1,
+
         bidder_company: 'KT',
 
         //최소입찰증분 (단위는 퍼센트)
@@ -34,10 +38,12 @@ define([
 
         roundListPricesTpl : null,
 
+        intervalAuctionList : null,
+
  		el: '.bidder',
  		events :{
             'click .bid_btn' : 'onBid',
-            'click .test_btn' : 'postBidSuccess',
+            'click .test_btn' : 'testBidSuccess',
             'click ._accordion_btn' : 'onAccordion',
             'click ._logout_btn' : 'onLogout'
  		},
@@ -47,14 +53,30 @@ define([
         render:function(){
             this.$el.html(Bidder);
 
+
+            this.intervalAuctionList_fn();
+
+
             this.setTpl();
 
             this.getAuctionList();
 
             this.setBidderLogo();
 
+
+
         },
 
+        /**
+         * 옥션 리스트 인터벌로 호출
+         */
+        intervalAuctionList_fn:function(){
+            this.intervalAuctionList = window.setInterval( Function.prototype.bind.call(this.getAuctionList ,this), 500 );
+        },
+
+        /**
+         * 옥션 리스트 호출
+         */
         getAuctionList:function(){
             Model.getAuctionList({
                  url:Auction.HOST + '/api/auction',
@@ -64,18 +86,39 @@ define([
                  error : Function.prototype.bind.call(this.getAuctionListError,this)
              })
         },
+
+        /**
+         * 옥션 리스트 호출 성공
+         */
         getAuctionListSuccess:function(data, textStatus, jqXHR){
-            console.log(data);
 
-            console.log(_.max(data, function(auction){ return auction.id; }));
+            if(textStatus === 'success'){
 
-            this.setLowestRacePrices(AuctionData.startPrices);
+                var auctionArr = _.filter(data,function(auction){
+                    return (auction.auctionStat === 'ON')
+                })
+
+                //console.log(auctionArr)
+
+                if(auctionArr.length === 1){
+                    this.auctionID = auctionArr[0].id;
+                    window.clearInterval(this.intervalAuctionList)
+                    return;
+                }
+            }
         },
+
+        /**
+         * 옥션 리스트 호출 실패
+         */
         getAuctionListError:function(jsXHR, textStatus, errorThrown){
 
-            console.log(jsXHR)
-
         },
+
+
+
+
+
         setBidderLogo:function(){
             var userInfo = store.get('user_info')
             this.$el.find('._bidder_info img').attr('src','img/' + userInfo.user + '_logo.jpg')
@@ -215,6 +258,8 @@ define([
                 return;
             }
 
+            this.postBid();
+
             // Model.postElkEvent({
             //      url: Elkplus.HOST + '/logmon/events' + eventId,
             //      method : (this.writeType === 'edit') ? 'PUT' : 'POST',
@@ -256,6 +301,46 @@ define([
             //console.log(this.$el.find('.bid_price'))
 
         },
+
+        /**
+         * 입찰 급액 등록
+         */
+        postBid:function(){
+
+            var $bidPrice = this.$el.find('.bid_price');
+
+            var A_price = $($bidPrice[0]).val();
+            var B_price = $($bidPrice[1]).val();
+            var C_price = $($bidPrice[2]).val();
+            var D_price = $($bidPrice[3]).val();
+            var E_price = $($bidPrice[4]).val();
+
+            Model.postBid({
+                 url: Auction.HOST + '/api/bidding',
+                 method : 'POST',
+                 contentType:"application/json; charset=UTF-8",
+                 data : JSON.stringify({
+                     'auctionNum':this.auctionID,
+                     'roundNum':this.roundNum,
+                     'companyName':this.bidder_company,
+                     'priceA':A_price,
+                     'priceB':B_price,
+                     'priceC':C_price,
+                     'priceD':D_price,
+                     'priceE':E_price
+                 }),
+                 success : Function.prototype.bind.call(this.postBidSuccess,this),
+                 error : Function.prototype.bind.call(this.postBidError,this)
+             })
+        },
+
+        postBidSuccess:function(data, textStatus, jqXHR){
+            console.log(data);
+        },
+        postBidError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
         /**
          * 입찰 테이블 보이게 안보이게 하는 함수
          */
@@ -275,7 +360,7 @@ define([
             }
 
         },
-        postBidSuccess : function(data, textStatus, jqXHR){
+        testBidSuccess : function(data, textStatus, jqXHR){
 
             var roundData = {
                 'round' : [

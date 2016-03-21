@@ -137,6 +137,126 @@ define({
             },
         ]
     },
+    // 'frequency' : [
+    //     {
+    //         'name': 'A',
+    //         'bandWidth':40,
+    //         'hertz':'700',
+    //         'type':'wideBand',
+    //         'winBidder': '',
+    //         'winPrice': 0,
+    //         'bidders': [
+    //             {'name':'KT', 'price':0, 'vs':'win'},
+    //             {'name':'SK', 'price':0, 'vs':'win'},
+    //             {'name':'LG', 'price':0, 'vs':'win'}
+    //         ]
+    //     },
+    //     {
+    //         'name': 'B',
+    //         'bandWidth':20,
+    //         'hertz':'18',
+    //         'type':'narrow',
+    //         'winBidder': '',
+    //         'winPrice': 0,
+    //         'bidders': [
+    //             {'name':'KT', 'price':0, 'vs':'win'},
+    //             {'name':'SK', 'price':0, 'vs':'win'},
+    //             {'name':'LG', 'price':0, 'vs':'win'}
+    //         ]
+    //     },
+    //     {
+    //         'name': 'C',
+    //         'bandWidth':20,
+    //         'hertz':'21',
+    //         'type':'wideBand',
+    //         'winBidder': '',
+    //         'winPrice': 0,
+    //         'bidders': [
+    //             {'name':'KT', 'price':0, 'vs':'win'},
+    //             {'name':'SK', 'price':0, 'vs':'win'},
+    //             {'name':'LG', 'price':0, 'vs':'win'}
+    //         ]
+    //     },
+    //     {
+    //         'name': 'D',
+    //         'bandWidth':40,
+    //         'hertz':'26',
+    //         'type':'wideBand',
+    //         'winBidder': '',
+    //         'winPrice': 0,
+    //         'bidders': [
+    //             {'name':'KT', 'price':0, 'vs':'win'},
+    //             {'name':'SK', 'price':0, 'vs':'win'},
+    //             {'name':'LG', 'price':0, 'vs':'win'}
+    //         ]
+    //     },
+    //     {
+    //         'name': 'E',
+    //         'bandWidth':20,
+    //         'hertz':'26',
+    //         'type':'narrow',
+    //         'winBidder': '',
+    //         'winPrice': 0,
+    //         'bidders': [
+    //             {'name':'KT', 'price':0, 'vs':'win'},
+    //             {'name':'SK', 'price':0, 'vs':'win'},
+    //             {'name':'LG', 'price':0, 'vs':'win'}
+    //         ]
+    //     },
+    // ],
+
+    'frequency' : [
+        {
+            'name': 'A',
+            'bandWidth':40,
+            'hertz':'700',
+            'type':'wideBand',
+            'winBidder': '',
+            'winPrice': 0,
+            'bidders': null,
+        },
+        {
+            'name': 'B',
+            'bandWidth':20,
+            'hertz':'18',
+            'type':'narrow',
+            'winBidder': '',
+            'winPrice': 0,
+            'bidders': null,
+        },
+        {
+            'name': 'C',
+            'bandWidth':20,
+            'hertz':'21',
+            'type':'wideBand',
+            'winBidder': '',
+            'winPrice': 0,
+            'bidders': null,
+        },
+        {
+            'name': 'D',
+            'bandWidth':40,
+            'hertz':'26',
+            'type':'wideBand',
+            'winBidder': '',
+            'winPrice': 0,
+            'bidders': null,
+        },
+        {
+            'name': 'E',
+            'bandWidth':20,
+            'hertz':'26',
+            'type':'narrow',
+            'winBidder': '',
+            'winPrice': 0,
+            'bidders': null,
+        },
+    ],
+    'bidders': [
+        {'name':'KT', 'price':0, 'vs':'win'},
+        {'name':'SK', 'price':0, 'vs':'win'},
+        {'name':'LG', 'price':0, 'vs':'win'}
+    ],
     color: "black",
     size: "unisize"
 });

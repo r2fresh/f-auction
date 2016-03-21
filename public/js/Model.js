@@ -1,5 +1,9 @@
 define(function(require, exports, module){
 
+	function getAuction(data){
+		$.ajax(data);
+	}
+
 	function postAuction(data){
 		$.ajax(data);
 	}
@@ -22,7 +26,9 @@ define(function(require, exports, module){
 	}
 
 	module.exports = new (Backbone.Model.extend({
+		getAuction:getAuction,
 		postAuction:postAuction,
+
 		postBid:postBid,
 		getAuctionInfo:getAuctionInfo,
 		getRoundList : getRoundList,

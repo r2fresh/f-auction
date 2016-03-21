@@ -64,6 +64,7 @@
         <div class="col-md-12" style="text-align:right">
             <button class="btn btn-default _auction_start_btn">모의경매시작</button>
             <button class="btn btn-default _logout_btn">로그아웃</button>
+            <button class="btn btn-default _clear_interval_btn">인터벌 스탑</button>
         </div>
     </div>
 
@@ -128,7 +129,7 @@
                                     <th style="text-align:center;" colspan="3">2.6Ghz(협)</th>
 
                                 </tr>
-                                <tr>
+                                <tr class="bidder_list">
                                     <th>사업자</th>
                                     <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
                                     <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
@@ -151,7 +152,7 @@
                                     <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
 
                                 </tr>
-                                <tr>
+                                <tr class="start_price_list">
                                     <th>시작가</th>
                                     <th style="text-align:center;"><span>3980</span></th>
                                     <th style="text-align:center;"><span>3980</span></th>
@@ -174,7 +175,24 @@
                                     <th style="text-align:center;"><span>3980</span></th>
 
                                 </tr>
-                                <tr>
+
+                                <script class="round_price_list_tpl" type="text/x-handlebars-template">
+                                    {{#roundList}}
+                                    <tr class="round_price_list">
+                                        <td>{{round}}</td>
+                                        {{#frequency}}
+                                            <{{#bidders}}
+                                            <td style="text-align:center;">
+                                                <!--  label label-{{name}}-l -->
+                                                <span class="{{className}}">{{price}}</span>
+                                            </td>
+                                            {{/bidders}}
+                                        {{/frequency}}
+                                    </tr>
+                                    {{/roundList}}
+                                </script>
+
+                                <!-- <tr>
                                     <th>1</th>
                                     <th style="text-align:center;"><span class="label label-KT-l" style="font-size:100%">3980</span></th>
                                     <th style="text-align:center;"><span class="text-gray">3980</span></th>
@@ -219,7 +237,7 @@
                                     <th style="text-align:center;"><span>3980</span></th>
                                     <th style="text-align:center;"><span class="label label-lg" style="font-size:100%">3980</span></th>
 
-                                </tr>
+                                </tr> -->
                                 <!-- <tr>
                                     <th>시작가</th>
                                     <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
