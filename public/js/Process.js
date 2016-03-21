@@ -32,6 +32,9 @@ define([
 
 
             return 'dfdfdf'
+        },
+        roundList : function(data){
+
         }
     }
     /*
@@ -58,5 +61,6 @@ define([
         }
 
     */
+
 
 });

@@ -48,22 +48,14 @@ define([
             'click ._logout_btn' : 'onLogout'
  		},
  		initialize:function(){
-
+            this.$el.html(Bidder);
+            this.setTpl();
 		},
         render:function(){
-            this.$el.html(Bidder);
-
 
             this.intervalAuctionList_fn();
-
-
-            this.setTpl();
-
             this.getAuctionList();
-
             this.setBidderLogo();
-
-
 
         },
 
@@ -298,7 +290,7 @@ define([
             //     console.log($(element).val()
             // })
 
-            //console.log(this.$el.find('.bid_price'))
+            //console.log(this.$el.find('.bid_price'))                                                                                                                                                        
 
         },
 

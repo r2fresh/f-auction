@@ -26,3 +26,35 @@
 
 	})
 })(Auction);
+
+(function(Auction){
+
+	Auction.interval = {
+		intervalArr:[],
+		set:function(name,fn){
+			this.intervalArr.push({
+				'name':name,
+				'fn':setInterval(fn,1000),
+			})
+		},
+		clear:function(name){
+			if(!name){
+				var arr = _.filter(this.intervalArr,function(interval){
+					return interval.name === name;
+				})
+				clearInterval(arr[0].fn);
+			} else {
+				_.each(this.intervalArr,function(interval){
+					clearInterval(interval.fn);
+				})
+			}
+		},
+		has:function(name){
+			var arr = _.filter(this.intervalArr,function(interval){
+				return interval.name === name;
+			});
+			return arr.length > 0;
+		}
+	};
+
+})(Auction);
