@@ -15,19 +15,28 @@ define([
         // 현재 라운드 정보
         roundNum : 1,
         // 라운드 값 리스트 템플릿
-        roundPriceListTpl : "",
+        roundPriceListTpl : '',
+        biddingResultTpl:'',
+        startPriceListTpl:'',
+
+        // 경매 원본 정보
+        originCompanyList : null,
 
  		el: '.admin',
  		events :{
             'click ._logout_btn' : 'onLogout',
             'click ._auction_start_btn' : 'onAuctionStart',
-            'click ._clear_interval_btn' : 'onClearInterval'
+            'click ._clear_interval_btn' : 'onClearInterval',
+            'click ._acending_btn' : 'onBiddingResult'
  		},
  		initialize:function(){
             this.$el.html(Admin);
             this.setTpl();
 		},
         render:function(){
+
+            this.setStartPriceList();
+
             this.auctionID = 1;
             this.intervalAuctionInfo_fn();
         },
@@ -36,7 +45,20 @@ define([
          * 템플릿 정의
          */
         setTpl:function(){
-            this.roundPriceListTpl   = this.$el.find(".round_price_list_tpl").html();
+            this.roundPriceListTpl  = this.$el.find(".round_price_list_tpl").html();
+            this.biddingResultTpl   = this.$el.find(".bindding_result_tpl").html();
+            this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
+            this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
+        },
+
+        /**
+         * 시작가 설정
+         */
+        setStartPriceList:function(){
+            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+
+            var template = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
         },
 
         /**
@@ -130,6 +152,8 @@ define([
         setRoundList:function(data){
 
             this.roundNum = Math.ceil(data.length/3);
+
+            this.originCompanyList = data;
 
             var roundList = this.changeDataFormat(data);
 
@@ -237,7 +261,7 @@ define([
                     win = winArr[0];
                 }
                 var winName = win.name;
-                
+
 
                 frequencyFormat[i].bidders = _.map(bidders,function(bidder){
 
@@ -268,11 +292,99 @@ define([
         },
 
 
+        companyMaxPrice : function(data){
+
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+
+            var priceList = []
+
+            for(var i=0; i<priceArr.length; ++i){
+
+                var arr = _.pluck(data, priceArr[i])
+
+                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
+            }
+
+            return priceList;
+
+        },
+
+
+        onBiddingResult:function(e){
+            console.log(this.originCompanyList)
+
+            var resultArr = [
+                {'name':'KT'},
+                {'name':'SK'},
+                {'name':'LG'}
+            ];
+
+            var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
+
+                var companyList = _.filter(this.originCompanyList,function(company){
+                    return company.companyName === result.name;
+                })
+
+                return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
+
+            },this))
+
+            console.log(bidderList)
+
+            this.setBiddingResult(this.companyPercent(bidderList))
+
+            this.setSealLowestBidPrice(this.secondCompanyMaxPrice(bidderList))
+        },
+
+        secondCompanyMaxPrice:function(data){
+
+            var companyData = JSON.parse( JSON.stringify( data ) );
+
+            for(var i=0; i<companyData.length; ++i){
+
+                for(var j=0; j < companyData[i].priceList.length ;++j){
+
+                    companyData[i].priceList[j].price = ( companyData[i].priceList[j].price > AuctionData.startPriceList[j].price ) ? companyData[i].priceList[j].price : AuctionData.startPriceList[j].price
+
+                }
+
+            }
+
+            return companyData;
+
+        },
+
+        companyPercent:function(data){
+            var companyData = JSON.parse( JSON.stringify( data ) );
+
+            for(var i=0; i<companyData.length; ++i){
+
+                for(var j=0; j < companyData[i].priceList.length ;++j){
+
+                    companyData[i].priceList[j].percent = Math.ceil( (companyData[i].priceList[j].price/AuctionData.startPriceList[j].price - 1) * 100 )
+
+                }
+
+            }
+
+            return companyData;
+        },
+
+        setBiddingResult:function(data){
+            var template = Handlebars.compile(this.biddingResultTpl);
+            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':data}));
+        },
 
 
 
 
-
+        /**
+         * 밀봉 입찰 최소액 셋팅
+         */
+        setSealLowestBidPrice:function(data){
+            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
+            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':data}));
+        },
 
 
 

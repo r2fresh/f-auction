@@ -43,6 +43,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+
+                                <!-- 시작가 -->
+                                <tr class="start_price_list">
+                                    <td>시작가</td>
+                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                        <{{#priceList}}
+                                        <td style="text-align:center;">
+                                            <span>{{price}}</span>
+                                        </td>
+                                        {{/priceList}}
+                                    </script>
+                                </tr><!--/ 시작가 -->
+
                                 <tr class="lowest_race_prices">
                                     <script class="lowest_race_prices_tpl" type="text/x-handlebars-template">
                                         <td>최저경쟁가격</td>

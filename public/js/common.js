@@ -1,7 +1,7 @@
 (function(){
 	window.Auction = window.Auction || {};
 
-	Auction.HOST = 'http://dry-castle-75128.herokuapp.com'
+	Auction.HOST = 'http://arcane-tundra-11453.herokuapp.com'
 	//Auction.HOST = ''
 })();
 

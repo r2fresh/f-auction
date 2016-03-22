@@ -53,11 +53,34 @@ define([
 		},
         render:function(){
 
+            this.setStartPriceList();
+
             this.intervalAuctionList_fn();
             this.getAuctionList();
             this.setBidderLogo();
 
         },
+
+        /**
+         * 사용하는 템플릿 설정
+         */
+        setTpl : function(){
+            this.startPriceListTpl      = this.$el.find(".start_price_list_tpl").html();
+            this.lowestRacePricesTpl    = this.$el.find(".lowest_race_prices_tpl").html();
+            this.lowestBidPricesTpl     = this.$el.find(".lowest_bid_prices_tpl").html();
+            this.roundListPricesTpl     = this.$el.find(".round_list_prices_tpl").html();
+        },
+
+        /**
+         * 시작가 설정
+         */
+        setStartPriceList:function(){
+            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+
+            var template = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
+        },
+
 
         /**
          * 옥션 리스트 인터벌로 호출
@@ -116,14 +139,7 @@ define([
             this.$el.find('._bidder_info img').attr('src','img/' + userInfo.user + '_logo.jpg')
         },
 
-        /**
-         * 사용하는 템플릿 설정
-         */
-        setTpl : function(){
-            this.lowestRacePricesTpl   = this.$el.find(".lowest_race_prices_tpl").html();
-            this.lowestBidPricesTpl   = this.$el.find(".lowest_bid_prices_tpl").html();
-            this.roundListPricesTpl   = this.$el.find(".round_list_prices_tpl").html();
-        },
+
 
         /*
          * 최저경쟁가격(시작가) 리스트 설정
@@ -290,7 +306,7 @@ define([
             //     console.log($(element).val()
             // })
 
-            //console.log(this.$el.find('.bid_price'))                                                                                                                                                        
+            //console.log(this.$el.find('.bid_price'))
 
         },
 

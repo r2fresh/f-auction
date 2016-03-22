@@ -1,4 +1,13 @@
 define({
+
+    'startPriceList':[
+        {'name':'priceA','price':1220},
+        {'name':'priceB','price':2300},
+        {'name':'priceC','price':1150},
+        {'name':'priceD','price':1816},
+        {'name':'priceE','price':1277}
+    ],
+
     'startPrices': {
         'frequency' : [
             {
