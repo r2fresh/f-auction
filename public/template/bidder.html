@@ -56,6 +56,7 @@
                                     </script>
                                 </tr><!--/ 시작가 -->
 
+                                <!-- 최소경쟁가격 -->
                                 <tr class="lowest_race_prices">
                                     <script class="lowest_race_prices_tpl" type="text/x-handlebars-template">
                                         <td>최저경쟁가격</td>
@@ -63,7 +64,9 @@
                                         <td>{{winPrice}}</td>
                                         {{/frequency}}
                                     </script>
-                                </tr>
+                                </tr><!--/ 최소경쟁가격 -->
+
+                                <!-- 최소입찰액 -->
                                 <tr class="lowest_bid_prices">
                                     <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
                                         <td>최소입찰액</td>
@@ -71,7 +74,9 @@
                                         <td><span class="lowest_bid_price">{{winPrice}}<span></td>
                                         {{/frequency}}
                                     </script>
-                                </tr>
+                                </tr><!--/ 최소입찰액 -->
+
+
                                 <tr class="bid_prices">
                                     <td>입찰금액</td>
                                     <td>

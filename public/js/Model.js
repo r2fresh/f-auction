@@ -8,6 +8,10 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function putAuction(data){
+		$.ajax(data);
+	}
+
 	function postBid(data){
 		$.ajax(data);
 	}
@@ -28,6 +32,7 @@ define(function(require, exports, module){
 	module.exports = new (Backbone.Model.extend({
 		getAuction:getAuction,
 		postAuction:postAuction,
+		putAuction:putAuction,
 
 		postBid:postBid,
 		getAuctionInfo:getAuctionInfo,

@@ -54,11 +54,10 @@ define([
         render:function(){
 
             this.setStartPriceList();
+            this.getAuctionList();
 
             this.intervalAuctionList_fn();
-            this.getAuctionList();
             this.setBidderLogo();
-
         },
 
         /**
@@ -76,10 +75,12 @@ define([
          */
         setStartPriceList:function(){
             var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
-
             var template = Handlebars.compile(this.startPriceListTpl);
             this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
         },
+
+
+
 
 
         /**
@@ -134,6 +135,18 @@ define([
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         setBidderLogo:function(){
             var userInfo = store.get('user_info')
             this.$el.find('._bidder_info img').attr('src','img/' + userInfo.user + '_logo.jpg')
@@ -153,7 +166,7 @@ define([
         },
 
         /**
-         * 최소입찰액 리스트 설정
+         * 최소경쟁가격 리스트 설정
          */
         setLowestBidPrices : function(data){
             this.lowestBidPrices = _.map(data.frequency, Function.prototype.bind.call(function(frequency){
@@ -167,6 +180,38 @@ define([
             this.$el.find('.lowest_bid_prices').empty().html(template({'frequency':this.lowestBidPrices}));
 
         },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /**
          * 입찰금액 리스트 설정

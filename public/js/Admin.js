@@ -12,13 +12,16 @@ define([
  	module.exports = new (Backbone.View.extend({
         // 실행중인 경매 아이디
         auctionID : 0,
+        // 생성된 경매의 이름
+        auctionName : '',
         // 현재 라운드 정보
         roundNum : 1,
+        // 시작가 리스트 템플릿
+        startPriceListTpl:'',
         // 라운드 값 리스트 템플릿
         roundPriceListTpl : '',
+        // 입찰 결과 템플릿
         biddingResultTpl:'',
-        startPriceListTpl:'',
-
         // 경매 원본 정보
         originCompanyList : null,
 
@@ -26,6 +29,7 @@ define([
  		events :{
             'click ._logout_btn' : 'onLogout',
             'click ._auction_start_btn' : 'onAuctionStart',
+            'click ._auction_end_btn' : 'onAuctionEnd',
             'click ._clear_interval_btn' : 'onClearInterval',
             'click ._acending_btn' : 'onBiddingResult'
  		},
@@ -91,6 +95,7 @@ define([
         postAuctionSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
                 this.auctionID = data.id;
+                this.auctionName = data.auctionName;
                 this.intervalAuctionInfo_fn();
             } else {
                 alert('경매 생성에 실패 하였습니다.')
@@ -101,6 +106,49 @@ define([
          * 경매 생성 실패
          */
         postAuctionError:function(jsXHR, textStatus, errorThrown){
+            alert('경매 생성에 실패 하였습니다.')
+        },
+
+        /**
+         * 모의경매의 낙찰이 되면 경매를 끝낸다.
+         */
+        onAuctionEnd:function(){
+            this.putAuction();
+        },
+
+        /**
+         * 경매 생성
+         */
+        putAuction:function(){
+            Model.putAuction({
+                 url: Auction.HOST + '/api/auction',
+                 method : 'PUT',
+                 contentType:"application/json; charset=UTF-8",
+                 data : JSON.stringify({
+                     'id':this.auctionID,
+                     'auctionName':this.auctionName,
+                     'auctionStat':'OFF'
+                 }),
+                 success : Function.prototype.bind.call(this.putAuctionSuccess,this),
+                 error : Function.prototype.bind.call(this.putAuctionError,this)
+             })
+        },
+
+        /**
+         * 경매 생성 성공
+         */
+        putAuctionSuccess:function(data, textStatus, jqXHR){
+            if(textStatus === 'success'){
+                alert('모의경매를 끝내기를 완료 하였습니다..')
+            } else {
+                alert('경매 생성에 실패 하였습니다.')
+            }
+        },
+
+        /**
+         * 경매 생성 실패
+         */
+        putAuctionError:function(jsXHR, textStatus, errorThrown){
             alert('경매 생성에 실패 하였습니다.')
         },
 
@@ -283,33 +331,8 @@ define([
         },
 
         /**
-         * 경매정보 호출에 관련된 인터벌 함수 클리어 하는 함수
+         * 입찰 결과 핸들러
          */
-        onClearInterval:function(){
-            if(Auction.interval.has('auctionInfo')){
-                Auction.interval.clear('auctionInfo')
-            }
-        },
-
-
-        companyMaxPrice : function(data){
-
-            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-
-            var priceList = []
-
-            for(var i=0; i<priceArr.length; ++i){
-
-                var arr = _.pluck(data, priceArr[i])
-
-                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
-            }
-
-            return priceList;
-
-        },
-
-
         onBiddingResult:function(e){
             console.log(this.originCompanyList)
 
@@ -320,71 +343,97 @@ define([
             ];
 
             var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
-
                 var companyList = _.filter(this.originCompanyList,function(company){
                     return company.companyName === result.name;
                 })
-
                 return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
 
             },this))
 
             console.log(bidderList)
 
-            this.setBiddingResult(this.companyPercent(bidderList))
+            this.setBiddingResult(bidderList)
 
-            this.setSealLowestBidPrice(this.secondCompanyMaxPrice(bidderList))
+            this.setSealLowestBidPrice(bidderList)
         },
 
-        secondCompanyMaxPrice:function(data){
-
-            var companyData = JSON.parse( JSON.stringify( data ) );
-
-            for(var i=0; i<companyData.length; ++i){
-
-                for(var j=0; j < companyData[i].priceList.length ;++j){
-
-                    companyData[i].priceList[j].price = ( companyData[i].priceList[j].price > AuctionData.startPriceList[j].price ) ? companyData[i].priceList[j].price : AuctionData.startPriceList[j].price
-
-                }
-
+        /**
+         * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
+         */
+        companyMaxPrice : function(data){
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+            var priceList = []
+            for(var i=0; i<priceArr.length; ++i){
+                var arr = _.pluck(data, priceArr[i])
+                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
             }
-
-            return companyData;
-
+            return priceList;
         },
 
+        /**
+         * 입찰 결과 UI 렌더링
+         */
+        setBiddingResult:function(data){
+            var bidderList = this.companyPercent(data)
+            var template = Handlebars.compile(this.biddingResultTpl);
+            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
+        },
+
+        /**
+         * 시작가에서 입찰 결과까지의 퍼센트 추가 함수
+         */
         companyPercent:function(data){
             var companyData = JSON.parse( JSON.stringify( data ) );
-
             for(var i=0; i<companyData.length; ++i){
-
                 for(var j=0; j < companyData[i].priceList.length ;++j){
-
-                    companyData[i].priceList[j].percent = Math.ceil( (companyData[i].priceList[j].price/AuctionData.startPriceList[j].price - 1) * 100 )
-
+                    var companyPrice    = companyData[i].priceList[j].price;
+                    var startPrice      = AuctionData.startPriceList[j].price
+                    companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 )
                 }
-
             }
-
             return companyData;
         },
-
-        setBiddingResult:function(data){
-            var template = Handlebars.compile(this.biddingResultTpl);
-            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':data}));
-        },
-
-
-
 
         /**
          * 밀봉 입찰 최소액 셋팅
          */
         setSealLowestBidPrice:function(data){
+            var bidderList = this.secondCompanyMaxPrice(data)
             var template = Handlebars.compile(this.sealLowestBidPriceTpl);
-            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':data}));
+            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
         },
+
+        /**
+         * 시작가와 최고가 주파수를 비교해서 최고가를 만듬
+         */
+        secondCompanyMaxPrice:function(data){
+            var companyData = JSON.parse( JSON.stringify( data ) );
+            for(var i=0; i<companyData.length; ++i){
+                for(var j=0; j < companyData[i].priceList.length ;++j){
+                    var companyPrice    = companyData[i].priceList[j].price;
+                    var startPrice      = AuctionData.startPriceList[j].price;
+                    companyData[i].priceList[j].price = ( companyPrice > startPrice ) ? companyPrice : startPrice;
+                }
+            }
+            return companyData;
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -755,15 +804,37 @@ define([
         // getRoundListError:function(jsXHR, textStatus, errorThrown){
         //
         // },
+
+        /**
+         * 경매정보 호출에 관련된 인터벌 함수 클리어 하는 함수
+         */
+        onClearInterval:function(){
+            if(Auction.interval.has('auctionInfo')){
+                Auction.interval.clear('auctionInfo')
+            }
+        },
+
+        /**
+         * 로그아웃 핸들러
+         */
         onLogout : function(e){
             e.preventDefault();
             store.remove('user_info');
             window.location.reload(true);
         },
+
+        /**
+         * 페이지 숨김
+         */
         hide : function(){
+            // 모든 인터벌 중지
             this.onClearInterval();
             this.$el.addClass('displayNone');
         },
+
+        /**
+         * 페이지 보이기
+         */
         show : function(){
             this.$el.removeClass('displayNone');
             $('body').css({'background-color':'#FFFFFF'})
