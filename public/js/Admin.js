@@ -38,12 +38,9 @@ define([
 		},
         render:function(){
             this.$el.html(Admin);
+
             this.setTpl();
-
             this.setStartPriceList();
-
-            //this.auctionID = 1;
-            //this.intervalAuctionInfo_fn();
         },
 
         /**
@@ -146,7 +143,7 @@ define([
             if(textStatus === 'success'){
                 alert('모의경매를 끝내기를 완료 하였습니다..')
             } else {
-                alert('경매 생성에 실패 하였습니다.')
+                alert('모의경매를 끝내기를 실패 하였습니다.')
             }
         },
 
@@ -154,7 +151,7 @@ define([
          * 경매 생성 실패
          */
         putAuctionError:function(jsXHR, textStatus, errorThrown){
-            alert('경매 생성에 실패 하였습니다.')
+            alert('모의경매를 끝내기를 실패 하였습니다.')
         },
 
         /**
@@ -425,7 +422,7 @@ define([
 
                 var reversePriceList = sortPriceList.reverse();
 
-                
+
             }
 
         },
