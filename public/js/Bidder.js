@@ -134,6 +134,8 @@ define([
 
             this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
 
+            this.resetBidPrice();
+            
             this.setBidPrices(priceList);
 
             this.setLowestBidPriceUI( this.runLowestBidAdd(priceList) );
@@ -291,24 +293,12 @@ define([
                 } else {
                     $(element).prop('disabled',false)
                 }
-
             })
 
+        },
 
-            // _.each(data.frequency,
-            //     Function.prototype.bind.call(
-            //         function(frequency,index){
-            //             //현재 해당되는 입찰
-            //             if(frequency.winBidder != '' && frequency.winBidder === this.bidder_company) {
-            //                 $(this.$el.find('.bid_price')[index]).prop('disabled',true)
-            //             } else {
-            //                 $(this.$el.find('.bid_price')[index]).prop('disabled',false)
-            //             }
-            //         },
-            //         this
-            //     )
-            // )
-
+        resetBidPrice : function(){
+            this.$el.find('.bid_price').val('')
         },
 
         /**
