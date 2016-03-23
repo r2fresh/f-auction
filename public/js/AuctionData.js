@@ -1,11 +1,18 @@
 define({
+    'defaultPriceList':[
+        {'name':'priceA','bandWidth':40,'price':0,'type':'wideBand'},
+        {'name':'priceB','bandWidth':20,'price':0,'type':'narrow'},
+        {'name':'priceC','bandWidth':20,'price':0,'type':'wideBand'},
+        {'name':'priceD','bandWidth':40,'price':0,'type':'wideBand'},
+        {'name':'priceE','bandWidth':20,'price':0,'type':'narrow'}
+    ],
 
     'startPriceList':[
-        {'name':'priceA','price':1220},
-        {'name':'priceB','price':2300},
-        {'name':'priceC','price':1150},
-        {'name':'priceD','price':1816},
-        {'name':'priceE','price':1277}
+        {'name':'priceA','bandWidth':40,'price':1220,'type':'wideBand'},
+        {'name':'priceB','bandWidth':20,'price':2300,'type':'narrow'},
+        {'name':'priceC','bandWidth':20,'price':1150,'type':'wideBand'},
+        {'name':'priceD','bandWidth':40,'price':1816,'type':'wideBand'},
+        {'name':'priceE','bandWidth':20,'price':1277,'type':'narrow'}
     ],
 
     'startPrices': {

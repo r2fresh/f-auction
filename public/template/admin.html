@@ -3,6 +3,7 @@
 
     <div class="row">
         <div class="col-md-12" style="text-align:right">
+            <input type="text" id="auction_id" placeholder="">
             <button class="btn btn-default _auction_start_btn">모의경매시작</button>
             <button class="btn btn-default _auction_end_btn">모의경매끝</button>
             <button class="btn btn-default _logout_btn">로그아웃</button>
@@ -12,7 +13,7 @@
     </div>
 
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
         <li role="presentation" class="active">
             <a href="#ascending_bidding" aria-controls="ascending_bidding" role="tab" data-toggle="tab">오른입찰</a>
         </li>
@@ -156,7 +157,7 @@
             </div>
 
             <!--  오름 입찰 결과-->
-            <div class="row _ascending_bidding_result">
+            <div class="row _ascending_bidding_result displayNone">
                 <div class="col-md-12">
                     <div class="panel panel-navy">
                         <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰 결과 ( 밀봉입찰 최소액 ) </strong></div>

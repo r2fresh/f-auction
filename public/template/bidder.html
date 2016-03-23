@@ -45,9 +45,9 @@
                             <tbody>
 
                                 <!-- 시작가 -->
-                                <tr class="start_price_list">
+                                <tr class="bidder_start_price_list">
                                     <td>시작가</td>
-                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                    <script class="bidder_start_price_list_tpl" type="text/x-handlebars-template">
                                         <{{#priceList}}
                                         <td style="text-align:center;">
                                             <span>{{price}}</span>
@@ -60,9 +60,11 @@
                                 <tr class="lowest_race_prices">
                                     <script class="lowest_race_prices_tpl" type="text/x-handlebars-template">
                                         <td>최저경쟁가격</td>
-                                        {{#frequency}}
-                                        <td>{{winPrice}}</td>
-                                        {{/frequency}}
+                                        {{#priceList}}
+                                        <td style="text-align:center;">
+                                            <span>{{price}}</span>
+                                        </td>
+                                        {{/priceList}}
                                     </script>
                                 </tr><!--/ 최소경쟁가격 -->
 
@@ -70,9 +72,11 @@
                                 <tr class="lowest_bid_prices">
                                     <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
                                         <td>최소입찰액</td>
-                                        <{{#frequency}}
-                                        <td><span class="lowest_bid_price">{{winPrice}}<span></td>
-                                        {{/frequency}}
+                                        <{{#priceList}}
+                                        <td style="text-align:center;">
+                                            <span class="lowest_bid_price">{{price}}<span>
+                                        </td>
+                                        {{/priceList}}
                                     </script>
                                 </tr><!--/ 최소입찰액 -->
 
@@ -167,51 +171,64 @@
 
                                 <tr>
                                     <th>구분</th>
-                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;" colspan="3"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
-                                <tr class="user_list">
-                                    <th>사업자</th>
-                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
-                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
-                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
+                                <tr class="bidder_list">
+                                    <td>사업자</td>
+                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
+                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
+                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
 
-                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
-                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
-                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
+                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
+                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
+                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
 
-                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
-                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
-                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
+                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
+                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
+                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
 
-                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
-                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
-                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
+                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
+                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
+                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
 
-                                    <th style="text-align:center;"><span class="label label-KT-s">KT</span></th>
-                                    <th style="text-align:center;"><span class="label label-SK-s">SK</span></th>
-                                    <th style="text-align:center;"><span class="label label-LG-s">LG</span></th>
+                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
+                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
+                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
 
                                 </tr>
 
-                                <script class="round_list_prices_tpl" type="text/x-handlebars-template">
-                                    {{#round}}
-                                    <tr class="round_prices">
-                                        <th>{{roundNum}}라운드</th>
+                                <!-- 시작가 -->
+                                <tr class="start_price_list">
+                                    <td>시작가</td>
+                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                        <{{#priceList}}
+                                        <td style="text-align:center;" colspan=3>
+                                            <span>{{price}}</span>
+                                        </td>
+                                        {{/priceList}}
+                                    </script>
+                                </tr><!--/ 시작가 -->
+
+                                <!-- 라운드 리스트 -->
+                                <script class="round_price_list_tpl" type="text/x-handlebars-template">
+                                    {{#roundList}}
+                                    <tr class="round_price_list">
+                                        <td>{{round}}</td>
                                         {{#frequency}}
                                             <{{#bidders}}
-                                            <th style="text-align:center;">
+                                            <td style="text-align:center;">
                                                 <!--  label label-{{name}}-l -->
                                                 <span class="{{className}}">{{price}}</span>
-                                            </th>
+                                            </td>
                                             {{/bidders}}
                                         {{/frequency}}
                                     </tr>
-                                    {{/round}}
-                                </script>
+                                    {{/roundList}}
+                                </script><!--/ 라운드 리스트 -->
 
                                 <!-- <tr class="round_prices">
                                     <script class="round_prices_tpl" type="text/x-handlebars-template">
@@ -223,170 +240,8 @@
                                         {{/frequency}}
 
                                     </script>
+                                -->
 
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                </tr>
-                                <tr>
-                                    <th>1</th>
-                                    <th style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                </tr>
-                                <tr>
-                                    <th>2</th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-primary" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-primary" style="font-size:100%">3980</span></th>
-
-                                </tr> -->
-                                <!-- <tr>
-                                    <th>시작가</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                                    <th style="text-align:center;"><span class="label label-default"  style="font-size:100%">3980</span></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr> -->
-
-                                <!-- <tr>
-                                    <th>입찰액</th>
-                                    <th>사업자</th>
-                                    <th>입찰액</th>
-                                    <th>사업자</th>
-                                    <th>입찰액</th>
-                                    <th>사업자</th>
-                                    <th>입찰액</th>
-                                    <th>사업자</th>
-                                    <th>입찰액</th>
-                                    <th>사업자</th>
-                                </tr> -->
-                                <!-- <tr>
-                                    <td>1</td>
-
-                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-danger" style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-primary"  style="font-size:100%">3980</span></td>
-                                    <td style="text-align:center;"><span class="label label-success"  style="font-size:100%">3980</span></td>
-
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>승자</th>
-                                    <th style="text-align:center;" colspan="3">KT</th>
-                                    <th style="text-align:center;" colspan="3">SK</th>
-                                    <th style="text-align:center;" colspan="3">LG</th>
-                                    <th style="text-align:center;" colspan="3"></th>
-                                    <th style="text-align:center;" colspan="3"></th>
-                                    <th>승자</th>
-                                    <th>페지</th>
-                                </tr> -->
-                                <tr>
-                                    <th>현재가</th>
-                                    <th style="text-align:center;"><span class="text-warning">3980</span></th>
-                                    <th style="text-align:center;"><span class="text-warning">3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span class="text-warning">3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-                                    <th style="text-align:center;"><span>3980</span></th>
-
-                                </tr>
                             </tbody>
                         </table>
                     </div>

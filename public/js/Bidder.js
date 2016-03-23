@@ -2,14 +2,15 @@ define([
    'module',
    'text!tpl/bidder.html',
    'js/AuctionData',
+   'js/Validation',
    'js/Model',
    ],
-   function(module, Bidder, AuctionData, Model){
+   function(module, Bidder, AuctionData, Validation, Model){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
-        auctionID : null,
+        auctionID : 1,
 
         roundNum : 1,
 
@@ -39,6 +40,11 @@ define([
         roundListPricesTpl : null,
 
         intervalAuctionList : null,
+        // 경매 원본 정보
+        originCompanyList : null,
+
+        startPriceList : null,
+
 
  		el: '.bidder',
  		events :{
@@ -52,22 +58,36 @@ define([
             this.setTpl();
 		},
         render:function(){
+            this.$el.html(Bidder);
+            this.setTpl();
 
             this.setStartPriceList();
-            this.getAuctionList();
 
-            this.intervalAuctionList_fn();
-            this.setBidderLogo();
+            //this.getAuctionInfo();
+
+            // this.intervalAuctionList_fn();
+            // this.setBidderLogo();
         },
 
         /**
          * 사용하는 템플릿 설정
          */
         setTpl : function(){
+
+            this.roundPriceListTpl      = this.$el.find(".round_price_list_tpl").html();
+
+            this.bidderStartPriceListTpl      = this.$el.find(".bidder_start_price_list_tpl").html();
+
             this.startPriceListTpl      = this.$el.find(".start_price_list_tpl").html();
+
             this.lowestRacePricesTpl    = this.$el.find(".lowest_race_prices_tpl").html();
+
             this.lowestBidPricesTpl     = this.$el.find(".lowest_bid_prices_tpl").html();
-            this.roundListPricesTpl     = this.$el.find(".round_list_prices_tpl").html();
+
+
+
+
+            //this.roundListPricesTpl     = this.$el.find(".round_list_prices_tpl").html();
         },
 
         /**
@@ -75,61 +95,116 @@ define([
          */
         setStartPriceList:function(){
             var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
-            var template = Handlebars.compile(this.startPriceListTpl);
-            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
-        },
+            this.startPriceList = JSON.parse( JSON.stringify( priceList ) );
 
+            var template1 = Handlebars.compile(this.bidderStartPriceListTpl);
+            this.$el.find('.bidder_start_price_list').append(template1({'priceList':priceList}));
 
+            var template2 = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template2({'priceList':priceList}));
 
+            this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
 
-
-        /**
-         * 옥션 리스트 인터벌로 호출
-         */
-        intervalAuctionList_fn:function(){
-            this.intervalAuctionList = window.setInterval( Function.prototype.bind.call(this.getAuctionList ,this), 500 );
-        },
-
-        /**
-         * 옥션 리스트 호출
-         */
-        getAuctionList:function(){
-            Model.getAuctionList({
-                 url:Auction.HOST + '/api/auction',
-                 method : 'GET',
-                 contentType:"application/json; charset=UTF-8",
-                 success : Function.prototype.bind.call(this.getAuctionListSuccess,this),
-                 error : Function.prototype.bind.call(this.getAuctionListError,this)
-             })
+            this.setLowestBidPriceUI(priceList)
         },
 
         /**
-         * 옥션 리스트 호출 성공
+         * 최소 입찰액 UI 설정
          */
-        getAuctionListSuccess:function(data, textStatus, jqXHR){
+        setLowestBidPriceUI : function(data){
+            var template = Handlebars.compile(this.lowestBidPricesTpl);
+            this.$el.find('.lowest_bid_prices').empty().html(template({'priceList':data}));
+        },
 
-            if(textStatus === 'success'){
+        /**
+         * 최소 입찰액 설정
+         */
+        setLowestBidPrice : function(data){
 
-                var auctionArr = _.filter(data,function(auction){
-                    return (auction.auctionStat === 'ON')
-                })
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
 
-                //console.log(auctionArr)
+            var priceList = _.map(priceArr, Function.prototype.bind.call(function(item, index){
 
-                if(auctionArr.length === 1){
-                    this.auctionID = auctionArr[0].id;
-                    window.clearInterval(this.intervalAuctionList)
-                    return;
+                var startPrice  = this.startPriceList[index].price;
+                var lowestPrice = _.max(_.pluck(data, item));
+                var price = (startPrice > lowestPrice) ? startPrice : lowestPrice;
+
+                return {'name':item, 'price':price}
+            },this));
+
+            this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
+
+            this.setBidPrices(priceList);
+
+            this.setLowestBidPriceUI( this.runLowestBidAdd(priceList) );
+
+        },
+
+        runLowestBidAdd:function(data){
+            var priceList = _.map(data, Function.prototype.bind.call(function(item,index){
+
+                var startPrice  = this.startPriceList[index].price;
+
+                if(startPrice != item.price){
+                    item.price = Math.ceil( item.price + (item.price*this.lowestBidAdd/100))
                 }
-            }
+
+                return item
+            },this));
+            return priceList;
         },
 
-        /**
-         * 옥션 리스트 호출 실패
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
+         * 최저경쟁가격(시작가) 리스트 설정
          */
-        getAuctionListError:function(jsXHR, textStatus, errorThrown){
+        // setLowestRacePrices : function(data){
+        //     var template = Handlebars.compile(this.lowestRacePricesTpl);
+        //     this.$el.find('.lowest_race_prices').empty().html(template(data));
+        //
+        //     this.setLowestBidPrices(data);
+        //     this.setBidPrices(data);
+        // },
 
-        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -154,32 +229,23 @@ define([
 
 
 
-        /*
-         * 최저경쟁가격(시작가) 리스트 설정
-         */
-        setLowestRacePrices : function(data){
-            var template = Handlebars.compile(this.lowestRacePricesTpl);
-            this.$el.find('.lowest_race_prices').empty().html(template(data));
 
-            this.setLowestBidPrices(data);
-            this.setBidPrices(data);
-        },
 
         /**
          * 최소경쟁가격 리스트 설정
          */
-        setLowestBidPrices : function(data){
-            this.lowestBidPrices = _.map(data.frequency, Function.prototype.bind.call(function(frequency){
-                    frequency.winPrice = Math.ceil( frequency.winPrice + (frequency.winPrice*this.lowestBidAdd/100) )
-                    return frequency
-                },this))
-
-            console.log(this.lowestBidPrices)
-
-            var template = Handlebars.compile(this.lowestBidPricesTpl);
-            this.$el.find('.lowest_bid_prices').empty().html(template({'frequency':this.lowestBidPrices}));
-
-        },
+        // setLowestBidPrices : function(data){
+        //     this.lowestBidPrices = _.map(data.frequency, Function.prototype.bind.call(function(frequency){
+        //             frequency.winPrice = Math.ceil( frequency.winPrice + (frequency.winPrice*this.lowestBidAdd/100) )
+        //             return frequency
+        //         },this))
+        //
+        //     console.log(this.lowestBidPrices)
+        //
+        //     var template = Handlebars.compile(this.lowestBidPricesTpl);
+        //     this.$el.find('.lowest_bid_prices').empty().html(template({'frequency':this.lowestBidPrices}));
+        //
+        // },
 
 
 
@@ -218,19 +284,30 @@ define([
          */
         setBidPrices : function(data){
 
-            _.each(data.frequency,
-                Function.prototype.bind.call(
-                    function(frequency,index){
-                        //현재 해당되는 입찰
-                        if(frequency.winBidder != '' && frequency.winBidder === this.bidder_company) {
-                            $(this.$el.find('.bid_price')[index]).prop('disabled',true)
-                        } else {
-                            $(this.$el.find('.bid_price')[index]).prop('disabled',false)
-                        }
-                    },
-                    this
-                )
-            )
+            _.each(this.$el.find('.bid_price'),function(element,index){
+
+                if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
+                    $(element).prop('disabled',true)
+                } else {
+                    $(element).prop('disabled',false)
+                }
+
+            })
+
+
+            // _.each(data.frequency,
+            //     Function.prototype.bind.call(
+            //         function(frequency,index){
+            //             //현재 해당되는 입찰
+            //             if(frequency.winBidder != '' && frequency.winBidder === this.bidder_company) {
+            //                 $(this.$el.find('.bid_price')[index]).prop('disabled',true)
+            //             } else {
+            //                 $(this.$el.find('.bid_price')[index]).prop('disabled',false)
+            //             }
+            //         },
+            //         this
+            //     )
+            // )
 
         },
 
@@ -238,15 +315,7 @@ define([
          * 블록별 가격 증가율 (시작가/승자의 가격 * 100)
          */
 
-        /**
-         * 과거 최고 입찰액 (본인이 쓴 과거 최고 입찰액)
-         */
 
-         onLogout : function(e){
-             e.preventDefault();
-             store.remove('user_info')
-             window.location.reload(true);
-         },
 
         /**
           * 1순위 블록 필요 입찰액
@@ -254,8 +323,10 @@ define([
 
         onBid : function(){
 
+            var bidPriceEl = this.$el.find('.bid_price');
+
             // 빈 입찰가격 체크 (true : 입찰가격모두빈칸, false : 입찰가격을 하나라도 입력했을경우)
-            var emptyCheck = _.every(this.$el.find('.bid_price'),function(element){
+            var emptyCheck = _.every(bidPriceEl, function(element){
                 return $(element).val() === '';
             })
             if(emptyCheck) {
@@ -264,18 +335,14 @@ define([
             }
 
             // 통신사 대역폭 체크
-            var bidPriceArr = _.map(AuctionData.auctionStartPrices,Function.prototype.bind.call(function(frequency, index){
-
-                var result = 0;
-
-                if( $(this.$el.find('.bid_price')[index]).val() != '' ){
-                    result = frequency.bandWidth
-                } else {
-                    result = 0;
-                }
-                return result
-            },this))
-            var maxBandWidth = _.reduce(bidPriceArr, function(memo, num){ return memo + num; }, 0);
+            var maxBandWidth = _.reduce(
+                _.map(AuctionData.defaultPriceList, Function.prototype.bind.call(function(item, index){
+                    var bidPriceValue = $(this.$el.find('.bid_price')[index]).val();
+                    return ( bidPriceValue != '' ) ? item.bandWidth : 0;
+                },this)),
+                function(memo, num){ return memo + num; },
+                0
+            );
             if(maxBandWidth > this.ableBandWidth){
                 alert('정해진 대역폭을 초과 하셨습니다.');
                 return;
@@ -283,7 +350,7 @@ define([
 
             // 광대역은 하나만 신청가능하다는 것을 체크
             var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
-                return AuctionData.startPrices.frequency[index].type === 'wideBand'
+                return AuctionData.defaultPriceList[index].type === 'wideBand'
             })
             var limitWideBandArr = _.filter(wideBandArr,function(element){
                 return $(element).val() != '';
@@ -301,7 +368,7 @@ define([
                 if($(element).val() === ''){
                     result = true;
                 } else {
-                    result = ( this.lowestBidPrices[index].winPrice <= parseInt($(element).val(),10) ) ? true : false
+                    result = ( this.lowestBidPrices[index].price <= parseInt($(element).val(),10) ) ? true : false
                 }
 
                 return result;
@@ -311,7 +378,10 @@ define([
                 return;
             }
 
-            this.postBid();
+            this.getAuctionList();
+
+
+            //this.postBid();
 
             // Model.postElkEvent({
             //      url: Elkplus.HOST + '/logmon/events' + eventId,
@@ -355,6 +425,55 @@ define([
 
         },
 
+
+        /**
+         * 옥션 리스트 호출
+         */
+        getAuctionList:function(){
+            Model.getAuctionList({
+                 url:Auction.HOST + '/api/auction',
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getAuctionListSuccess,this),
+                 error : Function.prototype.bind.call(this.getAuctionListError,this)
+             })
+        },
+
+        /**
+         * 옥션 리스트 호출 성공
+         */
+        getAuctionListSuccess:function(data, textStatus, jqXHR){
+
+            if(textStatus === 'success'){
+
+                var auctionArr = _.filter(data,function(auction){
+                    return (auction.auctionStat === 'ON')
+                })
+
+                if(auctionArr.length === 1){
+                    this.auctionID = auctionArr[0].id;
+                    this.postBid();
+                    //window.clearInterval(this.intervalAuctionList)
+                } else {
+                    alert('갱매가 중복적으로 생성되었습니다.')
+                }
+            }
+        },
+
+        /**
+         * 옥션 리스트 호출 실패
+         */
+        getAuctionListError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
+
+
+
+
+
+
+
         /**
          * 입찰 급액 등록
          */
@@ -368,20 +487,24 @@ define([
             var D_price = $($bidPrice[3]).val();
             var E_price = $($bidPrice[4]).val();
 
+            var postData = {
+                'auctionNum':this.auctionID,
+                'roundNum':this.roundNum,
+                'companyName':this.bidder_company,
+                'priceA':A_price,
+                'priceB':B_price,
+                'priceC':C_price,
+                'priceD':D_price,
+                'priceE':E_price
+            }
+
+            console.log(postData)
+
             Model.postBid({
                  url: Auction.HOST + '/api/bidding',
                  method : 'POST',
                  contentType:"application/json; charset=UTF-8",
-                 data : JSON.stringify({
-                     'auctionNum':this.auctionID,
-                     'roundNum':this.roundNum,
-                     'companyName':this.bidder_company,
-                     'priceA':A_price,
-                     'priceB':B_price,
-                     'priceC':C_price,
-                     'priceD':D_price,
-                     'priceE':E_price
-                 }),
+                 data : JSON.stringify(postData),
                  success : Function.prototype.bind.call(this.postBidSuccess,this),
                  error : Function.prototype.bind.call(this.postBidError,this)
              })
@@ -389,10 +512,206 @@ define([
 
         postBidSuccess:function(data, textStatus, jqXHR){
             console.log(data);
+            this.getAuctionInfo();
         },
         postBidError:function(jsXHR, textStatus, errorThrown){
 
         },
+
+        // /**
+        //  * 옥션 리스트 인터벌로 호출
+        //  */
+        // intervalAuctionList_fn:function(){
+        //     Auction.interval.set(
+        //         'auctionInfo',
+        //         Function.prototype.bind.call(this.getAuctionInfo,this)
+        //     )
+        // },
+
+        /**
+         * 경매 라운드 리스트 호출
+         */
+        getAuctionInfo:function(){
+            Model.getAuctionInfo({
+                 url:Auction.HOST + '/api/auctioninfo/' + this.auctionID,
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getAuctionInfoSuccess,this),
+                 error : Function.prototype.bind.call(this.getAuctionInfoError,this)
+             })
+        },
+
+        /**
+         * 경매 라운드 리스트 성공
+         */
+        getAuctionInfoSuccess:function(data, textStatus, jqXHR){
+            if(textStatus === 'success'){
+
+                var quotient = data.length%3;
+
+                if(quotient === 0){
+                    //UI 셋팅
+
+                    this.roundNum += 1;
+
+                    this.setLowestBidPrice(data);
+                    this.setRoundList(data);
+                } else {
+                    this.getAuctionInfo();
+                }
+
+                //this.setRoundList(data);
+
+            } else {
+                alert('경매 정보 호출에 실패하였습니다.')
+            }
+        },
+
+        /**
+         * 경매 라운드 리스트 실패
+         */
+        getAuctionInfoError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
+        /**
+         * 경매정보를 UI에 랜더링 하는 함수
+         */
+        setRoundList:function(data){
+            //this.roundNum = Math.ceil(data.length/3);
+
+            this.originCompanyList = data;
+
+            var roundList = this.changeDataFormat(data);
+
+            this.$el.find('.round_price_list').remove();
+
+            var template = Handlebars.compile(this.roundPriceListTpl);
+            this.$el.find('.start_price_list').after(template({'roundList':roundList}));
+        },
+
+        /**
+         * 서버에서 넘어온 경매 데이터를 프런트에 맞게 변경하는 함수
+         */
+        changeDataFormat:function(data){
+
+            var firstData   = this.setFirstData(data);
+            var secondData  = this.setSecondData(firstData);
+
+            return secondData;
+        },
+
+        /**
+         * 서버에서 받은 데이터를 첫번째로 그룹화를 하는 함수
+         */
+        setFirstData : function(data){
+
+            var roundTotal = Math.ceil(data.length/3);
+            var roundList = [];
+
+            for(var i=0; i<roundTotal ; ++i){
+                roundList.push({
+                    'round' : i + 1,
+                    'companys' : _.filter(data, function(round){
+                        return (round.roundNum === (i+1))
+                    })
+                })
+            }
+
+            return roundList;
+        },
+
+        /**
+         * 그룹화를 한 데이터를 템플릿에 맞게 변경
+         */
+        setSecondData : function(data){
+
+            var roundList = [];
+
+            for(var i=0; i<data.length ; ++i){
+                roundList.push({
+                    'round' : i + 1,
+                    'frequency' : this.setFrequencyData(data[i].companys)
+                })
+            }
+
+            return roundList;
+        },
+
+        /**
+         * 그룹화된 데이터를 주파수 별로 구분하는 것으로 구조 변경
+         */
+        setFrequencyData : function(data){
+
+            var frequencyList = [];
+            var bidderArr = ['KT', 'SK', 'LG']
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+            var frequencyFormat = JSON.parse( JSON.stringify( AuctionData.frequency ) );
+
+            for(var i=0; i<priceArr.length; ++i){
+
+                var bidders =[];
+
+                for(var j=0; j<bidderArr.length; ++j){
+                    var companyArr = _.filter(data,function(company){
+                        return company.companyName === bidderArr[j];
+                    })
+
+                    if(companyArr.length === 1){
+                        bidders.push({
+                            'name' : bidderArr[j],
+                            'price' : companyArr[0][priceArr[i]]
+                        })
+                    } else {
+                        bidders.push({
+                            'name' : bidderArr[j],
+                            'price' : 0
+                        })
+                    }
+                }
+
+
+                var winPrice = ( _.max(bidders, function(bidder){ return bidder.price; }) ).price;
+
+                var winArr = _.filter(bidders,function(bidder){
+                    return winPrice === bidder.price
+                })
+
+                var win = null;
+
+                if(winArr.length > 1){
+                    win = winArr[ parseInt(Math.random()*(winArr.length),10) ]
+                } else {
+                    win = winArr[0];
+                }
+                var winName = win.name;
+
+
+                frequencyFormat[i].bidders = _.map(bidders,function(bidder){
+
+                    var className = '';
+
+                    if(bidder.price === winPrice && bidder.name === winName){
+                        className = 'label label-' + bidder.name + '-l';
+                    } else {
+                        className = 'text-gray';
+                    }
+
+                    return _.extend(bidder,{'className':className})
+                })
+
+            }
+
+            return frequencyFormat;
+
+        },
+
+
+
+
+
+
+
 
         /**
          * 입찰 테이블 보이게 안보이게 하는 함수
@@ -705,7 +1024,7 @@ define([
 
             //this.setRoundUI(roundData);
 
-            this.setRoundUI(roundData)
+            this.setRoundUI2(roundData)
 
             //cloneData.ksyname = 'kkkk'
 
@@ -726,7 +1045,7 @@ define([
             this.setLowestBidPrices({'frequency':lastRound2});
         },
 
-        setRoundUI : function(data){
+        setRoundUI2 : function(data){
 
             _.each(data.round, function(round){
 
@@ -755,13 +1074,32 @@ define([
 
             })
         },
+        /**
+         * 로그아웃 핸들러
+         */
+        onLogout : function(e){
+            e.preventDefault();
+            store.remove('user_info');
+            window.location.reload(true);
+        },
+
+        /**
+         * 페이지 숨김
+         */
         hide : function(){
+            // 모든 인터벌 중지
+            this.onClearInterval();
             this.$el.addClass('displayNone');
         },
+
+        /**
+         * 페이지 보이기
+         */
         show : function(){
             this.$el.removeClass('displayNone');
             $('body').css({'background-color':'#FFFFFF'})
         }
+
  	}))
 
 })

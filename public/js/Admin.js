@@ -34,15 +34,16 @@ define([
             'click ._acending_btn' : 'onBiddingResult'
  		},
  		initialize:function(){
-            this.$el.html(Admin);
-            this.setTpl();
+
 		},
         render:function(){
+            this.$el.html(Admin);
+            this.setTpl();
 
             this.setStartPriceList();
 
-            this.auctionID = 1;
-            this.intervalAuctionInfo_fn();
+            //this.auctionID = 1;
+            //this.intervalAuctionInfo_fn();
         },
 
         /**
@@ -96,6 +97,10 @@ define([
             if(textStatus === 'success'){
                 this.auctionID = data.id;
                 this.auctionName = data.auctionName;
+
+                //나중에 지움
+                this.$el.find('#auction_id').val(data.id)
+
                 this.intervalAuctionInfo_fn();
             } else {
                 alert('경매 생성에 실패 하였습니다.')
@@ -377,6 +382,7 @@ define([
             var bidderList = this.companyPercent(data)
             var template = Handlebars.compile(this.biddingResultTpl);
             this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
+            this.$el.find('._ascending_bidding_result').removeClass('displayNone')
         },
 
         /**
