@@ -134,8 +134,6 @@ define([
 
             this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
 
-            this.resetBidPrice();
-            
             this.setBidPrices(priceList);
 
             this.setLowestBidPriceUI( this.runLowestBidAdd(priceList) );
@@ -287,13 +285,16 @@ define([
         setBidPrices : function(data){
 
             _.each(this.$el.find('.bid_price'),function(element,index){
-
                 if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
                     $(element).prop('disabled',true)
+                    $(element).attr('placeholder','입찰제한')
                 } else {
                     $(element).prop('disabled',false)
+                    $(element).attr('placeholder','')
                 }
             })
+
+            this.resetBidPrice();
 
         },
 
