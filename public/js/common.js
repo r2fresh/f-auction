@@ -1,7 +1,7 @@
 (function(){
 	window.Auction = window.Auction || {};
 
-	Auction.HOST = 'http://arcane-tundra-11453.herokuapp.com'
+	Auction.HOST = 'http://lit-tundra-21855.herokuapp.com/ '
 	//Auction.HOST = ''
 })();
 

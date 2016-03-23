@@ -51,7 +51,7 @@ define([
             'click .bid_btn' : 'onBid',
             'click .test_btn' : 'testBidSuccess',
             'click ._accordion_btn' : 'onAccordion',
-            'click ._logout_btn' : 'onLogout'
+            'click ._logout_btn' : 'onLogout',
  		},
  		initialize:function(){
             this.$el.html(Bidder);

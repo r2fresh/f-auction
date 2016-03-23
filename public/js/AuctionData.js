@@ -8,11 +8,11 @@ define({
     ],
 
     'startPriceList':[
-        {'name':'priceA','bandWidth':40,'price':1220,'type':'wideBand'},
-        {'name':'priceB','bandWidth':20,'price':2300,'type':'narrow'},
-        {'name':'priceC','bandWidth':20,'price':1150,'type':'wideBand'},
-        {'name':'priceD','bandWidth':40,'price':1816,'type':'wideBand'},
-        {'name':'priceE','bandWidth':20,'price':1277,'type':'narrow'}
+        {'name':'priceA','bandWidth':40,'price':7620,'type':'wideBand'},
+        {'name':'priceB','bandWidth':20,'price':4513,'type':'narrow'},
+        {'name':'priceC','bandWidth':20,'price':3816,'type':'wideBand'},
+        {'name':'priceD','bandWidth':40,'price':6553,'type':'wideBand'},
+        {'name':'priceE','bandWidth':20,'price':3277,'type':'narrow'}
     ],
 
     'startPrices': {

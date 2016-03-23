@@ -359,6 +359,7 @@ define([
 
             this.setBiddingResult(bidderList)
 
+            //밀봉 입찰 최소액 셋팅
             this.setSealLowestBidPrice(bidderList)
         },
 
@@ -379,25 +380,54 @@ define([
          * 입찰 결과 UI 렌더링
          */
         setBiddingResult:function(data){
-            var bidderList = this.companyPercent(data)
+            var bidderList = this.companyPercent(data);
+
+            console.log('== 입찰결과 ==')
+            console.log(bidderList);
+            console.table(bidderList);
+
             var template = Handlebars.compile(this.biddingResultTpl);
             this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
-            this.$el.find('._ascending_bidding_result').removeClass('displayNone')
+            this.$el.find('._ascending_bidding_result').removeClass('displayNone');
         },
 
         /**
          * 시작가에서 입찰 결과까지의 퍼센트 추가 함수
          */
         companyPercent:function(data){
+
             var companyData = JSON.parse( JSON.stringify( data ) );
             for(var i=0; i<companyData.length; ++i){
                 for(var j=0; j < companyData[i].priceList.length ;++j){
                     var companyPrice    = companyData[i].priceList[j].price;
                     var startPrice      = AuctionData.startPriceList[j].price
-                    companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 )
+                    companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 );
                 }
             }
+
+            this.setResultRanking(companyData);
+
             return companyData;
+        },
+
+        /**
+         * 오름경매 결과에 순위를 만드는 함수
+         */
+        setResultRanking:function(data){
+
+            var companyData = JSON.parse( JSON.stringify( data ) );
+
+            for(var i=0; i<companyData.length; ++i){
+                var sortPriceList = _.sortBy(companyData[i].priceList, 'percent');
+
+                console.log('== 입찰결과순위별 ==')
+                console.table(sortPriceList.reverse())
+
+                var reversePriceList = sortPriceList.reverse();
+
+                
+            }
+
         },
 
         /**
