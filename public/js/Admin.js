@@ -903,7 +903,7 @@ define([
         onLogout : function(e){
             e.preventDefault();
             store.remove('user_info');
-            window.location.reload(true);
+            window.location.href = '/';
         },
 
         /**

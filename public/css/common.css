@@ -35,3 +35,12 @@
     float: right;
     margin-top: -4px;
 }
+
+
+/**
+ * 입찰자 로고 사이즈
+ */
+.bidder .bidder_logo {
+    width:10%;
+    height:10%;
+}

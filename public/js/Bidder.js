@@ -14,7 +14,7 @@ define([
 
         roundNum : 1,
 
-        bidder_company: 'KT',
+        bidder_company: '',
 
         //최소입찰증분 (단위는 퍼센트)
         lowestBidAdd : 4,
@@ -52,6 +52,7 @@ define([
             'click .test_btn' : 'testBidSuccess',
             'click ._accordion_btn' : 'onAccordion',
             'click ._logout_btn' : 'onLogout',
+            'click .bidder_seal_lowest_bid_price_btn' : 'onSealLowestBidPrice'
  		},
  		initialize:function(){
             this.$el.html(Bidder);
@@ -60,14 +61,16 @@ define([
         render:function(){
             this.$el.html(Bidder);
             this.setTpl();
+            this.setBidderCompany();
             this.setLimitHertz();
+            this.setBidderLogo();
 
             this.setStartPriceList();
 
             //this.getAuctionInfo();
 
             // this.intervalAuctionList_fn();
-            // this.setBidderLogo();
+
         },
 
         /**
@@ -85,6 +88,18 @@ define([
 
             this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
 
+            this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
+
+        },
+
+        setBidderCompany:function(){
+            var userInfo = store.get('user_info')
+            this.bidder_company = (userInfo.user).toUpperCase();
+        },
+
+        setBidderLogo:function(){
+            var userInfo = store.get('user_info')
+            this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
         },
 
         setLimitHertz : function(){
@@ -165,6 +180,179 @@ define([
 
 
 
+        /**
+         * 밀봉최소금액 설정
+         */
+        onSealLowestBidPrice:function(data){
+            console.log(this.originCompanyList)
+
+            var resultArr = [
+                {'name': this.bidder_company}
+            ];
+
+            var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
+                var companyList = _.filter(this.originCompanyList,function(company){
+                    return company.companyName === result.name;
+                })
+                return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
+
+            },this))
+
+            console.log(bidderList)
+
+            var biddingResultList = this.setBiddingResult(bidderList)
+
+            //밀봉 입찰 최소액 셋팅
+            this.setSealLowestBidPrice(biddingResultList)
+        },
+
+        /**
+         * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
+         */
+        companyMaxPrice : function(data){
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+            var priceList = []
+            for(var i=0; i<priceArr.length; ++i){
+                var arr = _.pluck(data, priceArr[i])
+                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
+            }
+            return priceList;
+        },
+
+        /**
+         * 입찰 결과 UI 렌더링
+         */
+        setBiddingResult:function(data){
+            var companyData = this.companyPercent(data);
+            var bidderList = this.setResultRanking(companyData);
+
+            console.log('== 입찰결과 ==')
+            console.log(bidderList);
+            console.table(bidderList);
+
+            //var template = Handlebars.compile(this.biddingResultTpl);
+            //this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
+            //this.$el.find('._ascending_bidding_result').removeClass('displayNone');
+
+            return bidderList;
+        },
+
+        /**
+         * 시작가에서 입찰 결과까지의 퍼센트 추가 함수
+         */
+        companyPercent:function(data){
+
+            var companyData = JSON.parse( JSON.stringify( data ) );
+            for(var i=0; i<companyData.length; ++i){
+                for(var j=0; j < companyData[i].priceList.length ;++j){
+                    var companyPrice    = companyData[i].priceList[j].price;
+                    var startPrice      = AuctionData.startPriceList[j].price
+                    companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 );
+                }
+            }
+
+            return companyData;
+        },
+
+        /**
+         * 오름경매 결과에 순위를 만드는 함수
+         */
+        setResultRanking:function(data){
+
+            //this.setReversePriceList(data);
+
+            var companyData = JSON.parse( JSON.stringify( data ) );
+
+            var sortPriceList, reversePriceList = null;
+
+
+
+            for(var i=0; i<companyData.length; ++i){
+                sortPriceList = _.sortBy(companyData[i].priceList, 'percent');
+
+                reversePriceList = this.setReversePriceList( sortPriceList );
+
+                //console.log('== 입찰결과순위별 ==')
+                //console.table(reversePriceList)
+
+                for(var j=0; j<companyData[i].priceList.length; ++j){
+
+                    for(var k=0; k<reversePriceList.length; ++k){
+
+                        if(companyData[i].priceList[j].percent === reversePriceList[k].percent){
+                            companyData[i].priceList[j].ranking = reversePriceList[k].ranking;
+                            companyData[i].priceList[j].labelClass = reversePriceList[k].labelClass;
+                        }
+                    }
+
+                }
+            }
+
+            console.log(companyData);
+
+            return companyData
+
+        },
+
+        setReversePriceList:function(data){
+
+            var reversePriceList = JSON.parse( JSON.stringify( data.reverse() ) );
+
+            var ranking = 1;
+
+            var percent = null;
+
+            for (var i=0; i<reversePriceList.length; ++i){
+
+                if(percent == null){
+                    percent = reversePriceList[i].percent;
+                    reversePriceList[i].labelClass = 'danger'
+                    reversePriceList[i].ranking= ranking;
+                } else {
+                    if(percent == reversePriceList[i].percent){
+                        reversePriceList[i].ranking = ranking
+                    } else {
+                        percent = reversePriceList[i].percent;
+                        reversePriceList[i].ranking = ranking = ranking + 1;
+                    }
+                    reversePriceList[i].labelClass = 'default'
+                }
+            }
+
+            return reversePriceList;
+
+        },
+
+        /**
+         * 밀봉 입찰 최소액 셋팅
+         */
+        setSealLowestBidPrice:function(data){
+            var bidderList = this.secondCompanyMaxPrice(data)
+            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
+            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
+        },
+
+        /**
+         * 시작가와 최고가 주파수를 비교해서 최고가를 만듬
+         */
+        secondCompanyMaxPrice:function(data){
+            var companyData = JSON.parse( JSON.stringify( data ) );
+            for(var i=0; i<companyData.length; ++i){
+                for(var j=0; j < companyData[i].priceList.length ;++j){
+                    var companyPrice    = companyData[i].priceList[j].price;
+                    var startPrice      = AuctionData.startPriceList[j].price;
+                    companyData[i].priceList[j].price = ( companyPrice > startPrice ) ? companyPrice : startPrice;
+                }
+            }
+            return companyData;
+        },
+
+
+
+
+
+
+
 
 
 
@@ -225,10 +413,7 @@ define([
 
 
 
-        setBidderLogo:function(){
-            var userInfo = store.get('user_info')
-            this.$el.find('._bidder_info img').attr('src','img/' + userInfo.user + '_logo.jpg')
-        },
+
 
 
 
@@ -1074,7 +1259,7 @@ define([
         onLogout : function(e){
             e.preventDefault();
             store.remove('user_info');
-            window.location.reload(true);
+            window.location.href = '/';
         },
 
         /**
