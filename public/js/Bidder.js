@@ -60,6 +60,7 @@ define([
         render:function(){
             this.$el.html(Bidder);
             this.setTpl();
+            this.setLimitHertz();
 
             this.setStartPriceList();
 
@@ -74,20 +75,25 @@ define([
          */
         setTpl : function(){
 
-            this.roundPriceListTpl      = this.$el.find(".round_price_list_tpl").html();
+            this.roundPriceListTpl          = this.$el.find(".round_price_list_tpl").html();
 
-            this.bidderStartPriceListTpl      = this.$el.find(".bidder_start_price_list_tpl").html();
+            this.bidderStartPriceListTpl    = this.$el.find(".bidder_start_price_list_tpl").html();
 
-            this.startPriceListTpl      = this.$el.find(".start_price_list_tpl").html();
+            this.startPriceListTpl          = this.$el.find(".start_price_list_tpl").html();
 
-            this.lowestRacePricesTpl    = this.$el.find(".lowest_race_prices_tpl").html();
+            this.lowestRacePricesTpl        = this.$el.find(".lowest_race_prices_tpl").html();
 
-            this.lowestBidPricesTpl     = this.$el.find(".lowest_bid_prices_tpl").html();
+            this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
 
 
 
 
             //this.roundListPricesTpl     = this.$el.find(".round_list_prices_tpl").html();
+        },
+
+        setLimitHertz : function(){
+            var userInfo = store.get('user_info');
+            this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz')
         },
 
         /**
