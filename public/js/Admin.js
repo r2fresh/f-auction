@@ -354,10 +354,10 @@ define([
 
             console.log(bidderList)
 
-            this.setBiddingResult(bidderList)
+            var biddingResultList = this.setBiddingResult(bidderList)
 
             //밀봉 입찰 최소액 셋팅
-            this.setSealLowestBidPrice(bidderList)
+            this.setSealLowestBidPrice(biddingResultList)
         },
 
         /**
@@ -377,7 +377,8 @@ define([
          * 입찰 결과 UI 렌더링
          */
         setBiddingResult:function(data){
-            var bidderList = this.companyPercent(data);
+            var companyData = this.companyPercent(data);
+            var bidderList = this.setResultRanking(companyData);
 
             console.log('== 입찰결과 ==')
             console.log(bidderList);
@@ -386,6 +387,8 @@ define([
             var template = Handlebars.compile(this.biddingResultTpl);
             this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
             this.$el.find('._ascending_bidding_result').removeClass('displayNone');
+
+            return bidderList;
         },
 
         /**
@@ -402,8 +405,6 @@ define([
                 }
             }
 
-            this.setResultRanking(companyData);
-
             return companyData;
         },
 
@@ -412,18 +413,67 @@ define([
          */
         setResultRanking:function(data){
 
+            //this.setReversePriceList(data);
+
             var companyData = JSON.parse( JSON.stringify( data ) );
 
+            var sortPriceList, reversePriceList = null;
+
+
+
             for(var i=0; i<companyData.length; ++i){
-                var sortPriceList = _.sortBy(companyData[i].priceList, 'percent');
+                sortPriceList = _.sortBy(companyData[i].priceList, 'percent');
 
-                console.log('== 입찰결과순위별 ==')
-                console.table(sortPriceList.reverse())
+                reversePriceList = this.setReversePriceList( sortPriceList );
 
-                var reversePriceList = sortPriceList.reverse();
+                //console.log('== 입찰결과순위별 ==')
+                //console.table(reversePriceList)
 
+                for(var j=0; j<companyData[i].priceList.length; ++j){
 
+                    for(var k=0; k<reversePriceList.length; ++k){
+
+                        if(companyData[i].priceList[j].percent === reversePriceList[k].percent){
+                            companyData[i].priceList[j].ranking = reversePriceList[k].ranking;
+                            companyData[i].priceList[j].labelClass = reversePriceList[k].labelClass;
+                        }
+                    }
+
+                }
             }
+
+            console.log(companyData);
+
+            return companyData
+
+        },
+
+        setReversePriceList:function(data){
+
+            var reversePriceList = JSON.parse( JSON.stringify( data.reverse() ) );
+
+            var ranking = 1;
+
+            var percent = null;
+
+            for (var i=0; i<reversePriceList.length; ++i){
+
+                if(percent == null){
+                    percent = reversePriceList[i].percent;
+                    reversePriceList[i].labelClass = 'danger'
+                    reversePriceList[i].ranking= ranking;
+                } else {
+                    if(percent == reversePriceList[i].percent){
+                        reversePriceList[i].ranking = ranking
+                    } else {
+                        percent = reversePriceList[i].percent;
+                        reversePriceList[i].ranking = ranking = ranking + 1;
+                    }
+                    reversePriceList[i].labelClass = 'default'
+                }
+            }
+
+            return reversePriceList;
 
         },
 

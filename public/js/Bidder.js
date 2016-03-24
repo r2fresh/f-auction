@@ -32,7 +32,7 @@ define([
         bidPrices : null,
 
         //통신사마다 가능한 대역폭 상한서
-        ableBandWidth : 60,
+        ableBandWidth : 0,
 
         //라운드 리스트 탬플릿
         roundListPrices : null,
@@ -85,15 +85,12 @@ define([
 
             this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
 
-
-
-
-            //this.roundListPricesTpl     = this.$el.find(".round_list_prices_tpl").html();
         },
 
         setLimitHertz : function(){
             var userInfo = store.get('user_info');
-            this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz')
+            this.ableBandWidth = userInfo.hertz;
+            this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz');
         },
 
         /**
@@ -293,7 +290,7 @@ define([
             _.each(this.$el.find('.bid_price'),function(element,index){
                 if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
                     $(element).prop('disabled',true)
-                    $(element).attr('placeholder','입찰제한')
+                    $(element).attr('placeholder','승자')
                 } else {
                     $(element).prop('disabled',false)
                     $(element).attr('placeholder','')

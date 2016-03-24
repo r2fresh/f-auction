@@ -113,11 +113,11 @@
                             <thead>
                                 <tr>
                                     <th>구분</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,7 +127,8 @@
                                         <td>{{name}}</td>
                                         {{#priceList}}
                                             <td>{{price}}</td>
-                                            <td>{{percent}}% <span class="label label-danger">{{ranking}}</span></td>
+                                            <td>{{percent}}%</td>
+                                            <td><span class="label label-{{labelClass}}">{{ranking}} 순위</span></td>
                                         {{/priceList}}
                                     </tr>
                                     {{/bidderList}}
@@ -151,11 +152,11 @@
                             <thead>
                                 <tr>
                                     <th>구분</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,6 +166,7 @@
                                         <td>{{name}}</td>
                                         {{#priceList}}
                                             <td>{{price}}</td>
+                                            <td><span class="label label-{{labelClass}}">{{ranking}} 순위</span></td>
                                         {{/priceList}}
                                     </tr>
                                     {{/bidderList}}

@@ -1,0 +1,13 @@
+/**
+ * 오른 입찰 결과
+ */
+.admin ._ascending_bidding_result table tbody tr td {
+    text-align:center;
+}
+
+/**
+ * 밀봉 최소입찰액
+ */
+.admin .seal_lowest_bid_price table tbody tr td {
+    text-align:center;
+}
