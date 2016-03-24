@@ -27,6 +27,9 @@ define([
             //입찰자 정보
             var bidder = this.$el.find('._login_bidder input[name=login_bidder]:checked').val();
 
+            //제한 대역폭
+            var hertz = this.$el.find('._login_hertz input[name=hertz]:checked').val();
+
             //입찰전략
             var bid_strategy = this.$el.find('._login_bidder_strategy').val();
 
@@ -34,7 +37,7 @@ define([
             var type = (bidder === 'admin') ? 'admin' : 'bidder';
 
             //localstorage 저장
-            store.set('user_info',{'type':type, 'user':bidder, 'strategy':bid_strategy});
+            store.set('user_info',{'type':type, 'user':bidder, 'strategy':bid_strategy, 'hertz':hertz});
 
             window.location = '/#' + type;
 
