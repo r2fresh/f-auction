@@ -3,7 +3,7 @@
     <div class="row _bidder_info">
         <div class="col-md-6">
             <h4 style="float:left">입찰자 : </h4>
-            <img src="img/kt_logo.jpg" style="width:10%;height:10%;" alt="" />
+            <img class="bidder_logo" src="img/kt_logo.jpg" alt="" />
         </div>
         <div class="col-md-6" style="text-align:right">
             <span id='limit_hertz'></span>
@@ -12,7 +12,7 @@
     </div>
 
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
         <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">오름차순</a></li>
         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">밀봉입찰</a></li>
     </ul>
@@ -257,9 +257,8 @@
 
             <!--  밀봉 최소입찰액-->
             <div class="row seal_lowest_bid_price">
-                <div class="col-md-12">
 
-                    <button class="btn btn-default" id="seal_lowest_bid_price_btn">밀봉최소입찰액가져오기</button>
+                <div class="col-md-12">
 
                     <div class="panel panel-navy">
                         <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉최소입찰액</strong></div>
@@ -267,11 +266,11 @@
                             <thead>
                                 <tr>
                                     <th>구분</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -281,6 +280,7 @@
                                         <td>{{name}}</td>
                                         {{#priceList}}
                                             <td>{{price}}</td>
+                                            <td><span class="label label-{{labelClass}}">{{ranking}} 순위</span></td>
                                         {{/priceList}}
                                     </tr>
                                     {{/bidderList}}
@@ -289,8 +289,51 @@
                         </table>
                     </div>
                 </div>
+                <div class="col-md-12 text-center" style="margin-bottom:20px;">
+                    <button class="btn btn-default bidder_seal_lowest_bid_price_btn">
+                        <i class="fa fa-check"></i><strong> 밀봉최소입찰액가져오기</strong>
+                    </button>
+                </div>
             </div>
             <!--  /밀봉 최소입찰액-->
+
+            <!--  밀봉입찰액-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-navy">
+                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰액입력 </strong></div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>구분</th>
+                                    <th>700Mhz</th>
+                                    <th>2.1Ghz</th>
+                                    <th>2.6Ghz</th>
+                                    <th>1.8Ghz(협)</th>
+                                    <th>2.6Ghz(협)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2">KT</td>
+                                    <td><input type="text" class="form-control" placeholder=""></td>
+                                    <td><input type="text" class="form-control" placeholder=""></td>
+                                    <td><input type="text" class="form-control" placeholder=""></td>
+                                    <td><input type="text" class="form-control" placeholder=""></td>
+                                    <td><input type="text" class="form-control" placeholder=""></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-default bidder_acending_btn">
+                        <i class="fa fa-check"></i><strong> 밀봉입찰</strong>
+                    </button>
+                </div>
+            </div>
+
+            <!--  /밀봉입찰액-->
 
         </div>
         <!--/ 밀봉입찰 -->
