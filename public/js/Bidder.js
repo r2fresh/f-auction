@@ -1075,6 +1075,15 @@ define([
         },
 
         /**
+         * 경매정보 호출에 관련된 인터벌 함수 클리어 하는 함수
+         */
+        onClearInterval:function(){
+            if(Auction.interval.has('auctionInfo')){
+                Auction.interval.clear('auctionInfo')
+            }
+        },
+
+        /**
          * 페이지 숨김
          */
         hide : function(){
