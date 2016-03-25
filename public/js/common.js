@@ -1,7 +1,7 @@
 (function(){
 	window.Auction = window.Auction || {};
 
-	Auction.HOST = 'http://lit-tundra-21855.herokuapp.com/ '
+	Auction.HOST = 'https://nameless-citadel-87760.herokuapp.com/'
 	//Auction.HOST = ''
 })();
 
