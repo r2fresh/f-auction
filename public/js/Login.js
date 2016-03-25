@@ -1,17 +1,20 @@
 define([
    'module',
-   'text!tpl/login.html'
+   'text!tpl/login.html',
+   'socketio'
    ],
-   function(module, Login){
+   function(module, Login, SocketIo){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
+        socket : null,
  		el: '.login',
  		events :{
             'click ._login_btn' : 'onLogin'
  		},
  		initialize:function(){
+            this.socket = SocketIo();
 		},
         render:function(){
             this.$el.html(Login);
@@ -23,6 +26,8 @@ define([
         onLogin:function(e){
 
             e.preventDefault();
+
+            this.socket.emit('login','admin');
 
             //입찰자 정보
             var bidder = this.$el.find('._login_bidder input[name=login_bidder]:checked').val();

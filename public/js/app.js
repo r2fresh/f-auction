@@ -1,11 +1,16 @@
 var _gaq = _gaq || [];
 
-
 requirejs.config({
 	baseUrl: './',
+	shim: {
+		'socketio': {
+			exports: 'io'
+		}
+	},
 	paths: {
 		'text':'lib/text/text',
-		'tpl':'template'
+		'tpl':'template',
+		'socketio':'../socket.io/socket.io'
 		// 'bootstrap':'app/lib/bootstrap/dist/js/bootstrap',
 		// 'underscore':'app/lib/underscore/underscore',
 		// 'backbone':'app/lib/backbone/backbone',
@@ -32,7 +37,7 @@ requirejs([
 	'js/Admin',
 	'js/Bidder'
 ],
-function(Login, Admin, Bidder){
+function(Login, Admin, Bidder){	
 
 	var prevView = null;
 

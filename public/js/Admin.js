@@ -3,13 +3,16 @@ define([
    'text!tpl/admin.html',
    'js/Model',
    'js/Process',
-   'js/AuctionData'
+   'js/AuctionData',
+   'socketio'
    ],
-   function(module, Admin, Model, Pro, AuctionData){
+   function(module, Admin, Model, Pro, AuctionData, SocketIo){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
+        socket : null,
+
         // 실행중인 경매 아이디
         auctionID : 0,
         // 생성된 경매의 이름
@@ -34,13 +37,20 @@ define([
             'click ._acending_btn' : 'onBiddingResult'
  		},
  		initialize:function(){
-
+            this.socket = SocketIo();
+            this.setSocketEvent();
 		},
         render:function(){
             this.$el.html(Admin);
 
             this.setTpl();
             this.setStartPriceList();
+        },
+
+        setSocketEvent:function(){
+            this.socket.on('login',function(msg){
+                console.log(msg)
+            })
         },
 
         /**
