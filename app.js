@@ -2,6 +2,8 @@ var express = require('express');
 //var path = require('path');
 var bodyParser = require('body-parser');
 
+var data = require('/src/loginData')
+
 var _ = require('underscore')
 
 //var http = require('http')
