@@ -53,9 +53,7 @@ function(Login, Admin, Bidder, Model, io){
 		var app, appName, hash = Auction.util.parseHash();
 
 		Auction.io = io();
-
-		//Auction.basil = new window.Basil();
-
+		
 		routeStart();
 
 		if(hash) {
@@ -88,12 +86,11 @@ function(Login, Admin, Bidder, Model, io){
 	 */
 	function changeHash( guideType){
 
-		//if(!store.get('user_info')) {
 		if(!Auction.session.get('user_info')){
 			window.location = '/#login';
+			Login.render();
+			Login.show();
 		} else {
-
-
 			Model.postLogin({
                  url: '/login',
                  method : 'POST',
@@ -105,50 +102,62 @@ function(Login, Admin, Bidder, Model, io){
                  success : function(){
 					 var type = Auction.session.get('user_info').type;
 						window.location = '/#' + type;
+						if(type === 'admin'){
+							Admin.render();
+							Admin.show();
+						} else {
+							Bidder.render();
+							Bidder.show();
+						}
 				 },
                  error : function(){
 
 				 }
              })
-
-
-		}
-
-		if(prevView != null){
-			prevView.hide();
-		}
-
-
-		// else {
-		// 	var type = (store.get('user_info')).type;
-		// 	window.location = '/#' + type;
-		// }
-
-
-
-		switch(guideType){
-			case 'login' :
-				Login.render();
-				prevView = Login;
-				Login.show();
-			break;
-			case 'admin' :
-				Admin.render();
-				prevView = Admin;
-				Admin.show();
-			break;
-			case 'bidder' :
-				Bidder.render();
-				prevView = Bidder;
-				Bidder.show();
-			break;
-			default :
-				Login.render();
-				prevView = Login;
-				Login.show();
-			break;
 		}
 	}
+
+	// function changePage(guideType){
+	//
+	// 	Login.hide();
+	// 	Admin.hide();
+	// 	Bidder.hide();
+	//
+	// 	// if(prevView != null){
+	// 	// 	prevView.hide();
+	// 	// }
+	//
+	//
+	// 	// else {
+	// 	// 	var type = (store.get('user_info')).type;
+	// 	// 	window.location = '/#' + type;
+	// 	// }
+	//
+	// 	console.log('3')
+	//
+	// 	switch(guideType){
+	// 		case 'login' :
+	// 			Login.render();
+	// 			prevView = Login;
+	// 			Login.show();
+	// 		break;
+	// 		case 'admin' :
+	// 			Admin.render();
+	// 			prevView = Admin;
+	// 			Admin.show();
+	// 		break;
+	// 		case 'bidder' :
+	// 			Bidder.render();
+	// 			prevView = Bidder;
+	// 			Bidder.show();
+	// 		break;
+	// 		default :
+	// 			Login.render();
+	// 			prevView = Login;
+	// 			Login.show();
+	// 		break;
+	// 	}
+	// }
 
 	//Management.bind('LOGIN_CHECK',guideRender);
 

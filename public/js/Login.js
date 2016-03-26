@@ -91,7 +91,9 @@ define([
             Auction.session.set('user_info',{'type':type, 'user':bidder, 'strategy':bid_strategy, 'hertz':hertz})
             Cookies.set('user', bidder);
 
-            window.location = '/#' + type;
+            //window.location = '/#' + type;
+
+            window.location.reload();
 
             //console.log( Cookies.getJSON('user_info').type)
             //sessionStorage.setItem('user_info',JSON.stringify({'type':type, 'user':bidder, 'strategy':bid_strategy, 'hertz':hertz}))

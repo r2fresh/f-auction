@@ -1,17 +1,9 @@
 var express = require('express');
-//var path = require('path');
 var bodyParser = require('body-parser');
-
-var data = require('/src/loginData')
-
-var _ = require('underscore')
-
-//var http = require('http')
-//var querystring = require('querystring')
+var _ = require('underscore');
+var cookieParser = require('./src/cookie-parser')
 
 var app = express();
-
-var allClients = [];
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -29,12 +21,11 @@ var loginData = [
     {'name':'lg','state':false}
 ]
 
+/**
+ * 로그인 함수
+ */
 app.post('/login', function(req, res) {
-
-    console.log(req.fresh)
-
     var result = false;
-
     var bodyData = req.body;
 
     for(var i=0; i<loginData.length ;++i){
@@ -42,87 +33,52 @@ app.post('/login', function(req, res) {
         if(loginData[i].name === bodyData.bidder){
             if(!loginData[i].state){
                 loginData[i].state = true;
-                allClients
                 result = true;
             } else {
                 result = false;
             }
         }
     }
-
-    //console.log(nameList)
-
-    //console.log(req.body)
-
     res.send({'result':result})
 })
 
-
+/**
+ * index.html router
+ */
 app.get('/',function(req, res){
     res.sendFile(__dirname + '/index.html')
 })
 
-
-
+/**
+ * express server start
+ */
 var server = app.listen(app.get('port'), function () {
-  console.log('Example app listening on port 5000!');
+    console.log('Example app listening on port 5000!');
 });
 
 
 var io = require('socket.io')(server);
 
 io.on('connection', function(socket){
-  console.log('a user connected');
 
-  allClients.push(socket)
+    console.log('connection')
 
-      socket.on('disconnect', function(kkk){
-          console.log('=====================')
+    socket.on('disconnect', function(){
 
-          var str = this.handshake.headers.cookie
+        console.log('disconnection');
 
-          //var ksy = str.split(/[;,] */);
+        var str = this.handshake.headers.cookie
+        var cookieData = cookieParser.get( this.handshake.headers.cookie );
 
-          var obj = {}
-            var pairs = str.split(/[;,] */);
-            var encode = encodeURIComponent;
-            var decode = decodeURIComponent;
+        // cookieData 없을 경우 리턴
+        if(!cookieData.user) return;
 
-          pairs.forEach(function(pair) {
-                var eq_idx = pair.indexOf('=')
-                var key = pair.substr(0, eq_idx).trim()
-                var val = pair.substr(++eq_idx, pair.length).trim();
-
-                // quoted values
-                if ('"' == val[0]) {
-                    val = val.slice(1, -1);
-                }
-
-                // only assign once
-                if (undefined == obj[key]) {
-                    obj[key] = decode(val);
-                }
-            });
-
-            console.log(obj.user)
-
-            _.each(loginData,function(item){
-                if(item.name === obj.user){
-                    item.state = false;
-                }
-            })
-
-          //
-        //   var sang = ksy[ksy.length-1];
-        //
-        //   console.log(ksy)
-          //console.log(encodeURIComponent(JSON.parse(this.handshake.headers.cookie)))
-
-          //var index = allClients.indexOf(socket);
-
-          //allClients.splice(index,1);
-
-      })
+        _.each(loginData,function(item){
+            if(item.name === cookieData.user){
+                item.state = false;
+            }
+        })
+    })
 
 });
 
