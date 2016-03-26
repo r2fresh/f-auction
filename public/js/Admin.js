@@ -4,9 +4,9 @@ define([
    'js/Model',
    'js/Process',
    'js/AuctionData',
-   'socketio'
+   //'socketio'
    ],
-   function(module, Admin, Model, Pro, AuctionData, SocketIo){
+   function(module, Admin, Model, Pro, AuctionData){
 
 	'use strict'
 
@@ -37,7 +37,7 @@ define([
             'click ._acending_btn' : 'onBiddingResult'
  		},
  		initialize:function(){
-            this.socket = SocketIo();
+            //this.socket = SocketIo();
             this.setSocketEvent();
 		},
         render:function(){
@@ -48,9 +48,9 @@ define([
         },
 
         setSocketEvent:function(){
-            this.socket.on('login',function(msg){
-                console.log(msg)
-            })
+            // this.socket.on('login',function(msg){
+            //     console.log(msg)
+            // })
         },
 
         /**

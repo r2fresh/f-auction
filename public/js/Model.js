@@ -29,7 +29,13 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function postLogin(data){
+		$.ajax(data);
+	}
+
 	module.exports = new (Backbone.Model.extend({
+		postLogin:postLogin,
+
 		getAuction:getAuction,
 		postAuction:postAuction,
 		putAuction:putAuction,

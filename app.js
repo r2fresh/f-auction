@@ -1,35 +1,208 @@
 var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+//var path = require('path');
+var bodyParser = require('body-parser');
 
-var login = [
+var _ = require('underscore')
+
+//var http = require('http')
+//var querystring = require('querystring')
+
+var app = express();
+
+var allClients = [];
+
+app.set('port', (process.env.PORT || 5000));
+
+// parse application/json
+app.use(bodyParser.json())
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(express.static('public'));
+
+var loginData = [
     {'name':'admin','state':false},
     {'name':'kt','state':false},
     {'name':'sk','state':false},
     {'name':'lg','state':false}
 ]
 
-app.set('port', (process.env.PORT || 5000));
+app.post('/login', function(req, res) {
 
-app.use(express.static('public'));
+    console.log(req.fresh)
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
+    var result = false;
 
-io.on('connection', function(socket){
-    socket.on('login', function(msg){
+    var bodyData = req.body;
+
+    for(var i=0; i<loginData.length ;++i){
+
+        if(loginData[i].name === bodyData.bidder){
+            if(!loginData[i].state){
+                loginData[i].state = true;
+                allClients
+                result = true;
+            } else {
+                result = false;
+            }
+        }
+    }
+
+    //console.log(nameList)
+
+    //console.log(req.body)
+
+    res.send({'result':result})
+})
+
+
+app.get('/',function(req, res){
+    res.sendFile(__dirname + '/index.html')
+})
 
 
 
-      io.emit('login',msg)
-    });
-});
-
-http.listen(app.get('port'), function () {
+var server = app.listen(app.get('port'), function () {
   console.log('Example app listening on port 5000!');
 });
+
+
+var io = require('socket.io')(server);
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+
+  allClients.push(socket)
+
+      socket.on('disconnect', function(kkk){
+          console.log('=====================')
+
+          var str = this.handshake.headers.cookie
+
+          //var ksy = str.split(/[;,] */);
+
+          var obj = {}
+            var pairs = str.split(/[;,] */);
+            var encode = encodeURIComponent;
+            var decode = decodeURIComponent;
+
+          pairs.forEach(function(pair) {
+                var eq_idx = pair.indexOf('=')
+                var key = pair.substr(0, eq_idx).trim()
+                var val = pair.substr(++eq_idx, pair.length).trim();
+
+                // quoted values
+                if ('"' == val[0]) {
+                    val = val.slice(1, -1);
+                }
+
+                // only assign once
+                if (undefined == obj[key]) {
+                    obj[key] = decode(val);
+                }
+            });
+
+            console.log(obj.user)
+
+            _.each(loginData,function(item){
+                if(item.name === obj.user){
+                    item.state = false;
+                }
+            })
+
+          //
+        //   var sang = ksy[ksy.length-1];
+        //
+        //   console.log(ksy)
+          //console.log(encodeURIComponent(JSON.parse(this.handshake.headers.cookie)))
+
+          //var index = allClients.indexOf(socket);
+
+          //allClients.splice(index,1);
+
+      })
+
+});
+
+
+
+
+
+// var express = require('express');
+// var app = express();
+// var http = require('http').Server(app);
+// var io = require('socket.io')(server);
+// var _ = require('underscore')
+//
+// // var login = [
+// //     {'name':'admin','state':false},
+// //     {'name':'kt','state':false},
+// //     {'name':'sk','state':false},
+// //     {'name':'lg','state':false}
+// // ]
+//
+// app.set('port', (process.env.PORT || 5000));
+//
+// app.use(express.static('public'));
+//
+// app.get('/', function(req, res){
+//
+//     req.on('close', function(){
+//
+//     })
+//
+//   res.sendFile(__dirname + '/index.html');
+// });
+//
+// http.on('clonse',function(){
+//     console.log("sdfdsfd")
+// })
+//
+// var allClients = [];
+// var loginUser = [];
+// var clientID = '';
+//
+// io.on('connection', function(socket){
+//
+//     allClients.push(socket);
+//
+//     //console.log(allClients.length)
+//     console.log(allClients)
+//
+//     socket.on('clientID',function(msg){
+//         clientID = msg
+//     })
+//
+//     socket.on('login', function(msg){
+//
+//         console.log(loginUser.indexOf(msg))
+//
+//         if(loginUser.indexOf(msg) < 0){
+//             loginUser.push(msg);
+//             io.emit('receiveLogin', clientID);
+//         } else {
+//             io.emit('receiveLogin', '');
+//         }
+//
+//     });
+//
+//
+//
+//     // socket.on('disconnect', function(socket){
+//     //     var index = allClients.indexOf(socket)
+//     //     allClients.splice(index,1);
+//     //     //loginUser.splice(index,1);
+//     //     console.log("==========================")
+//     //     console.log(allClients)
+//     // })
+//
+// });
+//
+//
+//
+// var server = app.listen(app.get('port'), function () {
+//   console.log('Example app listening on port 5000!');
+// });
 
 // var express = require('express');
 // //var path = require('path');

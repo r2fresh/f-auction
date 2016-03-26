@@ -3,6 +3,10 @@
 
 	Auction.HOST = 'https://nameless-citadel-87760.herokuapp.com/'
 	//Auction.HOST = ''
+
+	//Auction.basil = null;
+
+	Auction.io = null;
 })();
 
 (function(Auction){
@@ -54,6 +58,33 @@
 				return interval.name === name;
 			});
 			return arr.length > 0;
+		}
+	};
+
+})(Auction);
+
+(function(Auction){
+
+	Auction.io = {
+		socketio:null,
+		set:function(socket){
+			this.socketio = socket;
+		},
+		get:function(){
+			return this.socketio;
+		}
+	};
+
+})(Auction);
+
+(function(Auction){
+
+	Auction.session = {
+		set:function(key,value){
+			sessionStorage.setItem(key,JSON.stringify(value));
+		},
+		get:function(key){
+			return JSON.parse( sessionStorage.getItem(key) );
 		}
 	};
 

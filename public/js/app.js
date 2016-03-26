@@ -35,9 +35,11 @@ requirejs.config({
 requirejs([
 	'js/Login',
 	'js/Admin',
-	'js/Bidder'
+	'js/Bidder',
+	'js/Model',
+	'socketio'
 ],
-function(Login, Admin, Bidder){	
+function(Login, Admin, Bidder, Model, io){
 
 	var prevView = null;
 
@@ -49,6 +51,10 @@ function(Login, Admin, Bidder){
 	function init(){
 
 		var app, appName, hash = Auction.util.parseHash();
+
+		Auction.io = io();
+
+		//Auction.basil = new window.Basil();
 
 		routeStart();
 
@@ -82,12 +88,30 @@ function(Login, Admin, Bidder){
 	 */
 	function changeHash( guideType){
 
-		if(!store.get('user_info')) {
-			console.log("1212")
+		//if(!store.get('user_info')) {
+		if(!Auction.session.get('user_info')){
 			window.location = '/#login';
 		} else {
-			var type = (store.get('user_info')).type;
-			window.location = '/#' + type;
+
+
+			Model.postLogin({
+                 url: '/login',
+                 method : 'POST',
+                 data : {
+                     'bidder' : Auction.session.get('user_info').user
+                 },
+                 dataType : 'json',
+                 contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+                 success : function(){
+					 var type = Auction.session.get('user_info').type;
+						window.location = '/#' + type;
+				 },
+                 error : function(){
+
+				 }
+             })
+
+
 		}
 
 		if(prevView != null){
