@@ -1,15 +1,47 @@
 <div class="container-fluid">
 
+    <!--로그인 상태 체크-->
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr class="connect_user_list">
+                        <script class="connect_user_list_tpl" type="text/x-handlebars-template">
+                            <td>
+                                <span>사용자상태 : </span>
+                            </td>
+                            <{{#list}}
+                            <td class="connect_user">
+                                <span class="label label-{{className}}">{{name}}</span>
+                            </td>
+                            {{/list}}
+                        </script>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row _bidder_info">
         <div class="col-md-6">
             <h4 style="float:left">입찰자 : </h4>
             <img class="bidder_logo" src="img/kt_logo.jpg" alt="" />
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-md-3 control-label"><i class="fa fa-compass"></i> 입찰전략 :</label>
+                <div class="col-md-9">
+                    <textarea class="form-control bid_strategy" rows="3"></textarea>
+                </div>
+            </div>
         </div>
         <div class="col-md-6" style="text-align:right">
             <span id='limit_hertz'></span>
             <button class="btn btn-default _logout_btn">로그아웃</button>
         </div>
     </div>
+
+
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">

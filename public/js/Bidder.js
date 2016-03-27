@@ -62,6 +62,7 @@ define([
             this.setBidderCompany();
             this.setLimitHertz();
             this.setBidderLogo();
+            this.setBidStrategy();
 
             this.setStartPriceList();
 
@@ -69,14 +70,32 @@ define([
 
             // this.intervalAuctionList_fn();
 
-            // Auction.io.on('loginCheck',function(msg){
-            //     console.log(msg)
-            // })
+            Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
 
             //console.log(Auction.session.get('user_info').name)
 
             Auction.io.emit('loginCheck',Auction.session.get('user_info').user)
 
+        },
+
+        /**
+         * 경매 참여자의 접속 체크
+         */
+        onLoginCheck:function(msg){
+
+            console.table(JSON.parse(msg))
+
+            var list = JSON.parse(msg);
+
+            _.each(list,function(item){
+                item.name = (item.name).toUpperCase();
+                item.className = (item.state) ? 'success' : 'danger';
+            })
+
+            this.$el.find('.connect_user_list').empty();
+
+            var template = Handlebars.compile(this.connectUserListTpl);
+            this.$el.find('.connect_user_list').html(template({'list':list}));
         },
 
         /**
@@ -96,6 +115,9 @@ define([
 
             this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
 
+            //접속자 유저 템플릿
+            this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
+
         },
 
         setBidderCompany:function(){
@@ -106,6 +128,12 @@ define([
         setBidderLogo:function(){
             var userInfo = Auction.session.get('user_info');
             this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
+        },
+
+        setBidStrategy : function(){
+            var userInfo = Auction.session.get('user_info');
+            var strategy = (userInfo.strategy === '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
+            this.$el.find('._bidder_info .bid_strategy').val(strategy)
         },
 
         setLimitHertz : function(){

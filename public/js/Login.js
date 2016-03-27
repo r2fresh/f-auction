@@ -19,6 +19,16 @@ define([
             this.$el.html(Login);
         },
 
+        // sessionCheck:function(){
+        //
+        //     var flag = Auction.session.get('user_info');
+        //
+        //     if(!flag){
+        //         Cookies.remove('user', bidder.val());
+        //     }
+        //
+        // },
+
         /**
          * 로그인 이벤트 함수
          */

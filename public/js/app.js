@@ -83,12 +83,9 @@ function(Login, Admin, Bidder, Model, io){
 	}
 
 	function checkSession(){
-		console.log("ksy")
+
 		if(!Auction.session.get('user_info')){
 			window.location = '/#login';
-
-			//Login.render();
-			//Login.show();
 		} else {
 			Model.postLogin({
                  url: '/login',
@@ -101,14 +98,6 @@ function(Login, Admin, Bidder, Model, io){
                  success : function(){
 					 var type = Auction.session.get('user_info').type;
 						window.location = '/#' + type;
-						// if(type === 'admin'){
-						// 	console.log('checkec')
-						// 	Admin.render();
-						// 	//Admin.show();
-						// } else {
-						// 	Bidder.render();
-						// 	Bidder.show();
-						// }
 				 },
                  error : function(){
 
@@ -133,16 +122,28 @@ function(Login, Admin, Bidder, Model, io){
 				Login.show();
 			break;
 			case 'admin' :
+				if(!Auction.session.get('user_info')) {
+					window.location = '/#login';
+					return;
+				}
 				Admin.render();
 				prevView = Admin;
 				Admin.show();
 			break;
 			case 'bidder' :
+				if(!Auction.session.get('user_info')) {
+					window.location = '/#login';
+					return;
+				}
 				Bidder.render();
 				prevView = Bidder;
 				Bidder.show();
 			break;
 			default :
+				if(!Auction.session.get('user_info')) {
+					window.location = '/#login';
+					return;
+				}
 				Login.render();
 				prevView = Login;
 				Login.show();

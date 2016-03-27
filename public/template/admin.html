@@ -1,5 +1,27 @@
 <div class="container-fluid">
 
+    <!--로그인 상태 체크-->
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr class="connect_user_list">
+                        <script class="connect_user_list_tpl" type="text/x-handlebars-template">
+                            <td>
+                                <span>사용자상태 : </span>
+                            </td>
+                            <{{#list}}
+                            <td class="connect_user">
+                                <span class="label label-{{className}}">{{name}}</span>
+                            </td>
+                            {{/list}}
+                        </script>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/로그인 상태 체크-->
 
     <div class="row">
         <div class="col-md-12" style="text-align:right">

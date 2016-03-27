@@ -79,11 +79,13 @@ io.on('connection', function(socket){
                 item.state = false;
             }
         })
+
+        io.emit('loginCheck',JSON.stringify(loginData))
     })
 
     socket.on('loginCheck',function(msg){
         console.log(msg)
-        //io.emit('loginCheck',msg)
+        io.emit('loginCheck',JSON.stringify(loginData))
     })
 
 });
