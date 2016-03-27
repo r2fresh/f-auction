@@ -88,7 +88,7 @@ define({
         'name':'',
         'frequency' : [
             {
-                'name': 'A',
+                'name': 'priceA',
                 'bandWidth':40,
                 'hertz':'700',
                 'type':'wideBand',
@@ -101,7 +101,7 @@ define({
                 ]
             },
             {
-                'name': 'B',
+                'name': 'priceB',
                 'bandWidth':20,
                 'hertz':'18',
                 'type':'narrow',
@@ -114,7 +114,7 @@ define({
                 ]
             },
             {
-                'name': 'C',
+                'name': 'priceC',
                 'bandWidth':20,
                 'hertz':'21',
                 'type':'wideBand',
@@ -127,7 +127,7 @@ define({
                 ]
             },
             {
-                'name': 'D',
+                'name': 'priceD',
                 'bandWidth':40,
                 'hertz':'26',
                 'type':'wideBand',
@@ -140,7 +140,7 @@ define({
                 ]
             },
             {
-                'name': 'E',
+                'name': 'priceE',
                 'bandWidth':20,
                 'hertz':'26',
                 'type':'narrow',

@@ -39,18 +39,28 @@ define([
             {'name':'LG','state':false}
         ],
 
+        winCompanyList:[
+            {'name':'','price':0},
+            {'name':'','price':0},
+            {'name':'','price':0},
+            {'name':'','price':0},
+            {'name':'','price':0}
+        ],
+
  		el: '.admin',
  		events :{
             // 로그아웃
             'click ._logout_btn' : 'onLogout',
             // 갱매시작
             'click ._auction_start_btn' : 'onAuctionStart',
+            // 라운드 시작
             'click ._round_start_btn' : 'onRoundStart',
+            //오름 차순 결과
+            'click ._acending_btn' : 'onBiddingResult'
 
 
             'click ._auction_end_btn' : 'onAuctionEnd',
             'click ._clear_interval_btn' : 'onClearInterval',
-            'click ._acending_btn' : 'onBiddingResult'
  		},
  		initialize:function(){
             //this.socket = SocketIo();
@@ -138,9 +148,11 @@ define([
             //     return;
             // }
 
+            _.each(this.bidCountList,function(item){
+                item.state = false;
+            })
+
             var $roundPriceList = $('<tr class="round_price_list"></tr>');
-
-
 
             this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.round,{'name':this.roundNum}) ) );
 
@@ -348,25 +360,39 @@ define([
 
         setRoundUI:function(data){
             var template = Handlebars.compile(this.roundPriceListTpl);
-            this.$el.find('.round_price_list').html(template( data ));
+            this.$el.find('.round_price_list').last().html(template( data ));
         },
 
         getWinBidder:function(data){
 
-            _.each(data.frequency,function(item){
+            _.each(data.frequency,Function.prototype.bind.call(function(item,index){
 
                 console.log(item)
 
                 var winPrice = ( _.max(item.bidders, function(bidder){ return bidder.price; }) ).price;
 
+                var winName = '';
+
                 console.log('WINPRICE : ' + winPrice)
 
                 if(winPrice === 0){
+
                     item.bidders = _.map(item.bidders,function(bidder){
                         return _.extend(bidder,{'className':'text-gray'})
                     })
-                    var winName = '';
+
+                    if(this.winCompanyList[index].name === ''){
+                        winName = '';
+                        winPrice = AuctionData.startPriceList[index].price;
+                    } else {
+                        winName = this.winCompanyList[index].name;
+                        winPrice = this.winCompanyList[index].price;
+                    }
+
                 } else {
+
+                    this.winCompanyList[index].price = winPrice;
+
                     var winArr = _.filter(item.bidders,function(bidder){
                         return winPrice === bidder.price
                     })
@@ -380,7 +406,9 @@ define([
                     } else {
                         win = winArr[0];
                     }
-                    var winName = win.name;
+                    winName = win.name;
+
+                    this.winCompanyList[index].name = win.name;
 
                     item.bidders = _.map(item.bidders,function(bidder){
 
@@ -396,9 +424,9 @@ define([
                     })
                 }
 
-                item.winBider = winName;
+                item.winBidder = winName;
                 item.winPrice = winPrice;
-            })
+            },this));
 
             return data
 

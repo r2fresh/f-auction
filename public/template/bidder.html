@@ -164,6 +164,7 @@
                     <div class="row">
                         <div class="col-md-12" style="text-align:center">
                             <button type="button" class="btn btn-default _bid_btn" style="margin-right:10px;"><strong><i class="fa fa-check"></i> 입찰</strong></button>
+                            <button type="button" class="btn btn-default _not_bid_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 입찰안함</strong></button>
                             <button type="button" class="btn btn-default delay_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 유예</strong></button>
                             <button type="button" class="btn btn-default giveup_btn"><strong><i class="fa fa-times"></i> 포기</strong></button>
 
@@ -195,22 +196,22 @@
                     </div> -->
 
                     <div class="panel panel-navy">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
+                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰승자결과</strong></div>
                         <table class="table table-bordered">
                             <thead>
 
                             </thead>
-                            <tbody class="ascending_bid">
+                            <tbody class="_ascending_bid">
 
                                 <tr>
                                     <th>구분</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
-                                <tr class="bidder_list">
+                                <!-- <tr class="bidder_list">
                                     <td>사업자</td>
                                     <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
                                     <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
@@ -232,7 +233,7 @@
                                     <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
                                     <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
 
-                                </tr>
+                                </tr> -->
 
                                 <!-- 시작가 -->
                                 <tr class="start_price_list">
@@ -247,21 +248,21 @@
                                 </tr><!--/ 시작가 -->
 
                                 <!-- 라운드 리스트 -->
-                                <script class="round_price_list_tpl" type="text/x-handlebars-template">
+                                <!-- <script class="round_price_list_tpl" type="text/x-handlebars-template">
                                     {{#roundList}}
                                     <tr class="round_price_list">
                                         <td>{{round}}</td>
                                         {{#frequency}}
                                             <{{#bidders}}
                                             <td style="text-align:center;">
-                                                <!--  label label-{{name}}-l -->
                                                 <span class="{{className}}">{{price}}</span>
                                             </td>
                                             {{/bidders}}
                                         {{/frequency}}
                                     </tr>
                                     {{/roundList}}
-                                </script><!--/ 라운드 리스트 -->
+                                </script> -->
+                                <!--/ 라운드 리스트 -->
 
                                 <!-- <tr class="round_prices">
                                     <script class="round_prices_tpl" type="text/x-handlebars-template">

@@ -1,13 +1,12 @@
 define([
    'module',
    'text!tpl/bidder.html',
-   'text!tpl/bidderRoundResult.html',
    'js/AuctionData',
    'js/Validation',
    'js/Model',
    'js/Process'
    ],
-   function(module, Bidder, RoundResult, AuctionData, Validation, Model, Process){
+   function(module, Bidder, AuctionData, Validation, Model, Process){
 
 	'use strict'
 
@@ -50,13 +49,10 @@ define([
 
  		el: '.bidder',
  		events :{
-            'click ._logout_btn' : 'onLogout',
             'click ._bid_btn' : 'onBid',
-            'click ._not_bid_btn' : 'onNotBid',
-
             'click .test_btn' : 'testBidSuccess',
             'click ._accordion_btn' : 'onAccordion',
-
+            'click ._logout_btn' : 'onLogout',
             'click .bidder_seal_lowest_bid_price_btn' : 'onSealLowestBidPrice'
  		},
  		initialize:function(){
@@ -93,9 +89,6 @@ define([
         setTpl : function(){
 
             this.roundPriceListTpl          = this.$el.find(".round_price_list_tpl").html();
-
-            this.roundResultTpl             = RoundResult
-
             this.bidderStartPriceListTpl    = this.$el.find(".bidder_start_price_list_tpl").html();
             this.startPriceListTpl          = this.$el.find(".start_price_list_tpl").html();
             this.lowestRacePricesTpl        = this.$el.find(".lowest_race_prices_tpl").html();
@@ -211,57 +204,6 @@ define([
 
             console.log(data);
 
-            this.setLowestBidPrice(data);
-
-            this.setRoundWinPrice(data);
-        },
-
-        /**
-         * 최소 입찰액 설정
-         */
-        setLowestBidPrice : function(data){
-
-            var priceList = _.map(data.frequency,Function.prototype.bind.call(function(item,index){
-
-                var price = 0;
-
-                var startPrice  = this.lowestBidPrices[index].price;
-                var lowestPrice = item.winPrice;
-
-                if(item.winPrice === 0){
-                    price = startPrice
-                } else {
-                    price = (startPrice > lowestPrice) ? startPrice : lowestPrice;
-                }
-
-                return {'name':item.name, 'price':price}
-            },this));
-
-            //this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
-
-            this.setBidPrices(data.frequency);
-
-            this.lowestBidPrices = this.runLowestBidAdd(priceList)
-
-            this.setLowestBidPriceUI( this.lowestBidPrices );
-
-            // var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-            //
-            // var priceList = _.map(priceArr, Function.prototype.bind.call(function(item, index){
-            //
-            //     var startPrice  = this.startPriceList[index].price;
-            //     var lowestPrice = _.max(_.pluck(data, item));
-            //     var price = (startPrice > lowestPrice) ? startPrice : lowestPrice;
-            //
-            //     return {'name':item, 'price':price}
-            // },this));
-            //
-            // this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
-            //
-            // this.setBidPrices(priceList);
-            //
-            // this.setLowestBidPriceUI( this.runLowestBidAdd(priceList) );
-
         },
 
         /**
@@ -272,10 +214,34 @@ define([
             this.$el.find('.lowest_bid_prices').empty().html(template({'priceList':data}));
         },
 
+        /**
+         * 최소 입찰액 설정
+         */
+        setLowestBidPrice : function(data){
+
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+
+            var priceList = _.map(priceArr, Function.prototype.bind.call(function(item, index){
+
+                var startPrice  = this.startPriceList[index].price;
+                var lowestPrice = _.max(_.pluck(data, item));
+                var price = (startPrice > lowestPrice) ? startPrice : lowestPrice;
+
+                return {'name':item, 'price':price}
+            },this));
+
+            this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
+
+            this.setBidPrices(priceList);
+
+            this.setLowestBidPriceUI( this.runLowestBidAdd(priceList) );
+
+        },
+
         runLowestBidAdd:function(data){
             var priceList = _.map(data, Function.prototype.bind.call(function(item,index){
 
-                var startPrice  = this.lowestBidPrices[index].price;
+                var startPrice  = this.startPriceList[index].price;
 
                 if(startPrice != item.price){
                     item.price = Math.ceil( item.price + (item.price*this.lowestBidAdd/100))
@@ -292,27 +258,15 @@ define([
          */
         setBidPrices : function(data){
 
-            _.each(data,Function.prototype.bind.call(function(item,index){
-
-                if(item.winBidder == this.bidder_company){
-                    $(this.$el.find('.bid_price')[index]).prop('disabled',true)
-                    $(this.$el.find('.bid_price')[index]).attr('placeholder','승자')
+            _.each(this.$el.find('.bid_price'),function(element,index){
+                if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
+                    $(element).prop('disabled',true)
+                    $(element).attr('placeholder','승자')
                 } else {
-                    $(this.$el.find('.bid_price')[index]).prop('disabled',false)
-                    $(this.$el.find('.bid_price')[index]).attr('placeholder','')
+                    $(element).prop('disabled',false)
+                    $(element).attr('placeholder','')
                 }
-
-            },this));
-
-            // _.each(this.$el.find('.bid_price'),function(element,index){
-            //     if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
-            //         $(element).prop('disabled',true)
-            //         $(element).attr('placeholder','승자')
-            //     } else {
-            //         $(element).prop('disabled',false)
-            //         $(element).attr('placeholder','')
-            //     }
-            // })
+            })
 
             this.resetBidPrice();
 
@@ -322,136 +276,7 @@ define([
             this.$el.find('.bid_price').val('')
         },
 
-        /**
-         * 각 라운드의 승자가격을 보여주는 함수
-         */
-        setRoundWinPrice:function(data){
-            console.log(data)
-            var template = Handlebars.compile(this.roundResultTpl);
-            this.$el.find('._ascending_bid').append(template(data));
-        },
 
-        /**
-          * 1순위 블록 필요 입찰액
-          */
-
-        onBid : function(){
-
-            var bidPriceEl = this.$el.find('.bid_price');
-
-            // 빈 입찰가격 체크 (true : 입찰가격모두빈칸, false : 입찰가격을 하나라도 입력했을경우)
-            var emptyCheck = _.every(bidPriceEl, function(element){
-                return $(element).val() === '';
-            })
-            if(emptyCheck) {
-                alert('입찰가격을 입력하여 주십시오');
-                return;
-            }
-
-            // 통신사 대역폭 체크
-            var maxBandWidth = _.reduce(
-                _.map(AuctionData.defaultPriceList, Function.prototype.bind.call(function(item, index){
-                    var bidPriceValue = $(this.$el.find('.bid_price')[index]).val();
-                    return ( bidPriceValue != '' ) ? item.bandWidth : 0;
-                },this)),
-                function(memo, num){ return memo + num; },
-                0
-            );
-            if(maxBandWidth > this.ableBandWidth){
-                alert('정해진 대역폭을 초과 하셨습니다.');
-                return;
-            }
-
-            // 광대역은 하나만 신청가능하다는 것을 체크
-            var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
-                return AuctionData.defaultPriceList[index].type === 'wideBand'
-            })
-            var limitWideBandArr = _.filter(wideBandArr,function(element){
-                return $(element).val() != '';
-            })
-            if(limitWideBandArr.length > 1) {
-                alert('광대역하나만 신청 가능합니다.');
-                return;
-            }
-
-            // 최소입찰가격이상을 입력했는지 체크
-            var lowestBidPriceCheck = _.every(this.$el.find('.bid_price'), Function.prototype.bind.call(function(element, index){
-
-                var result = null
-
-                if($(element).val() === ''){
-                    result = true;
-                } else {
-                    result = ( this.lowestBidPrices[index].price <= parseInt($(element).val(),10) ) ? true : false
-                }
-
-                return result;
-            },this))
-            if(!lowestBidPriceCheck){
-                alert('최소입찰액 이상 입력하시기 바랍니다.');
-                return;
-            }
-
-            this.postBid(_.map(this.$el.find('.bid_price'),function(element){
-                 return $(element).val()
-            }))
-        },
-
-        /**
-         * 입찰 급액 등록
-         */
-        postBid:function(data){
-
-            // var $bidPrice = this.$el.find('.bid_price');
-            //
-            // var A_price = $($bidPrice[0]).val();
-            // var B_price = $($bidPrice[1]).val();
-            // var C_price = $($bidPrice[2]).val();
-            // var D_price = $($bidPrice[3]).val();
-            // var E_price = $($bidPrice[4]).val();
-
-            var postData = {
-                'auctionNum':this.auctionID,
-                'roundNum':this.roundNum,
-                'companyName':this.bidder_company,
-                'priceA':data[0],
-                'priceB':data[1],
-                'priceC':data[2],
-                'priceD':data[3],
-                'priceE':data[4]
-            }
-
-            Model.postBid({
-                 url: Auction.HOST + '/api/bidding',
-                 method : 'POST',
-                 contentType:"application/json; charset=UTF-8",
-                 data : JSON.stringify(postData),
-                 success : Function.prototype.bind.call(this.postBidSuccess,this),
-                 error : Function.prototype.bind.call(this.postBidError,this)
-             })
-        },
-
-        postBidSuccess:function(data, textStatus, jqXHR){
-            console.log(data);
-
-            if(textStatus === 'success'){
-
-                var priceList = Process.getBidFormatChange( data );
-
-                Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
-            }
-
-        },
-        postBidError:function(jsXHR, textStatus, errorThrown){
-
-        },
-
-        /**
-         * 입찰하지 않음 핸들러
-         */
-        onNotBid : function(e){
-            this.postBid([0,0,0,0,0])
-        },
 
 
 
@@ -781,7 +606,118 @@ define([
 
 
 
+        /**
+          * 1순위 블록 필요 입찰액
+          */
 
+        onBid : function(){
+
+            var bidPriceEl = this.$el.find('.bid_price');
+
+            // 빈 입찰가격 체크 (true : 입찰가격모두빈칸, false : 입찰가격을 하나라도 입력했을경우)
+            var emptyCheck = _.every(bidPriceEl, function(element){
+                return $(element).val() === '';
+            })
+            if(emptyCheck) {
+                alert('입찰가격을 입력하여 주십시오');
+                return;
+            }
+
+            // 통신사 대역폭 체크
+            var maxBandWidth = _.reduce(
+                _.map(AuctionData.defaultPriceList, Function.prototype.bind.call(function(item, index){
+                    var bidPriceValue = $(this.$el.find('.bid_price')[index]).val();
+                    return ( bidPriceValue != '' ) ? item.bandWidth : 0;
+                },this)),
+                function(memo, num){ return memo + num; },
+                0
+            );
+            if(maxBandWidth > this.ableBandWidth){
+                alert('정해진 대역폭을 초과 하셨습니다.');
+                return;
+            }
+
+            // 광대역은 하나만 신청가능하다는 것을 체크
+            var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
+                return AuctionData.defaultPriceList[index].type === 'wideBand'
+            })
+            var limitWideBandArr = _.filter(wideBandArr,function(element){
+                return $(element).val() != '';
+            })
+            if(limitWideBandArr.length > 1) {
+                alert('광대역하나만 신청 가능합니다.');
+                return;
+            }
+
+            // 최소입찰가격이상을 입력했는지 체크
+            var lowestBidPriceCheck = _.every(this.$el.find('.bid_price'), Function.prototype.bind.call(function(element, index){
+
+                var result = null
+
+                if($(element).val() === ''){
+                    result = true;
+                } else {
+                    result = ( this.lowestBidPrices[index].price <= parseInt($(element).val(),10) ) ? true : false
+                }
+
+                return result;
+            },this))
+            if(!lowestBidPriceCheck){
+                alert('최소입찰액 이상 입력하시기 바랍니다.');
+                return;
+            }
+
+            this.postBid()
+        },
+
+        /**
+         * 입찰 급액 등록
+         */
+        postBid:function(){
+
+            var $bidPrice = this.$el.find('.bid_price');
+
+            var A_price = $($bidPrice[0]).val();
+            var B_price = $($bidPrice[1]).val();
+            var C_price = $($bidPrice[2]).val();
+            var D_price = $($bidPrice[3]).val();
+            var E_price = $($bidPrice[4]).val();
+
+            var postData = {
+                'auctionNum':this.auctionID,
+                'roundNum':this.roundNum,
+                'companyName':this.bidder_company,
+                'priceA':A_price,
+                'priceB':B_price,
+                'priceC':C_price,
+                'priceD':D_price,
+                'priceE':E_price
+            }
+
+            Model.postBid({
+                 url: Auction.HOST + '/api/bidding',
+                 method : 'POST',
+                 contentType:"application/json; charset=UTF-8",
+                 data : JSON.stringify(postData),
+                 success : Function.prototype.bind.call(this.postBidSuccess,this),
+                 error : Function.prototype.bind.call(this.postBidError,this)
+             })
+        },
+
+        postBidSuccess:function(data, textStatus, jqXHR){
+            console.log(data);
+
+            if(textStatus === 'success'){
+
+                var priceList = Process.getBidFormatChange( data );
+
+                Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
+            }
+
+        },
+        postBidError:function(jsXHR, textStatus, errorThrown){
+
+        },
 
 
 
