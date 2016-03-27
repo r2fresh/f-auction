@@ -67,17 +67,23 @@ io.on('connection', function(socket){
 
         console.log('disconnection');
 
-        var str = this.handshake.headers.cookie
+        //var str = this.handshake.headers.cookie
         var cookieData = cookieParser.get( this.handshake.headers.cookie );
 
         // cookieData 없을 경우 리턴
         if(!cookieData.user) return;
+        console.log("12112")
 
         _.each(loginData,function(item){
             if(item.name === cookieData.user){
                 item.state = false;
             }
         })
+    })
+
+    socket.on('loginCheck',function(msg){
+        console.log(msg)
+        //io.emit('loginCheck',msg)
     })
 
 });

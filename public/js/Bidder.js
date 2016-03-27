@@ -55,8 +55,6 @@ define([
             'click .bidder_seal_lowest_bid_price_btn' : 'onSealLowestBidPrice'
  		},
  		initialize:function(){
-            this.$el.html(Bidder);
-            this.setTpl();
 		},
         render:function(){
             this.$el.html(Bidder);
@@ -70,6 +68,14 @@ define([
             //this.getAuctionInfo();
 
             // this.intervalAuctionList_fn();
+
+            // Auction.io.on('loginCheck',function(msg){
+            //     console.log(msg)
+            // })
+
+            //console.log(Auction.session.get('user_info').name)
+
+            Auction.io.emit('loginCheck',Auction.session.get('user_info').user)
 
         },
 
@@ -93,17 +99,17 @@ define([
         },
 
         setBidderCompany:function(){
-            var userInfo = store.get('user_info')
+            var userInfo = Auction.session.get('user_info');
             this.bidder_company = (userInfo.user).toUpperCase();
         },
 
         setBidderLogo:function(){
-            var userInfo = store.get('user_info')
+            var userInfo = Auction.session.get('user_info');
             this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
         },
 
         setLimitHertz : function(){
-            var userInfo = store.get('user_info');
+            var userInfo = Auction.session.get('user_info');;
             this.ableBandWidth = userInfo.hertz;
             this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz');
         },
@@ -1258,7 +1264,7 @@ define([
          */
         onLogout : function(e){
             e.preventDefault();
-            store.remove('user_info');
+            //store.remove('user_info');
             window.location.href = '/';
         },
 

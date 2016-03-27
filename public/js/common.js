@@ -65,20 +65,6 @@
 
 (function(Auction){
 
-	Auction.io = {
-		socketio:null,
-		set:function(socket){
-			this.socketio = socket;
-		},
-		get:function(){
-			return this.socketio;
-		}
-	};
-
-})(Auction);
-
-(function(Auction){
-
 	Auction.session = {
 		set:function(key,value){
 			sessionStorage.setItem(key,JSON.stringify(value));

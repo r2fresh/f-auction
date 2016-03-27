@@ -38,20 +38,29 @@ define([
  		},
  		initialize:function(){
             //this.socket = SocketIo();
-            this.setSocketEvent();
+            //this.setSocketEvent();
 		},
         render:function(){
+            console.log('12121')
             this.$el.html(Admin);
 
             this.setTpl();
             this.setStartPriceList();
-        },
 
-        setSocketEvent:function(){
-            // this.socket.on('login',function(msg){
+            // Auction.io.on('loginCheck',function(msg){
             //     console.log(msg)
             // })
+
+            //console.log(Auction.session.get('user_info').name)
+
+            Auction.io.emit('loginCheck',Auction.session.get('user_info').user)
         },
+
+        // setSocketEvent:function(){
+            //     Auction.io.on('loginCheck',function(msg){
+        //         console.log(msg)
+        //     })
+        // },
 
         /**
          * 템플릿 정의

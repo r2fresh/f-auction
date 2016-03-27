@@ -21,6 +21,8 @@ function get(data){
         }
     });
 
+
+    console.log(obj)
     return obj;
 }
 

@@ -53,7 +53,7 @@ function(Login, Admin, Bidder, Model, io){
 		var app, appName, hash = Auction.util.parseHash();
 
 		Auction.io = io();
-		
+
 		routeStart();
 
 		if(hash) {
@@ -61,6 +61,8 @@ function(Login, Admin, Bidder, Model, io){
 		} else {
 			routers.navigate('', { trigger: true, replace: true });
 		}
+
+		checkSession();
 	}
 
 	/**
@@ -80,16 +82,13 @@ function(Login, Admin, Bidder, Model, io){
 
 	}
 
-	/**
-	 * #의 router가 변경되면 처음에 실행 되는 함수
-	 * @param {String} guideType 		선택된 가이드
-	 */
-	function changeHash( guideType){
-
+	function checkSession(){
+		console.log("ksy")
 		if(!Auction.session.get('user_info')){
 			window.location = '/#login';
-			Login.render();
-			Login.show();
+
+			//Login.render();
+			//Login.show();
 		} else {
 			Model.postLogin({
                  url: '/login',
@@ -102,18 +101,52 @@ function(Login, Admin, Bidder, Model, io){
                  success : function(){
 					 var type = Auction.session.get('user_info').type;
 						window.location = '/#' + type;
-						if(type === 'admin'){
-							Admin.render();
-							Admin.show();
-						} else {
-							Bidder.render();
-							Bidder.show();
-						}
+						// if(type === 'admin'){
+						// 	console.log('checkec')
+						// 	Admin.render();
+						// 	//Admin.show();
+						// } else {
+						// 	Bidder.render();
+						// 	Bidder.show();
+						// }
 				 },
                  error : function(){
 
 				 }
              })
+		}
+	}
+
+	/**
+	 * #의 router가 변경되면 처음에 실행 되는 함수
+	 * @param {String} guideType 		선택된 가이드
+	 */
+	function changeHash( guideType){
+		if(prevView != null){
+			prevView.hide();
+		}
+
+		switch(guideType){
+			case 'login' :
+				Login.render();
+				prevView = Login;
+				Login.show();
+			break;
+			case 'admin' :
+				Admin.render();
+				prevView = Admin;
+				Admin.show();
+			break;
+			case 'bidder' :
+				Bidder.render();
+				prevView = Bidder;
+				Bidder.show();
+			break;
+			default :
+				Login.render();
+				prevView = Login;
+				Login.show();
+			break;
 		}
 	}
 
