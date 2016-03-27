@@ -85,6 +85,7 @@ define({
         ]
     },
     'round': {
+        'name':'',
         'frequency' : [
             {
                 'name': 'A',
@@ -94,9 +95,9 @@ define({
                 'winBidder': '',
                 'winPrice': 0,
                 'bidders': [
-                    {'name':'KT', 'price':0, 'vs':'win'},
-                    {'name':'SK', 'price':0, 'vs':'win'},
-                    {'name':'LG', 'price':0, 'vs':'win'}
+                    {'name':'KT', 'price':0},
+                    {'name':'SK', 'price':0},
+                    {'name':'LG', 'price':0}
                 ]
             },
             {
@@ -107,9 +108,9 @@ define({
                 'winBidder': '',
                 'winPrice': 0,
                 'bidders': [
-                    {'name':'KT', 'price':0, 'vs':'win'},
-                    {'name':'SK', 'price':0, 'vs':'win'},
-                    {'name':'LG', 'price':0, 'vs':'win'}
+                    {'name':'KT', 'price':0},
+                    {'name':'SK', 'price':0},
+                    {'name':'LG', 'price':0}
                 ]
             },
             {
@@ -120,9 +121,9 @@ define({
                 'winBidder': '',
                 'winPrice': 0,
                 'bidders': [
-                    {'name':'KT', 'price':0, 'vs':'win'},
-                    {'name':'SK', 'price':0, 'vs':'win'},
-                    {'name':'LG', 'price':0, 'vs':'win'}
+                    {'name':'KT', 'price':0},
+                    {'name':'SK', 'price':0},
+                    {'name':'LG', 'price':0}
                 ]
             },
             {
@@ -133,9 +134,9 @@ define({
                 'winBidder': '',
                 'winPrice': 0,
                 'bidders': [
-                    {'name':'KT', 'price':0, 'vs':'win'},
-                    {'name':'SK', 'price':0, 'vs':'win'},
-                    {'name':'LG', 'price':0, 'vs':'win'}
+                    {'name':'KT', 'price':0},
+                    {'name':'SK', 'price':0},
+                    {'name':'LG', 'price':0}
                 ]
             },
             {
@@ -146,9 +147,9 @@ define({
                 'winBidder': '',
                 'winPrice': 0,
                 'bidders': [
-                    {'name':'KT', 'price':0, 'vs':'win'},
-                    {'name':'SK', 'price':0, 'vs':'win'},
-                    {'name':'LG', 'price':0, 'vs':'win'}
+                    {'name':'KT', 'price':0},
+                    {'name':'SK', 'price':0},
+                    {'name':'LG', 'price':0}
                 ]
             },
         ]
@@ -214,9 +215,9 @@ define({
     //         'winBidder': '',
     //         'winPrice': 0,
     //         'bidders': [
-    //             {'name':'KT', 'price':0, 'vs':'win'},
-    //             {'name':'SK', 'price':0, 'vs':'win'},
-    //             {'name':'LG', 'price':0, 'vs':'win'}
+                // {'name':'KT', 'price':0, 'vs':'win'},
+                // {'name':'SK', 'price':0, 'vs':'win'},
+                // {'name':'LG', 'price':0, 'vs':'win'}
     //         ]
     //     },
     // ],
@@ -229,7 +230,11 @@ define({
             'type':'wideBand',
             'winBidder': '',
             'winPrice': 0,
-            'bidders': null,
+            'bidders': [
+                {'name':'KT', 'price':0},
+                {'name':'SK', 'price':0},
+                {'name':'LG', 'price':0}
+            ],
         },
         {
             'name': 'B',
@@ -238,7 +243,11 @@ define({
             'type':'narrow',
             'winBidder': '',
             'winPrice': 0,
-            'bidders': null,
+            'bidders': [
+                {'name':'KT', 'price':0},
+                {'name':'SK', 'price':0},
+                {'name':'LG', 'price':0}
+            ],
         },
         {
             'name': 'C',
@@ -247,7 +256,11 @@ define({
             'type':'wideBand',
             'winBidder': '',
             'winPrice': 0,
-            'bidders': null,
+            'bidders': [
+                {'name':'KT', 'price':0},
+                {'name':'SK', 'price':0},
+                {'name':'LG', 'price':0}
+            ],
         },
         {
             'name': 'D',
@@ -256,7 +269,11 @@ define({
             'type':'wideBand',
             'winBidder': '',
             'winPrice': 0,
-            'bidders': null,
+            'bidders': [
+                {'name':'KT', 'price':0},
+                {'name':'SK', 'price':0},
+                {'name':'LG', 'price':0}
+            ],
         },
         {
             'name': 'E',
@@ -265,7 +282,11 @@ define({
             'type':'narrow',
             'winBidder': '',
             'winPrice': 0,
-            'bidders': null,
+            'bidders': [
+                {'name':'KT', 'price':0},
+                {'name':'SK', 'price':0},
+                {'name':'LG', 'price':0}
+            ],
         },
     ],
     'bidders': [

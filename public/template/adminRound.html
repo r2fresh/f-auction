@@ -1,0 +1,26 @@
+<td>{{name}}</td>
+{{#frequency}}
+    {{#bidders}}
+    <td style="text-align:center;">
+        <!--  label label-{{name}}-l -->
+        <span class="{{className}}">{{price}}</span>
+    </td>
+    {{/bidders}}
+    {{^bidders}}
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:center;"></td>
+    {{/bidders}}
+{{/frequency}}

@@ -12,6 +12,10 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function postRound(data){
+		$.ajax(data);
+	}
+
 	function postBid(data){
 		$.ajax(data);
 	}
@@ -39,6 +43,8 @@ define(function(require, exports, module){
 		getAuction:getAuction,
 		postAuction:postAuction,
 		putAuction:putAuction,
+
+		postRound:postRound,
 
 		postBid:postBid,
 		getAuctionInfo:getAuctionInfo,

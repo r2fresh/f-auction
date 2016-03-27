@@ -1,7 +1,7 @@
 (function(){
 	window.Auction = window.Auction || {};
 
-	Auction.HOST = 'https://nameless-citadel-87760.herokuapp.com/'
+	Auction.HOST = 'http://nameless-citadel-87760.herokuapp.com'
 	//Auction.HOST = ''
 
 	//Auction.basil = null;
@@ -71,6 +71,9 @@
 		},
 		get:function(key){
 			return JSON.parse( sessionStorage.getItem(key) );
+		},
+		remove:function(key){
+			return sessionStorage.removeItem(key);
 		}
 	};
 

@@ -1,12 +1,13 @@
 define([
    'module',
    'text!tpl/admin.html',
+   'text!tpl/adminRound.html',
    'js/Model',
    'js/Process',
    'js/AuctionData',
    //'socketio'
    ],
-   function(module, Admin, Model, Pro, AuctionData){
+   function(module, Admin, AdminRound, Model, Pro, AuctionData){
 
 	'use strict'
 
@@ -19,6 +20,8 @@ define([
         auctionName : '',
         // 현재 라운드 정보
         roundNum : 1,
+
+        roundData : null,
         // 시작가 리스트 템플릿
         startPriceListTpl:'',
         // 라운드 값 리스트 템플릿
@@ -28,10 +31,23 @@ define([
         // 경매 원본 정보
         originCompanyList : null,
 
+        loginCheckList : null,
+
+        bidCountList :[
+            {'name':'KT','state':false},
+            {'name':'SK','state':false},
+            {'name':'LG','state':false}
+        ],
+
  		el: '.admin',
  		events :{
+            // 로그아웃
             'click ._logout_btn' : 'onLogout',
+            // 갱매시작
             'click ._auction_start_btn' : 'onAuctionStart',
+            'click ._round_start_btn' : 'onRoundStart',
+
+
             'click ._auction_end_btn' : 'onAuctionEnd',
             'click ._clear_interval_btn' : 'onClearInterval',
             'click ._acending_btn' : 'onBiddingResult'
@@ -41,17 +57,48 @@ define([
             //this.setSocketEvent();
 		},
         render:function(){
-            console.log('12121')
             this.$el.html(Admin);
 
             this.setTpl();
             this.setStartPriceList();
+            this.setSocketReceiveEvent();
 
+            Auction.io.emit('loginCheck',Auction.session.get('user_info').user);
+        },
+
+        /**
+         * 템플릿 정의
+         */
+        setTpl:function(){
+            //this.roundPriceListTpl  = this.$el.find(".round_price_list_tpl").html();
+
+            this.roundPriceListTpl  = AdminRound
+
+
+            this.biddingResultTpl   = this.$el.find(".bindding_result_tpl").html();
+            this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
+            this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
+
+            //접속자 유저 템플릿
+            this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
+        },
+
+        /**
+         * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
+         */
+        setSocketReceiveEvent:function(){
             Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
+            Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
+        },
 
-            //console.log(Auction.session.get('user_info').name)
+        /**
+         * 시작가 설정
+         */
+        setStartPriceList:function(){
+            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
 
-            Auction.io.emit('loginCheck',Auction.session.get('user_info').user)
+            var template = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
         },
 
         /**
@@ -60,6 +107,8 @@ define([
         onLoginCheck:function(msg){
 
             console.table(JSON.parse(msg))
+
+            this.loginCheckList = JSON.parse(msg);
 
             var list = JSON.parse(msg);
 
@@ -75,32 +124,50 @@ define([
         },
 
         /**
-         * 템플릿 정의
+         * Round Start Event Handler
          */
-        setTpl:function(){
-            this.roundPriceListTpl  = this.$el.find(".round_price_list_tpl").html();
-            this.biddingResultTpl   = this.$el.find(".bindding_result_tpl").html();
-            this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
-            this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
+        onRoundStart:function(e){
+            e.preventDefault();
 
-            //접속자 유저 템플릿
-            this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
-        },
+            // var check = _.every(this.loginCheckList,function(item){
+            //     return item.state === true;
+            // })
+            //
+            // if(!check){
+            //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
+            //     return;
+            // }
 
-        /**
-         * 시작가 설정
-         */
-        setStartPriceList:function(){
-            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+            var $roundPriceList = $('<tr class="round_price_list"></tr>');
 
-            var template = Handlebars.compile(this.startPriceListTpl);
-            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
+
+
+            this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.round,{'name':this.roundNum}) ) );
+
+            var template = Handlebars.compile(this.roundPriceListTpl);
+            $roundPriceList.html(template( _.extend(AuctionData.round,{'name':this.roundNum}) ));
+
+            this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList)
+
+            Auction.io.emit('ROUND_NUMBER',this.roundNum);
         },
 
         /**
          * 경매 시작 이벤트 핸들러
          */
         onAuctionStart:function(e){
+
+            // var check = _.every(this.loginCheckList,function(item){
+            //     return item.state === true;
+            // })
+            //
+            // if(!check){
+            //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
+            //     return;
+            // }
+
+            this.$el.find(".round_price_list_tpl").remove();
+
             this.postAuction();
         },
 
@@ -129,10 +196,12 @@ define([
                 this.auctionID = data.id;
                 this.auctionName = data.auctionName;
 
-                //나중에 지움
-                this.$el.find('#auction_id').val(data.id)
+                Auction.io.emit('AUCTION_ID',data.id)
 
-                this.intervalAuctionInfo_fn();
+                //나중에 지움
+                //this.$el.find('#auction_id').val(data.id)
+
+                //this.intervalAuctionInfo_fn();
             } else {
                 alert('경매 생성에 실패 하였습니다.')
             }
@@ -144,6 +213,226 @@ define([
         postAuctionError:function(jsXHR, textStatus, errorThrown){
             alert('경매 생성에 실패 하였습니다.')
         },
+
+        /**
+         * 입찰을 하고
+         */
+        onBid:function(msg){
+
+            // bidCheck 다 true 이면 웹서버에 저장
+
+            var roundData = null;
+
+            var bidData = JSON.parse(msg);
+
+
+            // var frequencyList = [];
+            // var bidderArr = ['KT', 'SK', 'LG']
+            // var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+            // var frequencyFormat = JSON.parse( JSON.stringify( AuctionData.frequency ) );
+            //
+
+            for(var i=0; i<this.roundData.frequency.length; ++i){
+
+                for(var j=0; j<this.roundData.frequency[i].bidders.length; ++j){
+
+                    console.log(bidData.name)
+                    console.log(bidData.priceList[0].price)
+
+                    if(this.roundData.frequency[i].bidders[j].name === bidData.name){
+
+                        console.log(bidData.priceList[i].price)
+
+                        this.roundData.frequency[i].bidders[j].price = bidData.priceList[i].price;
+
+                    }
+
+                }
+
+            }
+
+            _.each(this.bidCountList,function(item){
+                if(item.name === bidData.name){
+                    item.state = true;
+                }
+            })
+
+            var flag = _.every(this.bidCountList,function(item){
+                return item.state == true;
+            })
+
+            console.log(flag)
+
+            if(flag === true){
+                roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
+                this.postRound(roundData);
+            } else {
+                roundData = _.extend(this.roundData,{'name':this.roundNum});
+                this.setRoundUI(roundData);
+            }
+
+            //roundData = _.extend(this.roundData,{'name':this.roundNum});
+
+
+
+            //console.log(this.roundData);
+
+            // var template = Handlebars.compile(this.roundPriceListTpl);
+            // this.$el.find('.round_price_list').html(template( roundData ));
+
+
+            // _.each(this.roundData.frequency,function(item){
+            //
+            //     _.each(item.bidders,function(item){
+            //
+            //         if(item.name === priceList.name){
+            //             item.price = priceList
+            //         }
+            //
+            //     }
+            //
+            // })
+
+            // for(var i=0; i<priceArr.length; ++i){
+            //
+            //     // var bidders =[];
+            //
+            //     // for(var j=0; j<bidderArr.length; ++j){
+            //     //     var companyArr = _.filter(data,function(company){
+            //     //         return company.companyName === bidderArr[j];
+            //     //     })
+            //     //
+            //     //     if(companyArr.length === 1){
+            //     //         bidders.push({
+            //     //             'name' : bidderArr[j],
+            //     //             'price' : companyArr[0][priceArr[i]]
+            //     //         })
+            //     //     } else {
+            //     //         bidders.push({
+            //     //             'name' : bidderArr[j],
+            //     //             'price' : 0
+            //     //         })
+            //     //     }
+            //     // }
+            //
+            //     frequencyFormat[i].bidders = bidders;
+            // }
+
+            //return frequencyFormat;
+
+        },
+
+        postRound:function(data){
+            Model.postRound({
+                 url: '/round',
+                 method : 'POST',
+                 contentType:"application/json; charset=UTF-8",
+                 data : JSON.stringify({
+                     'round':data
+                 }),
+                 success : Function.prototype.bind.call(this.postRoundSuccess,this),
+                 error : Function.prototype.bind.call(this.postRoundError,this)
+             })
+        },
+
+        postRoundSuccess:function(data, textStatus, jqXHR){
+            if(textStatus === 'success'){
+                Auction.io.emit('ROUND_RESULT',JSON.stringify(data))
+                this.setRoundUI(data);
+                this.roundNum += 1;
+            }
+        },
+        postRoundError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
+        setRoundUI:function(data){
+            var template = Handlebars.compile(this.roundPriceListTpl);
+            this.$el.find('.round_price_list').html(template( data ));
+        },
+
+        getWinBidder:function(data){
+
+            _.each(data.frequency,function(item){
+
+                console.log(item)
+
+                var winPrice = ( _.max(item.bidders, function(bidder){ return bidder.price; }) ).price;
+
+                console.log('WINPRICE : ' + winPrice)
+
+                if(winPrice === 0){
+                    item.bidders = _.map(item.bidders,function(bidder){
+                        return _.extend(bidder,{'className':'text-gray'})
+                    })
+                    var winName = '';
+                } else {
+                    var winArr = _.filter(item.bidders,function(bidder){
+                        return winPrice === bidder.price
+                    })
+
+                    console.log(winArr)
+
+                    var win = null;
+
+                    if(winArr.length > 1){
+                        win = winArr[ parseInt(Math.random()*(winArr.length),10) ]
+                    } else {
+                        win = winArr[0];
+                    }
+                    var winName = win.name;
+
+                    item.bidders = _.map(item.bidders,function(bidder){
+
+                        var className = '';
+
+                        if(bidder.price === winPrice && bidder.name === winName){
+                            className = 'label label-' + bidder.name + '-l';
+                        } else {
+                            className = 'text-gray';
+                        }
+
+                        return _.extend(bidder,{'className':className})
+                    })
+                }
+
+                item.winBider = winName;
+                item.winPrice = winPrice;
+            })
+
+            return data
+
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /**
          * 모의경매의 낙찰이 되면 경매를 끝낸다.
@@ -237,12 +526,11 @@ define([
 
             this.roundNum = Math.ceil(data.length/3);
 
-            this.originCompanyList = data;
+            this.originCompanyList = JSON.parse( JSON.stringify( data ) );;
 
             var roundList = this.changeDataFormat(data);
 
             this.$el.find('.round_price_list').remove();
-
             var template = Handlebars.compile(this.roundPriceListTpl);
             this.$el.find('.start_price_list').after(template({'roundList':roundList}));
 
@@ -330,35 +618,35 @@ define([
                     }
                 }
 
-
-                var winPrice = ( _.max(bidders, function(bidder){ return bidder.price; }) ).price;
-
-                var winArr = _.filter(bidders,function(bidder){
-                    return winPrice === bidder.price
-                })
-
-                var win = null;
-
-                if(winArr.length > 1){
-                    win = winArr[ parseInt(Math.random()*(winArr.length),10) ]
-                } else {
-                    win = winArr[0];
-                }
-                var winName = win.name;
-
-
-                frequencyFormat[i].bidders = _.map(bidders,function(bidder){
-
-                    var className = '';
-
-                    if(bidder.price === winPrice && bidder.name === winName){
-                        className = 'label label-' + bidder.name + '-l';
-                    } else {
-                        className = 'text-gray';
-                    }
-
-                    return _.extend(bidder,{'className':className})
-                })
+                frequencyFormat[i].bidders = bidders;
+                // var winPrice = ( _.max(bidders, function(bidder){ return bidder.price; }) ).price;
+                //
+                // var winArr = _.filter(bidders,function(bidder){
+                //     return winPrice === bidder.price
+                // })
+                //
+                // var win = null;
+                //
+                // if(winArr.length > 1){
+                //     win = winArr[ parseInt(Math.random()*(winArr.length),10) ]
+                // } else {
+                //     win = winArr[0];
+                // }
+                // var winName = win.name;
+                //
+                //
+                // frequencyFormat[i].bidders = _.map(bidders,function(bidder){
+                //
+                //     var className = '';
+                //
+                //     if(bidder.price === winPrice && bidder.name === winName){
+                //         className = 'label label-' + bidder.name + '-l';
+                //     } else {
+                //         className = 'text-gray';
+                //     }
+                //
+                //     return _.extend(bidder,{'className':className})
+                // })
 
             }
 
@@ -936,7 +1224,8 @@ define([
          */
         onLogout : function(e){
             e.preventDefault();
-            store.remove('user_info');
+            Auction.session.remove('user_info');
+            Cookies.remove('user');
             window.location.href = '/';
         },
 

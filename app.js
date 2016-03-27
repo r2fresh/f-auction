@@ -21,6 +21,10 @@ var loginData = [
     {'name':'lg','state':false}
 ]
 
+var roundList = [
+
+];
+
 /**
  * 로그인 함수
  */
@@ -41,6 +45,26 @@ app.post('/login', function(req, res) {
     }
     res.send({'result':result})
 })
+
+app.post('/round', function(req, res) {
+    var result = false;
+    var bodyData = req.body;
+
+    console.log(bodyData.round)
+
+    roundList.push(bodyData.round);
+
+    res.send(bodyData.round)
+})
+
+// app.get('/round', function(req, res) {
+//     var result = false;
+//     var bodyData = req.body;
+//
+//     roundList.push(bodyData.round);
+//
+//     res.send({'result':result})
+// })
 
 /**
  * index.html router
@@ -86,6 +110,26 @@ io.on('connection', function(socket){
     socket.on('loginCheck',function(msg){
         console.log(msg)
         io.emit('loginCheck',JSON.stringify(loginData))
+    })
+
+    socket.on('AUCTION_ID',function(msg){
+        console.log(msg)
+        io.emit('AUCTION_ID',msg)
+    })
+
+    socket.on('ROUND_NUMBER',function(msg){
+        console.log(msg)
+        io.emit('ROUND_NUMBER',msg)
+    })
+
+    socket.on('BID',function(msg){
+        console.log(msg)
+        io.emit('BID',msg)
+    })
+
+    socket.on('ROUND_RESULT',function(msg){
+        console.log(msg)
+        io.emit('ROUND_RESULT',msg)
     })
 
 });

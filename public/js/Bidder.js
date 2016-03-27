@@ -4,8 +4,9 @@ define([
    'js/AuctionData',
    'js/Validation',
    'js/Model',
+   'js/Process'
    ],
-   function(module, Bidder, AuctionData, Validation, Model){
+   function(module, Bidder, AuctionData, Validation, Model, Process){
 
 	'use strict'
 
@@ -48,7 +49,7 @@ define([
 
  		el: '.bidder',
  		events :{
-            'click .bid_btn' : 'onBid',
+            'click ._bid_btn' : 'onBid',
             'click .test_btn' : 'testBidSuccess',
             'click ._accordion_btn' : 'onAccordion',
             'click ._logout_btn' : 'onLogout',
@@ -64,18 +65,98 @@ define([
             this.setBidderLogo();
             this.setBidStrategy();
 
+
+
             this.setStartPriceList();
+
+            this.setSocketReceiveEvent();
 
             //this.getAuctionInfo();
 
             // this.intervalAuctionList_fn();
 
-            Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
+
 
             //console.log(Auction.session.get('user_info').name)
 
             Auction.io.emit('loginCheck',Auction.session.get('user_info').user)
 
+        },
+
+        /**
+         * 사용하는 템플릿 설정
+         */
+        setTpl : function(){
+
+            this.roundPriceListTpl          = this.$el.find(".round_price_list_tpl").html();
+            this.bidderStartPriceListTpl    = this.$el.find(".bidder_start_price_list_tpl").html();
+            this.startPriceListTpl          = this.$el.find(".start_price_list_tpl").html();
+            this.lowestRacePricesTpl        = this.$el.find(".lowest_race_prices_tpl").html();
+            this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
+            this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
+            //접속자 유저 템플릿
+            this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
+
+        },
+
+        /**
+         * 입찰 회사 설정
+         */
+        setBidderCompany:function(){
+            var userInfo = Auction.session.get('user_info');
+            this.bidder_company = (userInfo.user).toUpperCase();
+        },
+
+        /**
+         * 입찰 회사 로고 설정
+         */
+        setBidderLogo:function(){
+            var userInfo = Auction.session.get('user_info');
+            this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
+        },
+
+        /**
+         * 입찰 회사 입찰 전략 설정
+         */
+        setBidStrategy : function(){
+            var userInfo = Auction.session.get('user_info');
+            var strategy = (userInfo.strategy === '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
+            this.$el.find('._bidder_info .bid_strategy').val(strategy)
+        },
+
+        /**
+         * 입찰 회사 제한 대역폭 설정
+         */
+        setLimitHertz : function(){
+            var userInfo = Auction.session.get('user_info');;
+            this.ableBandWidth = userInfo.hertz;
+            this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz');
+        },
+
+        /**
+         * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
+         */
+        setSocketReceiveEvent:function(){
+            Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
+            Auction.io.on('AUCTION_ID', Function.prototype.bind.call(this.setAuctionId,this) );
+            Auction.io.on('ROUND_NUMBER', Function.prototype.bind.call(this.setRoundNum,this) );
+            Auction.io.on('ROUND_RESULT', Function.prototype.bind.call(this.onRoundResult,this) );
+        },
+
+        /**
+         * 경매 ID 설정
+         */
+        setAuctionId:function(id){
+            console.log('AUCTION_ID : ' + id)
+            this.auctionID = id;
+        },
+
+        /**
+         * 라우든 Number 설정
+         */
+        setRoundNum:function(num){
+            console.log('ROUND_NUMBER : ' + num)
+            this.roundNum = num;
         },
 
         /**
@@ -99,50 +180,6 @@ define([
         },
 
         /**
-         * 사용하는 템플릿 설정
-         */
-        setTpl : function(){
-
-            this.roundPriceListTpl          = this.$el.find(".round_price_list_tpl").html();
-
-            this.bidderStartPriceListTpl    = this.$el.find(".bidder_start_price_list_tpl").html();
-
-            this.startPriceListTpl          = this.$el.find(".start_price_list_tpl").html();
-
-            this.lowestRacePricesTpl        = this.$el.find(".lowest_race_prices_tpl").html();
-
-            this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
-
-            this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
-
-            //접속자 유저 템플릿
-            this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
-
-        },
-
-        setBidderCompany:function(){
-            var userInfo = Auction.session.get('user_info');
-            this.bidder_company = (userInfo.user).toUpperCase();
-        },
-
-        setBidderLogo:function(){
-            var userInfo = Auction.session.get('user_info');
-            this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
-        },
-
-        setBidStrategy : function(){
-            var userInfo = Auction.session.get('user_info');
-            var strategy = (userInfo.strategy === '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
-            this.$el.find('._bidder_info .bid_strategy').val(strategy)
-        },
-
-        setLimitHertz : function(){
-            var userInfo = Auction.session.get('user_info');;
-            this.ableBandWidth = userInfo.hertz;
-            this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz');
-        },
-
-        /**
          * 시작가 설정
          */
         setStartPriceList:function(){
@@ -158,6 +195,15 @@ define([
             this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
 
             this.setLowestBidPriceUI(priceList)
+        },
+
+
+        onRoundResult:function(msg){
+
+            var data = JSON.parse(msg);
+
+            console.log(data);
+
         },
 
         /**
@@ -205,6 +251,80 @@ define([
             },this));
             return priceList;
         },
+
+
+        /**
+         * 입찰금액 리스트 설정
+         */
+        setBidPrices : function(data){
+
+            _.each(this.$el.find('.bid_price'),function(element,index){
+                if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
+                    $(element).prop('disabled',true)
+                    $(element).attr('placeholder','승자')
+                } else {
+                    $(element).prop('disabled',false)
+                    $(element).attr('placeholder','')
+                }
+            })
+
+            this.resetBidPrice();
+
+        },
+
+        resetBidPrice : function(){
+            this.$el.find('.bid_price').val('')
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -403,16 +523,6 @@ define([
 
 
 
-        /*
-         * 최저경쟁가격(시작가) 리스트 설정
-         */
-        // setLowestRacePrices : function(data){
-        //     var template = Handlebars.compile(this.lowestRacePricesTpl);
-        //     this.$el.find('.lowest_race_prices').empty().html(template(data));
-        //
-        //     this.setLowestBidPrices(data);
-        //     this.setBidPrices(data);
-        // },
 
 
 
@@ -453,21 +563,6 @@ define([
 
 
 
-        /**
-         * 최소경쟁가격 리스트 설정
-         */
-        // setLowestBidPrices : function(data){
-        //     this.lowestBidPrices = _.map(data.frequency, Function.prototype.bind.call(function(frequency){
-        //             frequency.winPrice = Math.ceil( frequency.winPrice + (frequency.winPrice*this.lowestBidAdd/100) )
-        //             return frequency
-        //         },this))
-        //
-        //     console.log(this.lowestBidPrices)
-        //
-        //     var template = Handlebars.compile(this.lowestBidPricesTpl);
-        //     this.$el.find('.lowest_bid_prices').empty().html(template({'frequency':this.lowestBidPrices}));
-        //
-        // },
 
 
 
@@ -501,28 +596,9 @@ define([
 
 
 
-        /**
-         * 입찰금액 리스트 설정
-         */
-        setBidPrices : function(data){
-
-            _.each(this.$el.find('.bid_price'),function(element,index){
-                if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
-                    $(element).prop('disabled',true)
-                    $(element).attr('placeholder','승자')
-                } else {
-                    $(element).prop('disabled',false)
-                    $(element).attr('placeholder','')
-                }
-            })
-
-            this.resetBidPrice();
-
-        },
-
-        resetBidPrice : function(){
-            this.$el.find('.bid_price').val('')
-        },
+
+
+
 
         /**
          * 블록별 가격 증가율 (시작가/승자의 가격 * 100)
@@ -591,52 +667,83 @@ define([
                 return;
             }
 
-            this.getAuctionList();
+            this.postBid()
+        },
 
+        /**
+         * 입찰 급액 등록
+         */
+        postBid:function(){
 
-            //this.postBid();
+            var $bidPrice = this.$el.find('.bid_price');
 
-            // Model.postElkEvent({
-            //      url: Elkplus.HOST + '/logmon/events' + eventId,
-            //      method : (this.writeType === 'edit') ? 'PUT' : 'POST',
-            //      contentType:"application/json; charset=UTF-8",
-            //      data : JSON.stringify(this.content),
-            //      success : Function.prototype.bind.call(this.postElkEventSuccess,this),
-            //      error : Function.prototype.bind.call(this.postElkEventError,this)
-            //  })
+            var A_price = $($bidPrice[0]).val();
+            var B_price = $($bidPrice[1]).val();
+            var C_price = $($bidPrice[2]).val();
+            var D_price = $($bidPrice[3]).val();
+            var E_price = $($bidPrice[4]).val();
 
-            // var wideBandArr =  _.filter(AuctionData.auctionStartPrices,Function.prototype.bind.call(function(frequency, index){
-            //
-            //     var result = null;
-            //
-            //     if(frequency.type === 'wideBand'){
-            //
-            //     }
-            //
-            //     var result = 0;
-            //
-            //     if( $(this.$el.find('.bid_price')[index]).val() != '' ){
-            //         result = frequency.bandWidth
-            //     } else {
-            //         result = 0;
-            //     }
-            //     return result
-            // },this))
+            var postData = {
+                'auctionNum':this.auctionID,
+                'roundNum':this.roundNum,
+                'companyName':this.bidder_company,
+                'priceA':A_price,
+                'priceB':B_price,
+                'priceC':C_price,
+                'priceD':D_price,
+                'priceE':E_price
+            }
 
+            Model.postBid({
+                 url: Auction.HOST + '/api/bidding',
+                 method : 'POST',
+                 contentType:"application/json; charset=UTF-8",
+                 data : JSON.stringify(postData),
+                 success : Function.prototype.bind.call(this.postBidSuccess,this),
+                 error : Function.prototype.bind.call(this.postBidError,this)
+             })
+        },
 
-            //console.log(emptyCheck)
+        postBidSuccess:function(data, textStatus, jqXHR){
+            console.log(data);
 
-            // $.each(this.$el.find('.bid_price'),function(index,element){
-            //     console.log($(element).val()
-            // })
+            if(textStatus === 'success'){
 
-            // _.each(this.$el.find('.bid_price'),function(index,element){
-            //     console.log($(element).val()
-            // })
+                var priceList = Process.getBidFormatChange( data );
 
-            //console.log(this.$el.find('.bid_price'))
+                Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
+            }
 
         },
+        postBidError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         /**
@@ -687,49 +794,7 @@ define([
 
 
 
-        /**
-         * 입찰 급액 등록
-         */
-        postBid:function(){
 
-            var $bidPrice = this.$el.find('.bid_price');
-
-            var A_price = $($bidPrice[0]).val();
-            var B_price = $($bidPrice[1]).val();
-            var C_price = $($bidPrice[2]).val();
-            var D_price = $($bidPrice[3]).val();
-            var E_price = $($bidPrice[4]).val();
-
-            var postData = {
-                'auctionNum':this.auctionID,
-                'roundNum':this.roundNum,
-                'companyName':this.bidder_company,
-                'priceA':A_price,
-                'priceB':B_price,
-                'priceC':C_price,
-                'priceD':D_price,
-                'priceE':E_price
-            }
-
-            console.log(postData)
-
-            Model.postBid({
-                 url: Auction.HOST + '/api/bidding',
-                 method : 'POST',
-                 contentType:"application/json; charset=UTF-8",
-                 data : JSON.stringify(postData),
-                 success : Function.prototype.bind.call(this.postBidSuccess,this),
-                 error : Function.prototype.bind.call(this.postBidError,this)
-             })
-        },
-
-        postBidSuccess:function(data, textStatus, jqXHR){
-            console.log(data);
-            this.getAuctionInfo();
-        },
-        postBidError:function(jsXHR, textStatus, errorThrown){
-
-        },
 
         // /**
         //  * 옥션 리스트 인터벌로 호출
@@ -1292,7 +1357,7 @@ define([
          */
         onLogout : function(e){
             e.preventDefault();
-            //store.remove('user_info');
+            Auction.session.remove('user_info');
             window.location.href = '/';
         },
 
@@ -1322,35 +1387,34 @@ define([
             $('body').css({'background-color':'#FFFFFF'})
         }
 
+
+        /*
+         * 최저경쟁가격(시작가) 리스트 설정
+         */
+        // setLowestRacePrices : function(data){
+        //     var template = Handlebars.compile(this.lowestRacePricesTpl);
+        //     this.$el.find('.lowest_race_prices').empty().html(template(data));
+        //
+        //     this.setLowestBidPrices(data);
+        //     this.setBidPrices(data);
+        // },
+
+        /**
+         * 최소경쟁가격 리스트 설정
+         */
+        // setLowestBidPrices : function(data){
+        //     this.lowestBidPrices = _.map(data.frequency, Function.prototype.bind.call(function(frequency){
+        //             frequency.winPrice = Math.ceil( frequency.winPrice + (frequency.winPrice*this.lowestBidAdd/100) )
+        //             return frequency
+        //         },this))
+        //
+        //     console.log(this.lowestBidPrices)
+        //
+        //     var template = Handlebars.compile(this.lowestBidPricesTpl);
+        //     this.$el.find('.lowest_bid_prices').empty().html(template({'frequency':this.lowestBidPrices}));
+        //
+        // },
+
  	}))
 
 })
-
-
-// {
-//     'KT': [
-//         {'name': 'A', 'bandWidth':40,'hertz':'700', 'type':'wideBand', 'price' : 7620},
-//         {'name': 'B', 'bandWidth':20, 'hertz':'18', 'type':'narrow', 'price' : 6553},
-//         {'name': 'C', 'bandWidth':20, 'hertz':'21', 'type':'wideBand', 'price' : 4513},
-//         {'name': 'D', 'bandWidth':40, 'hertz':'26', 'type':'wideBand', 'price' : 3816},
-//         {'name': 'E', 'bandWidth':20, 'hertz':'26', 'type':'narrow', 'price' : 3277},
-//     ],
-// },
-// {
-//     'SK': [
-//         {'name': 'A', 'bandWidth':40,'hertz':'700', 'type':'wideBand', 'price' : 7620},
-//         {'name': 'B', 'bandWidth':20, 'hertz':'18', 'type':'narrow', 'price' : 6553},
-//         {'name': 'C', 'bandWidth':20, 'hertz':'21', 'type':'wideBand', 'price' : 4513},
-//         {'name': 'D', 'bandWidth':40, 'hertz':'26', 'type':'wideBand', 'price' : 3816},
-//         {'name': 'E', 'bandWidth':20, 'hertz':'26', 'type':'narrow', 'price' : 3277},
-//     ],
-// },
-// {
-//     'LG': [
-//         {'name': 'A', 'bandWidth':40,'hertz':'700', 'type':'wideBand', 'price' : 7620},
-//         {'name': 'B', 'bandWidth':20, 'hertz':'18', 'type':'narrow', 'price' : 6553},
-//         {'name': 'C', 'bandWidth':20, 'hertz':'21', 'type':'wideBand', 'price' : 4513},
-//         {'name': 'D', 'bandWidth':40, 'hertz':'26', 'type':'wideBand', 'price' : 3816},
-//         {'name': 'E', 'bandWidth':20, 'hertz':'26', 'type':'narrow', 'price' : 3277},
-//     ],
-// }
