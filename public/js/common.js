@@ -1,7 +1,7 @@
 (function(){
 	window.Auction = window.Auction || {};
 
-	Auction.HOST = 'http://nameless-citadel-87760.herokuapp.com'
+	Auction.HOST = 'http://14.32.174.222'
 	//Auction.HOST = ''
 
 	//Auction.basil = null;
