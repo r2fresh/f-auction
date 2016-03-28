@@ -6,46 +6,25 @@ define([
 
        module.exports = {
            sealBidBidderList:null,
+           sealBandWidthList:null,
+           /**
+            * 밀봉 입찰액 객체 설정
+            */
+           setSealBidBidderList:function(data){
+               this.sealBidBidderList = JSON.parse( JSON.stringify(data) );
+           },
            getSealBidBidderList:function(){
                return this.sealBidBidderList;
            },
-           sealBandWidthList:[
-               {'name':'KT','ableBandWidth':0},
-               {'name':'SK','ableBandWidth':0},
-               {'name':'LG','ableBandWidth':0}
-           ],
-
-
            /**
-            * 입찰자들의 신청 가능 대역폭 저장
+            * 통신사별 제한 주파수 배열 설정
             */
-           setSealBandWidthCheck:function(data){
-               var bidder = data;
-               _.each(this.sealBandWidthList,Function.prototype.bind.call(function(item){
-                   if(item.name === bidder.name){
-                       item.ableBandWidth = bidder.ableBandWidth;
-                   }
-               },this));
+           setSealBandWidthList:function(data){
+               this.sealBandWidthList = JSON.parse( JSON.stringify(data) );
            },
-           /**
-            * 밀봉입찰액 기본 테이블 생성
-            */
-           setSealBidPrice:function(){
-               var bidderList = JSON.parse( JSON.stringify(AuctionData.binderList) );
-               this.sealBidBidderList = _.map(bidderList,function(item){
-                   var defaultPriceList = JSON.parse( JSON.stringify(AuctionData.defaultPriceList) );
-                   var priceList = _.map(defaultPriceList,function(item){
-                       item.price = '';
-                       return item
-                   })
-                   return _.extend(item,{'priceList':priceList});
-               })
-               console.log(this.sealBidBidderList);
-               this.setSealBidPriceUI(this.sealBidBidderList)
+           getSealBandWidthList:function(){
+               return this.sealBandWidthList;
            },
-
-
-
 
            getCombinationList:function(data){
 
@@ -73,7 +52,7 @@ define([
                console.log(sealBidPriceList);
                console.log(frequencyList);
 
-               return tihs.setCombinationList(frequencyList);
+               return frequencyList;
            },
            /**
             * 주파수로 구성된 배열을 사용하여 밀봉입찰을 조합하는 함수
@@ -191,6 +170,87 @@ define([
                }
 
                return flag
+           },
+
+           /**
+            * 밀봉 조합에서 각 통신사 마다 광대역을 하나씩은 가지고 가는 조합을 만드는 함수
+            */
+           setCombinationWideBandCheck:function(data){
+               var companyList = ['KT','SK','LG'];
+               var combination = data;
+               var flag = true;
+
+               for(var i=0; i<companyList.length; ++i){
+                   var companyDissolve = _.filter(combination,function(item){
+                       return item.company === companyList[i];
+                   })
+
+                   var wideBandList = _.filter(companyDissolve,function(item){
+                       return item.type === 'wideBand'
+                   });
+
+                   if(wideBandList.length === 0){
+                       flag = false;
+                   }
+               }
+
+               return flag;
+           },
+
+           /**
+            * 밀봉조합에서 가격의 합계를 구하는 함수
+            */
+           setCombinationPriceSum:function(data){
+
+               var combinationList = JSON.parse(JSON.stringify(data));
+
+               var combinationSumList = _.map(combinationList,function(item){
+
+                   var priceList = _.pluck(item, 'price');
+
+                   var sum = _.reduce(priceList, function(memo, num){ return memo + num; }, 0);
+
+                   return {'priceSum':sum,'combination':item}
+
+               })
+
+               return combinationSumList;
+           },
+           /**
+            * 밀봉조합의 가격의 합을 오름차순으로 정열하는 함수
+            */
+           setCombinationSumSort:function(data){
+               var combinationSumList = JSON.parse(JSON.stringify(data));
+               return _.sortBy(data,'priceSum');
+           },
+           /**
+            * 오름차순으로 정열 된 밀봉조합을 내림차순으로 변경
+            */
+           setCombinationReverse:function(data){
+               return JSON.parse(JSON.stringify(data.reverse()));
+           },
+           /**
+            * 내림차순으로 정열된 밀봉조합에 순위 붙이기
+            */
+           setCombinationRanking:function(data){
+               var combinationList = JSON.parse(JSON.stringify(data));
+               var ranking = 1;
+               var priceSum = null;
+
+               for (var i=0; i<combinationList.length; ++i){
+                   if(priceSum == null){
+                       priceSum = combinationList[i].priceSum;
+                       combinationList[i].ranking= ranking;
+                   } else {
+                       if(priceSum == combinationList[i].priceSum){
+                           combinationList[i].ranking = ranking
+                       } else {
+                           priceSum = combinationList[i].priceSum;
+                           combinationList[i].ranking = ranking = ranking + 1;
+                       }
+                   }
+               }
+               return combinationList;
            },
        }
    }
