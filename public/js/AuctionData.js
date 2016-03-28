@@ -1,4 +1,14 @@
 define({
+    'binderList':[
+        {'name':'KT','state':false},
+        {'name':'SK','state':false},
+        {'name':'LG','state':false}
+    ],
+    'bidders': [
+        {'name':'KT', 'price':0, 'vs':'win'},
+        {'name':'SK', 'price':0, 'vs':'win'},
+        {'name':'LG', 'price':0, 'vs':'win'}
+    ],
     'defaultPriceList':[
         {'name':'priceA','bandWidth':40,'price':0,'type':'wideBand'},
         {'name':'priceB','bandWidth':20,'price':0,'type':'narrow'},
@@ -288,11 +298,6 @@ define({
                 {'name':'LG', 'price':0}
             ],
         },
-    ],
-    'bidders': [
-        {'name':'KT', 'price':0, 'vs':'win'},
-        {'name':'SK', 'price':0, 'vs':'win'},
-        {'name':'LG', 'price':0, 'vs':'win'}
     ],
     color: "black",
     size: "unisize"

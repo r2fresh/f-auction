@@ -173,36 +173,15 @@
                     </div>
                 </div>
 
-                <!-- <div class="col-md-2">
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 최소입찰증분</strong></div>
-                        <h1 class="text-center">
-                            4%
-                        </h1>
-                    </div>
-                </div> -->
-
             </div>
 
             <!--  /오름입찰-->
             <div class="row" style="margin-top:20px">
                 <div class="col-md-12">
-                    <!-- <div style="text-align:center">
-                        <ul style="padding:0">
-                            <li style="display: inline-block"><h3><span class="label label-KT-l">KT</span></h3></li>
-                            <li style="display: inline-block"><h3><span class="label label-SK-l">SK</span></h3></li>
-                            <li style="display: inline-block"><h3><span class="label label-LG-l">LG</span></h3></li>
-                        </ul>
-                    </div> -->
-
                     <div class="panel panel-navy">
                         <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰승자결과</strong></div>
                         <table class="table table-bordered">
                             <thead>
-
-                            </thead>
-                            <tbody class="_ascending_bid">
-
                                 <tr>
                                     <th>구분</th>
                                     <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
@@ -211,30 +190,8 @@
                                     <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
                                     <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
-                                <!-- <tr class="bidder_list">
-                                    <td>사업자</td>
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SK</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LG</span></td>
-
-                                </tr> -->
-
+                            </thead>
+                            <tbody class="_ascending_bid">
                                 <!-- 시작가 -->
                                 <tr class="start_price_list">
                                     <td>시작가</td>
@@ -246,36 +203,6 @@
                                         {{/priceList}}
                                     </script>
                                 </tr><!--/ 시작가 -->
-
-                                <!-- 라운드 리스트 -->
-                                <!-- <script class="round_price_list_tpl" type="text/x-handlebars-template">
-                                    {{#roundList}}
-                                    <tr class="round_price_list">
-                                        <td>{{round}}</td>
-                                        {{#frequency}}
-                                            <{{#bidders}}
-                                            <td style="text-align:center;">
-                                                <span class="{{className}}">{{price}}</span>
-                                            </td>
-                                            {{/bidders}}
-                                        {{/frequency}}
-                                    </tr>
-                                    {{/roundList}}
-                                </script> -->
-                                <!--/ 라운드 리스트 -->
-
-                                <!-- <tr class="round_prices">
-                                    <script class="round_prices_tpl" type="text/x-handlebars-template">
-                                        <th>1라운드</th>
-                                        {{#frequency}}
-                                            <{{#user}}
-                                            <th style="text-align:center;"><span>{{price}}</span></th>
-                                            {{/user}}
-                                        {{/frequency}}
-
-                                    </script>
-                                -->
-
                             </tbody>
                         </table>
                     </div>
@@ -322,16 +249,16 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-md-12 text-center" style="margin-bottom:20px;">
+                <!-- <div class="col-md-12 text-center" style="margin-bottom:20px;">
                     <button class="btn btn-default bidder_seal_lowest_bid_price_btn">
                         <i class="fa fa-check"></i><strong> 밀봉최소입찰액가져오기</strong>
                     </button>
-                </div>
+                </div> -->
             </div>
             <!--  /밀봉 최소입찰액-->
 
             <!--  밀봉입찰액-->
-            <div class="row">
+            <div class="row _seal_bid_price">
                 <div class="col-md-12">
                     <div class="panel panel-navy">
                         <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰액입력 </strong></div>
@@ -339,16 +266,16 @@
                             <thead>
                                 <tr>
                                     <th>구분</th>
-                                    <th>700Mhz</th>
-                                    <th>2.1Ghz</th>
-                                    <th>2.6Ghz</th>
-                                    <th>1.8Ghz(협)</th>
-                                    <th>2.6Ghz(협)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td rowspan="2">KT</td>
+                                <tr class="_seal_bid_price_list">
+                                    <td>KT</td>
                                     <td><input type="text" class="form-control" placeholder=""></td>
                                     <td><input type="text" class="form-control" placeholder=""></td>
                                     <td><input type="text" class="form-control" placeholder=""></td>
@@ -360,7 +287,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 text-center">
-                    <button class="btn btn-default bidder_acending_btn">
+                    <button class="btn btn-default _seal_bid_price_btn">
                         <i class="fa fa-check"></i><strong> 밀봉입찰</strong>
                     </button>
                 </div>

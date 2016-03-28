@@ -13,12 +13,14 @@
 
 .label-SK-l,
 .label-SK-s {
-    background-color: #F58026;
+    /*background-color: #F58026;*/
+    background-color:#0072FF;
 }
 
 .label-LG-l ,
 .label-LG-s {
-    background-color: #E40080;
+    /*background-color: #E40080;*/
+    background-color: #2EB502;
 }
 
 .label-KT-l,

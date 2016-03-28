@@ -130,6 +130,18 @@ io.on('connection', function(socket){
         io.emit('ROUND_RESULT',msg)
     })
 
+    socket.on('SEAL_LOWEST_BID_PRICE',function(msg){
+        console.log(msg)
+        io.emit('SEAL_LOWEST_BID_PRICE',msg)
+    })
+
+    /**
+     * 입찰자 밀봉입찰
+     */
+    socket.on('SEAL_BID_PRICE',function(msg){
+        io.emit('SEAL_BID_PRICE',msg);
+    })
+
 });
 
 

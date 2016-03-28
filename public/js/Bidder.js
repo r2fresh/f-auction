@@ -57,7 +57,9 @@ define([
             'click .test_btn' : 'testBidSuccess',
             'click ._accordion_btn' : 'onAccordion',
 
-            'click .bidder_seal_lowest_bid_price_btn' : 'onSealLowestBidPrice'
+            //밀봉입찰 버튼 클릭 이벤트
+            'click ._seal_bid_price_btn' : 'onSealBidPrice'
+            //'click .bidder_seal_lowest_bid_price_btn' : 'onSealLowestBidPrice'
  		},
  		initialize:function(){
 		},
@@ -148,6 +150,7 @@ define([
             Auction.io.on('AUCTION_ID', Function.prototype.bind.call(this.setAuctionId,this) );
             Auction.io.on('ROUND_NUMBER', Function.prototype.bind.call(this.setRoundNum,this) );
             Auction.io.on('ROUND_RESULT', Function.prototype.bind.call(this.onRoundResult,this) );
+            Auction.io.on('SEAL_LOWEST_BID_PRICE', Function.prototype.bind.call(this.onSealLowestBidPrice,this) );
         },
 
         /**
@@ -215,6 +218,25 @@ define([
 
             this.setRoundWinPrice(data);
         },
+
+        /**
+         * 밀봉 입찰 최소액 설정
+         */
+         onSealLowestBidPrice:function(msg){
+
+             var data = JSON.parse(msg);
+
+             var bidderList = _.filter(data,Function.prototype.bind.call(function(item){
+                 console.log(item.name)
+                 console.log(this.bidder_company);
+                 return item.name === this.bidder_company;
+
+             },this))
+
+             var template = Handlebars.compile(this.sealLowestBidPriceTpl);
+             this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
+
+         },
 
         /**
          * 최소 입찰액 설정
@@ -453,7 +475,21 @@ define([
             this.postBid([0,0,0,0,0])
         },
 
+        /**
+         * 밀봉입찰버튼 클릭 이벤트 핸들러
+         */
+        onSealBidPrice:function(e){
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE'];
+            var defaultPriceList = JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
+            var $sealBidPrice = this.$el.find('._seal_bid_price_list input');
+            var priceList = _.map($sealBidPrice,Function.prototype.bind.call(function(item ,index){
+                var frequency = {'name':priceArr[index],'price':parseInt( $(item).val(),10 ), 'company':this.bidder_company}
+                return _.extend(defaultPriceList[index],frequency);
+            },this));
+            var bidderList = {'name':this.bidder_company,'ableBandWidth':this.ableBandWidth,'priceList':priceList};
 
+            Auction.io.emit('SEAL_BID_PRICE', JSON.stringify(bidderList));
+        },
 
 
 
@@ -512,28 +548,28 @@ define([
         /**
          * 밀봉최소금액 설정
          */
-        onSealLowestBidPrice:function(data){
-            console.log(this.originCompanyList)
-
-            var resultArr = [
-                {'name': this.bidder_company}
-            ];
-
-            var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
-                var companyList = _.filter(this.originCompanyList,function(company){
-                    return company.companyName === result.name;
-                })
-                return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
-
-            },this))
-
-            console.log(bidderList)
-
-            var biddingResultList = this.setBiddingResult(bidderList)
-
-            //밀봉 입찰 최소액 셋팅
-            this.setSealLowestBidPrice(biddingResultList)
-        },
+        // onSealLowestBidPrice:function(data){
+        //     console.log(this.originCompanyList)
+        //
+        //     var resultArr = [
+        //         {'name': this.bidder_company}
+        //     ];
+        //
+        //     var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
+        //         var companyList = _.filter(this.originCompanyList,function(company){
+        //             return company.companyName === result.name;
+        //         })
+        //         return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
+        //
+        //     },this))
+        //
+        //     console.log(bidderList)
+        //
+        //     var biddingResultList = this.setBiddingResult(bidderList)
+        //
+        //     //밀봉 입찰 최소액 셋팅
+        //     this.setSealLowestBidPrice(biddingResultList)
+        // },
 
         /**
          * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
