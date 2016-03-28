@@ -432,11 +432,62 @@ define([
 
         },
 
+        /**
+         * 입찰 결과 핸들러
+         */
+        onBiddingResult:function(e){
 
+            this.getRoundList();
+            // console.log(this.originCompanyList)
+            //
+            // var resultArr = [
+            //     {'name':'KT'},
+            //     {'name':'SK'},
+            //     {'name':'LG'}
+            // ];
+            //
+            // var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
+            //     var companyList = _.filter(this.originCompanyList,function(company){
+            //         return company.companyName === result.name;
+            //     })
+            //     return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
+            //
+            // },this))
+            //
+            // console.log(bidderList)
+            //
+            // var biddingResultList = this.setBiddingResult(bidderList)
+            //
+            // //밀봉 입찰 최소액 셋팅
+            // this.setSealLowestBidPrice(biddingResultList)
+        },
 
+        /**
+         * 전체 라운드 리스트 호출
+         */
+        getRoundList:function(){
+            Model.getRoundList({
+                 url: '/round'
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getRoundListSuccess,this),
+                 error : Function.prototype.bind.call(this.getRoundListError,this)
+             })
+        },
+        /**
+         * 전체 라운드 리스트 호출 성공
+         */
+        getRoundListSuccess:function(data, textStatus, jqXHR){
+            if(textStatus === 'success'){
+                console.log(data);
+            }
+        },
+        /**
+         * 전체 라운드 리스트 호출 실패
+         */
+        getRoundListError:function(jsXHR, textStatus, errorThrown){
 
-
-
+        },
 
 
 
@@ -682,46 +733,10 @@ define([
 
         },
 
-        /**
-         * 입찰 결과 핸들러
-         */
-        onBiddingResult:function(e){
-            console.log(this.originCompanyList)
 
-            var resultArr = [
-                {'name':'KT'},
-                {'name':'SK'},
-                {'name':'LG'}
-            ];
 
-            var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
-                var companyList = _.filter(this.originCompanyList,function(company){
-                    return company.companyName === result.name;
-                })
-                return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
 
-            },this))
 
-            console.log(bidderList)
-
-            var biddingResultList = this.setBiddingResult(bidderList)
-
-            //밀봉 입찰 최소액 셋팅
-            this.setSealLowestBidPrice(biddingResultList)
-        },
-
-        /**
-         * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
-         */
-        companyMaxPrice : function(data){
-            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-            var priceList = []
-            for(var i=0; i<priceArr.length; ++i){
-                var arr = _.pluck(data, priceArr[i])
-                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
-            }
-            return priceList;
-        },
 
         /**
          * 입찰 결과 UI 렌더링
@@ -740,6 +755,24 @@ define([
 
             return bidderList;
         },
+
+
+
+
+        /**
+         * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
+         */
+        companyMaxPrice : function(data){
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+            var priceList = []
+            for(var i=0; i<priceArr.length; ++i){
+                var arr = _.pluck(data, priceArr[i])
+                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
+            }
+            return priceList;
+        },
+
+
 
         /**
          * 시작가에서 입찰 결과까지의 퍼센트 추가 함수
