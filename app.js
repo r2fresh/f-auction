@@ -57,14 +57,12 @@ app.post('/round', function(req, res) {
     res.send(bodyData.round)
 })
 
-// app.get('/round', function(req, res) {
-//     var result = false;
-//     var bodyData = req.body;
-//
-//     roundList.push(bodyData.round);
-//
-//     res.send({'result':result})
-// })
+app.get('/round', function(req, res) {
+    var result = false;
+    var bodyData = req.body;
+
+    res.send(roundList)
+})
 
 /**
  * index.html router

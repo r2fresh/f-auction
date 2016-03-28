@@ -56,7 +56,7 @@ define([
             // 라운드 시작
             'click ._round_start_btn' : 'onRoundStart',
             //오름 차순 결과
-            'click ._acending_btn' : 'onBiddingResult',
+            'click ._acending_btn' : 'onBiddingResult'
 
 
             'click ._auction_end_btn' : 'onAuctionEnd',
@@ -248,8 +248,8 @@ define([
 
                 for(var j=0; j<this.roundData.frequency[i].bidders.length; ++j){
 
-                    //console.log(bidData.name)
-                    //console.log(bidData.priceList[0].price)
+                    console.log(bidData.name)
+                    console.log(bidData.priceList[0].price)
 
                     if(this.roundData.frequency[i].bidders[j].name === bidData.name){
 
@@ -431,256 +431,6 @@ define([
             return data
 
         },
-
-        /**
-         * 입찰 결과 핸들러
-         */
-        onBiddingResult:function(e){
-
-            this.getRoundList();
-            // console.log(this.originCompanyList)
-            //
-            // var resultArr = [
-            //     {'name':'KT'},
-            //     {'name':'SK'},
-            //     {'name':'LG'}
-            // ];
-            //
-            // var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
-            //     var companyList = _.filter(this.originCompanyList,function(company){
-            //         return company.companyName === result.name;
-            //     })
-            //     return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
-            //
-            // },this))
-            //
-            // console.log(bidderList)
-            //
-            // var biddingResultList = this.setBiddingResult(bidderList)
-            //
-            // //밀봉 입찰 최소액 셋팅
-            // this.setSealLowestBidPrice(biddingResultList)
-        },
-
-        /**
-         * 전체 라운드 리스트 호출
-         */
-        getRoundList:function(){
-            Model.getRoundList({
-                 url: '/round',
-                 method : 'GET',
-                 contentType:"application/json; charset=UTF-8",
-                 success : Function.prototype.bind.call(this.getRoundListSuccess,this),
-                 error : Function.prototype.bind.call(this.getRoundListError,this)
-             })
-        },
-        /**
-         * 전체 라운드 리스트 호출 성공
-         */
-        getRoundListSuccess:function(data, textStatus, jqXHR){
-            if(textStatus === 'success'){
-                console.log(data);
-                var biddingResultList = this.setBiddingResult(data);
-
-                this.setSealLowestBidPrice(biddingResultList)
-            }
-        },
-        /**
-         * 전체 라운드 리스트 호출 실패
-         */
-        getRoundListError:function(jsXHR, textStatus, errorThrown){
-
-        },
-
-        /**
-         * 입찰 결과 UI 렌더링
-         */
-        setBiddingResult:function(data){
-
-
-            var companyArr = [
-                {'name':'KT'},
-                {'name':'SK'},
-                {'name':'LG'}
-            ];
-
-            var priceList = _.map(companyArr,Function.prototype.bind.call(function(company){
-
-                return _.extend( company,{'priceList':this.setFrequencyList(company,data)} )
-
-            },this))
-
-            //this.companyPercent(priceList);
-
-            console.log(priceList);
-
-
-            var companyData = this.companyPercent(priceList);
-            var bidderList = this.setResultRanking(companyData);
-
-            console.log('== 입찰결과 ==')
-            console.log(bidderList);
-            console.table(bidderList);
-
-            var template = Handlebars.compile(this.biddingResultTpl);
-            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
-            this.$el.find('._ascending_bidding_result').removeClass('displayNone');
-
-            return bidderList;
-        },
-
-        setFrequencyList:function(company, data){
-
-            var frequencyList = [[],[],[],[],[]];
-
-            for(var i=0;i<data.length;++i){
-
-                var frequency = data[i].frequency;
-
-                for(var j=0;j<frequency.length;++j){
-
-                    var bidder = _.filter(frequency[j].bidders,function(item){
-                        return item.name === company.name;
-                    })
-
-                    console.log(bidder[0].price);
-
-                    frequencyList[j][i] = bidder[0].price;
-                }
-
-            }
-
-            console.log(frequencyList)
-
-            var priceList = this.companyMaxPrice(frequencyList);
-
-
-
-            console.log(priceList)
-
-            return priceList;
-        },
-
-        /**
-         * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
-         */
-        companyMaxPrice : function(data){
-
-            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-
-            var priceList = _.map(data,function(item,index){
-                console.log(item)
-                return {'name':priceArr[index], 'price':_.max(item)}
-            })
-
-            console.log(priceList)
-
-            return priceList;
-            // var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-            // var priceList = []
-            // for(var i=0; i<priceArr.length; ++i){
-            //     var arr = _.pluck(data, priceArr[i])
-            //     priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
-            // }
-            // return priceList;
-        },
-
-        /**
-         * 시작가에서 입찰 결과까지의 퍼센트 추가 함수
-         */
-        companyPercent:function(data){
-
-            console.log(data)
-
-            var companyData = JSON.parse( JSON.stringify( data ) );
-            for(var i=0; i<companyData.length; ++i){
-                for(var j=0; j < companyData[i].priceList.length ;++j){
-                    var companyPrice    = companyData[i].priceList[j].price;
-                    var startPrice      = AuctionData.startPriceList[j].price
-                    companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 );
-                }
-            }
-
-            return companyData;
-        },
-
-        /**
-         * 오름경매 결과에 순위를 만드는 함수
-         */
-        setResultRanking:function(data){
-
-            //this.setReversePriceList(data);
-
-            var companyData = JSON.parse( JSON.stringify( data ) );
-
-            var sortPriceList, reversePriceList = null;
-
-            for(var i=0; i<companyData.length; ++i){
-                sortPriceList = _.sortBy(companyData[i].priceList, 'percent');
-
-                reversePriceList = this.setReversePriceList( sortPriceList );
-
-                //console.log('== 입찰결과순위별 ==')
-                //console.table(reversePriceList)
-
-                for(var j=0; j<companyData[i].priceList.length; ++j){
-
-                    for(var k=0; k<reversePriceList.length; ++k){
-
-                        if(companyData[i].priceList[j].percent === reversePriceList[k].percent){
-                            companyData[i].priceList[j].ranking = reversePriceList[k].ranking;
-                            companyData[i].priceList[j].labelClass = reversePriceList[k].labelClass;
-                        }
-                    }
-
-                }
-            }
-
-            console.log(companyData);
-
-            return companyData
-
-        },
-
-        setReversePriceList:function(data){
-
-            var reversePriceList = JSON.parse( JSON.stringify( data.reverse() ) );
-
-            var ranking = 1;
-
-            var percent = null;
-
-            for (var i=0; i<reversePriceList.length; ++i){
-
-                if(percent == null){
-                    percent = reversePriceList[i].percent;
-                    reversePriceList[i].labelClass = 'danger'
-                    reversePriceList[i].ranking= ranking;
-                } else {
-                    if(percent == reversePriceList[i].percent){
-                        reversePriceList[i].ranking = ranking
-                    } else {
-                        percent = reversePriceList[i].percent;
-                        reversePriceList[i].ranking = ranking = ranking + 1;
-                    }
-                    reversePriceList[i].labelClass = 'default'
-                }
-            }
-
-            return reversePriceList;
-
-        },
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -932,34 +682,150 @@ define([
 
         },
 
+        /**
+         * 입찰 결과 핸들러
+         */
+        onBiddingResult:function(e){
+            console.log(this.originCompanyList)
 
+            var resultArr = [
+                {'name':'KT'},
+                {'name':'SK'},
+                {'name':'LG'}
+            ];
 
+            var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
+                var companyList = _.filter(this.originCompanyList,function(company){
+                    return company.companyName === result.name;
+                })
+                return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
 
+            },this))
 
+            console.log(bidderList)
 
+            var biddingResultList = this.setBiddingResult(bidderList)
 
-
-
-
+            //밀봉 입찰 최소액 셋팅
+            this.setSealLowestBidPrice(biddingResultList)
+        },
 
         /**
          * 주파수 별로 되어 있는 데이터를 통신사별로 변경하는 함수
          */
-        // companyMaxPrice : function(data){
-        //     var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-        //     var priceList = []
-        //     for(var i=0; i<priceArr.length; ++i){
-        //         var arr = _.pluck(data, priceArr[i])
-        //         priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
-        //     }
-        //     return priceList;
-        // },
+        companyMaxPrice : function(data){
+            var priceArr = ['priceA','priceB','priceC','priceD','priceE']
+            var priceList = []
+            for(var i=0; i<priceArr.length; ++i){
+                var arr = _.pluck(data, priceArr[i])
+                priceList.push( {'name':priceArr[i], 'price':_.max(arr)} )
+            }
+            return priceList;
+        },
+
+        /**
+         * 입찰 결과 UI 렌더링
+         */
+        setBiddingResult:function(data){
+            var companyData = this.companyPercent(data);
+            var bidderList = this.setResultRanking(companyData);
+
+            console.log('== 입찰결과 ==')
+            console.log(bidderList);
+            console.table(bidderList);
+
+            var template = Handlebars.compile(this.biddingResultTpl);
+            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
+            this.$el.find('._ascending_bidding_result').removeClass('displayNone');
+
+            return bidderList;
+        },
+
+        /**
+         * 시작가에서 입찰 결과까지의 퍼센트 추가 함수
+         */
+        companyPercent:function(data){
+
+            var companyData = JSON.parse( JSON.stringify( data ) );
+            for(var i=0; i<companyData.length; ++i){
+                for(var j=0; j < companyData[i].priceList.length ;++j){
+                    var companyPrice    = companyData[i].priceList[j].price;
+                    var startPrice      = AuctionData.startPriceList[j].price
+                    companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 );
+                }
+            }
+
+            return companyData;
+        },
+
+        /**
+         * 오름경매 결과에 순위를 만드는 함수
+         */
+        setResultRanking:function(data){
+
+            //this.setReversePriceList(data);
+
+            var companyData = JSON.parse( JSON.stringify( data ) );
+
+            var sortPriceList, reversePriceList = null;
 
 
 
+            for(var i=0; i<companyData.length; ++i){
+                sortPriceList = _.sortBy(companyData[i].priceList, 'percent');
 
+                reversePriceList = this.setReversePriceList( sortPriceList );
 
+                //console.log('== 입찰결과순위별 ==')
+                //console.table(reversePriceList)
 
+                for(var j=0; j<companyData[i].priceList.length; ++j){
+
+                    for(var k=0; k<reversePriceList.length; ++k){
+
+                        if(companyData[i].priceList[j].percent === reversePriceList[k].percent){
+                            companyData[i].priceList[j].ranking = reversePriceList[k].ranking;
+                            companyData[i].priceList[j].labelClass = reversePriceList[k].labelClass;
+                        }
+                    }
+
+                }
+            }
+
+            console.log(companyData);
+
+            return companyData
+
+        },
+
+        setReversePriceList:function(data){
+
+            var reversePriceList = JSON.parse( JSON.stringify( data.reverse() ) );
+
+            var ranking = 1;
+
+            var percent = null;
+
+            for (var i=0; i<reversePriceList.length; ++i){
+
+                if(percent == null){
+                    percent = reversePriceList[i].percent;
+                    reversePriceList[i].labelClass = 'danger'
+                    reversePriceList[i].ranking= ranking;
+                } else {
+                    if(percent == reversePriceList[i].percent){
+                        reversePriceList[i].ranking = ranking
+                    } else {
+                        percent = reversePriceList[i].percent;
+                        reversePriceList[i].ranking = ranking = ranking + 1;
+                    }
+                    reversePriceList[i].labelClass = 'default'
+                }
+            }
+
+            return reversePriceList;
+
+        },
 
         /**
          * 밀봉 입찰 최소액 셋팅
