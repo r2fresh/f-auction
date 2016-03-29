@@ -79,7 +79,6 @@ function(Login, Admin, Bidder, Model, io){
 
 		Backbone.history.start({pushstate:true})
 
-
 	}
 
 	function checkSession(){

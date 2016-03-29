@@ -216,7 +216,7 @@
         <div role="tabpanel" class="tab-pane" id="profile">
 
             <!--  밀봉 최소입찰액-->
-            <div class="row seal_lowest_bid_price">
+            <!-- <div class="row seal_lowest_bid_price">
 
                 <div class="col-md-12">
 
@@ -249,16 +249,18 @@
                         </table>
                     </div>
                 </div>
-                <!-- <div class="col-md-12 text-center" style="margin-bottom:20px;">
-                    <button class="btn btn-default bidder_seal_lowest_bid_price_btn">
-                        <i class="fa fa-check"></i><strong> 밀봉최소입찰액가져오기</strong>
-                    </button>
-                </div> -->
-            </div>
+            </div>-->
             <!--  /밀봉 최소입찰액-->
 
             <!--  밀봉입찰액-->
-            <div class="row _seal_bid_price">
+
+            <div class="alert alert-info" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <p>- <strong>밀봉입찰순위</strong>는 <strong>밀봉입찰최소액</strong>의 순위를 참고하시어 입력하여 주시기 바랍니다.</p>
+                <p>- <strong>밀봉입찰액</strong>은 <strong>밀봉입찰최소액</strong> 이상을 입력하셔야 합니다.</p>
+                <p>- <strong>밀봉입찰액</strong>을 입력하지 않으시면,<strong>밀봉입찰최소액</strong>을 밀봉입찰이 진행됩니다.
+            </div>
+            <div class="row _seal_bid">
                 <div class="col-md-12">
                     <div class="panel panel-navy">
                         <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰액입력 </strong></div>
@@ -266,27 +268,77 @@
                             <thead>
                                 <tr>
                                     <th>구분</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th class="text-center" colspan="2"><span class="label label-default">A</span> - 700Mhz (광)</th>
+                                    <th class="text-center" colspan="2"><span class="label label-default">B</span> - 1.8Ghz (협)</th>
+                                    <th class="text-center" colspan="2"><span class="label label-default">C</span> - 2.1Ghz (광)</th>
+                                    <th class="text-center" colspan="2"><span class="label label-default">D</span> - 2.6Ghz (광)</th>
+                                    <th class="text-center" colspan="2"><span class="label label-default">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr class="_seal_lowest_bid_price">
+                                    <script class="_seal_lowest_bid_price_tpl" type="text/x-handlebars-template">
+                                        <td>밀봉최소입찰액</td>
+                                        {{#priceList}}
+                                            <td class="text-center"><span class="label label-{{labelClass}}">{{ranking}} 순위</span></td>
+                                            <td class="text-center">{{price}}</td>
+                                        {{/priceList}}
+                                    </script>
+                                    <td>밀봉최소입찰액</td>
+                                    <td colspan="2"><span></span></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr class="_seal_bid_ranking_list">
+                                    <td>밀봉입찰순위</td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
+                                </tr>
                                 <tr class="_seal_bid_price_list">
-                                    <td>KT</td>
-                                    <td><input type="text" class="form-control" placeholder=""></td>
-                                    <td><input type="text" class="form-control" placeholder=""></td>
-                                    <td><input type="text" class="form-control" placeholder=""></td>
-                                    <td><input type="text" class="form-control" placeholder=""></td>
-                                    <td><input type="text" class="form-control" placeholder=""></td>
+                                    <td>밀봉입찰액</td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
+                                    <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
+                                </tr>
+                                <tr class="_seal_bid_percent_list">
+                                    <script class="_seal_bid_percent_list_tpl" type="text/x-handlebars-template">
+                                        <td>밀봉입찰결과증분율</td>
+                                        {{#percentList}}
+                                            <td class="text-center" colspan="2"><strong>{{percent}}%</strong></td>
+                                        {{/percentList}}
+                                    </script>
+                                    <td>밀봉입찰결과증분율</td>
+                                    <td colspan="2"><span></span></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-success _seal_bid_role displayNone" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <p>- <strong>밀봉입찰순위</strong>와 <strong>밀봉입찰액</strong>에 문제가 없으시면 밀봉입찰버튼을 클릭하여 주시기 바랍니다.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-12 text-center">
+                    <button class="btn btn-default _seal_predict_percent_btn">
+                        <i class="fa fa-check"></i><strong> 예상증분율</strong>
+                    </button>
                     <button class="btn btn-default _seal_bid_price_btn">
                         <i class="fa fa-check"></i><strong> 밀봉입찰</strong>
                     </button>
