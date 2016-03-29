@@ -74,11 +74,9 @@ define([
             'click ._acending_btn' : 'onBiddingResult',
 
             'click ._auction_end_btn' : 'onAuctionEnd',
-            'click ._clear_interval_btn' : 'onClearInterval',
+            //'click ._clear_interval_btn' : 'onClearInterval',
  		},
  		initialize:function(){
-            //this.socket = SocketIo();
-            //this.setSocketEvent();
 		},
         render:function(){
             this.$el.html(Admin);
@@ -94,24 +92,34 @@ define([
          * 템플릿 정의
          */
         setTpl:function(){
-            //this.roundPriceListTpl  = this.$el.find(".round_price_list_tpl").html();
-
+            //시작가 템플릿
+            this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
             // 라운드 템플릿
             this.roundPriceListTpl  = AdminRound
-
             // 밀봉입찰액 템플릿
             this.sealBidPriceListTpl = this.$el.find("._seal_bid_price_list_tpl").html();
             this.$el.find("._seal_bid_price_list_tpl").remove();
+
+
 
             // 밀봉입찰 조합 결과
             this.sealBidCombinationListTpl = this.$el.find("._seal_bid_combination_list_tpl").html();
 
             this.biddingResultTpl   = this.$el.find(".bindding_result_tpl").html();
-            this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
+
             this.sealLowestBidPriceTpl = this.$el.find(".seal_lowest_bid_price_tpl").html();
 
             //접속자 유저 템플릿
             this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
+        },
+
+        /**
+         * 시작가 설정
+         */
+        setStartPriceList:function(){
+            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+            var template = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
         },
 
         /**
@@ -121,69 +129,6 @@ define([
             Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
             Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
             Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
-        },
-
-        /**
-         * 시작가 설정
-         */
-        setStartPriceList:function(){
-            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
-
-            var template = Handlebars.compile(this.startPriceListTpl);
-            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
-        },
-
-        /**
-         * 경매 참여자의 접속 체크
-         */
-        onLoginCheck:function(msg){
-
-            console.table(JSON.parse(msg))
-
-            this.loginCheckList = JSON.parse(msg);
-
-            var list = JSON.parse(msg);
-
-            _.each(list,function(item){
-                item.name = (item.name).toUpperCase();
-                item.className = (item.state) ? 'success' : 'danger';
-            })
-
-            this.$el.find('.connect_user_list').empty();
-
-            var template = Handlebars.compile(this.connectUserListTpl);
-            this.$el.find('.connect_user_list').html(template({'list':list}));
-        },
-
-        /**
-         * Round Start Event Handler
-         */
-        onRoundStart:function(e){
-            e.preventDefault();
-
-            // var check = _.every(this.loginCheckList,function(item){
-            //     return item.state === true;
-            // })
-            //
-            // if(!check){
-            //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
-            //     return;
-            // }
-
-            _.each(this.bidCountList,function(item){
-                item.state = false;
-            })
-
-            var $roundPriceList = $('<tr class="round_price_list"></tr>');
-
-            this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.round,{'name':this.roundNum}) ) );
-
-            var template = Handlebars.compile(this.roundPriceListTpl);
-            $roundPriceList.html(template( _.extend(AuctionData.round,{'name':this.roundNum}) ));
-
-            this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList)
-
-            Auction.io.emit('ROUND_NUMBER',this.roundNum);
         },
 
         /**
@@ -200,7 +145,7 @@ define([
             //     return;
             // }
 
-            this.$el.find(".round_price_list_tpl").remove();
+            //this.$el.find(".round_price_list_tpl").remove();
 
             this.postAuction();
         },
@@ -249,29 +194,109 @@ define([
         },
 
         /**
+         * 라운드 시작 이벤트
+         */
+        onRoundStart:function(e){
+            e.preventDefault();
+
+            // var check = _.every(this.loginCheckList,function(item){
+            //     return item.state === true;
+            // })
+            //
+            // if(!check){
+            //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
+            //     return;
+            // }
+
+            /**
+             * 라운드 입찰 여부 리스트 리셋
+             */
+            _.each(this.bidCountList,function(item){
+                item.state = false;
+            })
+
+            this.setRoundTable();
+
+            this.setRoundMark();
+
+            this.$el.find('._round_start_btn').addClass('displayNone')
+
+            Auction.io.emit('ROUND_NUMBER',this.roundNum);
+
+        },
+        /**
+         * 라운드 빈 테이블 생성
+         */
+        setRoundTable:function(){
+            var $roundPriceList = $('<tr class="round_price_list"></tr>');
+            this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.round,{'name':this.roundNum}) ) );
+            var template = Handlebars.compile(this.roundPriceListTpl);
+            $roundPriceList.html(template( _.extend(AuctionData.round,{'name':this.roundNum}) ));
+            this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList);
+        },
+        /**
+         * 라운드 진행 표시
+         */
+        setRoundMark:function(){
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 진행중...');
+        },
+        /**
+         * 경매 참여자의 접속 체크
+         */
+        onLoginCheck:function(msg){
+            this.loginCheckList = JSON.parse(msg);
+            var list = JSON.parse(msg);
+            _.each(list,function(item){
+                item.name = (item.name).toUpperCase();
+                item.className = (item.state) ? 'success' : 'danger';
+            })
+            this.$el.find('.connect_user_list').empty();
+            var template = Handlebars.compile(this.connectUserListTpl);
+            this.$el.find('.connect_user_list').html(template({'list':list}));
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /**
          * 입찰을 하고
          */
         onBid:function(msg){
-
-            // bidCheck 다 true 이면 웹서버에 저장
 
             var roundData = null;
 
             var bidData = JSON.parse(msg);
 
-
-            // var frequencyList = [];
-            // var bidderArr = ['KT', 'SK', 'LG']
-            // var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-            // var frequencyFormat = JSON.parse( JSON.stringify( AuctionData.frequency ) );
-            //
-
             for(var i=0; i<this.roundData.frequency.length; ++i){
 
                 for(var j=0; j<this.roundData.frequency[i].bidders.length; ++j){
-
-                    //console.log(bidData.name)
-                    //console.log(bidData.priceList[0].price)
 
                     if(this.roundData.frequency[i].bidders[j].name === bidData.name){
 
@@ -295,8 +320,6 @@ define([
                 return item.state == true;
             })
 
-            console.log(flag)
-
             if(flag === true){
                 roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
                 this.postRound(roundData);
@@ -304,55 +327,6 @@ define([
                 roundData = _.extend(this.roundData,{'name':this.roundNum});
                 this.setRoundUI(roundData);
             }
-
-            //roundData = _.extend(this.roundData,{'name':this.roundNum});
-
-
-
-            //console.log(this.roundData);
-
-            // var template = Handlebars.compile(this.roundPriceListTpl);
-            // this.$el.find('.round_price_list').html(template( roundData ));
-
-
-            // _.each(this.roundData.frequency,function(item){
-            //
-            //     _.each(item.bidders,function(item){
-            //
-            //         if(item.name === priceList.name){
-            //             item.price = priceList
-            //         }
-            //
-            //     }
-            //
-            // })
-
-            // for(var i=0; i<priceArr.length; ++i){
-            //
-            //     // var bidders =[];
-            //
-            //     // for(var j=0; j<bidderArr.length; ++j){
-            //     //     var companyArr = _.filter(data,function(company){
-            //     //         return company.companyName === bidderArr[j];
-            //     //     })
-            //     //
-            //     //     if(companyArr.length === 1){
-            //     //         bidders.push({
-            //     //             'name' : bidderArr[j],
-            //     //             'price' : companyArr[0][priceArr[i]]
-            //     //         })
-            //     //     } else {
-            //     //         bidders.push({
-            //     //             'name' : bidderArr[j],
-            //     //             'price' : 0
-            //     //         })
-            //     //     }
-            //     // }
-            //
-            //     frequencyFormat[i].bidders = bidders;
-            // }
-
-            //return frequencyFormat;
 
         },
 
@@ -371,9 +345,12 @@ define([
 
         postRoundSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-                Auction.io.emit('ROUND_RESULT',JSON.stringify(data))
+                alert('1라운드 모든 입찰자가 입찰하였습니다.')
+                Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
                 this.setRoundUI(data);
                 this.roundNum += 1;
+                this.$el.find('._round_mark').text(this.roundNum + '라운드');
+                this.$el.find('._round_start_btn').removeClass('displayNone')
             }
         },
         postRoundError:function(jsXHR, textStatus, errorThrown){

@@ -12,7 +12,7 @@ define([
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
-        auctionID : 1,
+        //auctionID : 1,
 
         roundNum : 1,
 
@@ -51,18 +51,22 @@ define([
 
  		el: '.bidder',
  		events :{
+            // 로그아웃 이벤트
             'click ._logout_btn' : 'onLogout',
+            // 입찰 이벤트
             'click ._bid_btn' : 'onBid',
+            // 입찰 스킵 이벤트
+            'click ._bid_skip_btn' : 'onSkipBid',
+            // 입찰안함 이벤트
             'click ._not_bid_btn' : 'onNotBid',
-
-            'click .test_btn' : 'testBidSuccess',
-            'click ._accordion_btn' : 'onAccordion',
-
+            // 유예버튼 이벤트
+            'click ._delay_bid_btn' : 'onDelayBid',
+            // 포기버튼 이벤트
+            'click ._giveup_bid_btn' : 'onGiveupBid',
             // 밀봉입찰 예상 증분율 확인 하는 이벤트
             'click ._seal_predict_percent_btn' : 'onSealPredictPercent',
             //밀봉입찰 버튼 클릭 이벤트
             'click ._seal_bid_price_btn' : 'onSealBidPrice'
-            //'click .bidder_seal_lowest_bid_price_btn' : 'onSealLowestBidPrice'
  		},
  		initialize:function(){
 		},
@@ -70,41 +74,31 @@ define([
             this.$el.html(Bidder);
             this.setTpl();
             this.setBidderCompany();
-            this.setLimitHertz();
             this.setBidderLogo();
             this.setBidStrategy();
-
-            this.setStartPriceList();
+            this.setLimitHertz();
             this.setSocketReceiveEvent();
+            this.setStartPriceList();
 
             Auction.io.emit('loginCheck',Auction.session.get('user_info').user);
-
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
-            //VMasker(document.querySelectorAll('._seal_bid_price')).maskNumber();
         },
 
         /**
          * 사용하는 템플릿 설정
          */
         setTpl : function(){
-
             this.roundPriceListTpl          = this.$el.find(".round_price_list_tpl").html();
-
             this.roundResultTpl             = RoundResult
-
             this.sealLowestBidPriceTpl      = this.$el.find("._seal_lowest_bid_price_tpl").html();
             this.sealBidPercentListTpl      = this.$el.find("._seal_bid_percent_list_tpl").html();
-
             this.bidderStartPriceListTpl    = this.$el.find(".bidder_start_price_list_tpl").html();
             this.startPriceListTpl          = this.$el.find(".start_price_list_tpl").html();
             this.lowestRacePricesTpl        = this.$el.find(".lowest_race_prices_tpl").html();
             this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
-
             //접속자 유저 템플릿
-            this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
-
+            this.connectUserListTpl         = this.$el.find(".connect_user_list_tpl").html();
         },
-
         /**
          * 입찰 회사 설정
          */
@@ -112,7 +106,6 @@ define([
             var userInfo = Auction.session.get('user_info');
             this.bidder_company = (userInfo.user).toUpperCase();
         },
-
         /**
          * 입찰 회사 로고 설정
          */
@@ -120,7 +113,6 @@ define([
             var userInfo = Auction.session.get('user_info');
             this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
         },
-
         /**
          * 입찰 회사 입찰 전략 설정
          */
@@ -129,7 +121,6 @@ define([
             var strategy = (userInfo.strategy === '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
             this.$el.find('._bidder_info .bid_strategy').val(strategy)
         },
-
         /**
          * 입찰 회사 제한 대역폭 설정
          */
@@ -138,24 +129,32 @@ define([
             this.ableBandWidth = userInfo.hertz;
             this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz');
         },
-
         /**
          * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
          */
         setSocketReceiveEvent:function(){
             Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
-            Auction.io.on('AUCTION_ID', Function.prototype.bind.call(this.setAuctionId,this) );
             Auction.io.on('ROUND_NUMBER', Function.prototype.bind.call(this.setRoundNum,this) );
             Auction.io.on('ROUND_RESULT', Function.prototype.bind.call(this.onRoundResult,this) );
             Auction.io.on('SEAL_LOWEST_BID_PRICE', Function.prototype.bind.call(this.onSealLowestBidPrice,this) );
         },
 
         /**
-         * 경매 ID 설정
+         * 시작가 설정
          */
-        setAuctionId:function(id){
-            console.log('AUCTION_ID : ' + id)
-            this.auctionID = id;
+        setStartPriceList:function(){
+            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+            this.startPriceList = JSON.parse( JSON.stringify( priceList ) );
+
+            var template1 = Handlebars.compile(this.bidderStartPriceListTpl);
+            this.$el.find('.bidder_start_price_list').append(template1({'priceList':priceList}));
+
+            var template2 = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template2({'priceList':priceList}));
+
+            this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
+
+            this.setLowestBidPriceUI(priceList)
         },
 
         /**
@@ -164,6 +163,11 @@ define([
         setRoundNum:function(num){
             console.log('ROUND_NUMBER : ' + num)
             this.roundNum = num;
+
+            alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+
+            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, .delay_btn, .giveup_btn').removeClass('displayNone');
         },
 
         /**
@@ -186,23 +190,6 @@ define([
             this.$el.find('.connect_user_list').html(template({'list':list}));
         },
 
-        /**
-         * 시작가 설정
-         */
-        setStartPriceList:function(){
-            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
-            this.startPriceList = JSON.parse( JSON.stringify( priceList ) );
-
-            var template1 = Handlebars.compile(this.bidderStartPriceListTpl);
-            this.$el.find('.bidder_start_price_list').append(template1({'priceList':priceList}));
-
-            var template2 = Handlebars.compile(this.startPriceListTpl);
-            this.$el.find('.start_price_list').append(template2({'priceList':priceList}));
-
-            this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
-
-            this.setLowestBidPriceUI(priceList)
-        },
 
 
         onRoundResult:function(msg){
@@ -214,6 +201,8 @@ define([
             this.setLowestBidPrice(data);
 
             this.setRoundWinPrice(data);
+
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
         },
 
         /**
@@ -406,9 +395,18 @@ define([
                 return;
             }
 
-            this.postBid(_.map(this.$el.find('.bid_price'),function(element){
+            this.sendBid(_.map(this.$el.find('.bid_price'),function(element){
                  return $(element).val()
             }))
+
+            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, .delay_btn, .giveup_btn').addClass('displayNone');
+
+            alert(this.roundNum + '라운드 입찰신청이 되었습니다.');
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
+
+            // this.postBid(_.map(this.$el.find('.bid_price'),function(element){
+            //      return $(element).val()
+            // }))
         },
 
         /**
@@ -428,11 +426,11 @@ define([
                 'auctionNum':this.auctionID,
                 'roundNum':this.roundNum,
                 'companyName':this.bidder_company,
-                'priceA':data[0],
-                'priceB':data[1],
-                'priceC':data[2],
-                'priceD':data[3],
-                'priceE':data[4]
+                'priceA':(data[0] === '') ? 0 : parseInt(data[0],10),
+                'priceB':(data[1] === '') ? 0 : parseInt(data[1],10),
+                'priceC':(data[2] === '') ? 0 : parseInt(data[2],10),
+                'priceD':(data[3] === '') ? 0 : parseInt(data[3],10),
+                'priceE':(data[4] === '') ? 0 : parseInt(data[4],10),
             }
 
             Model.postBid({
@@ -464,12 +462,36 @@ define([
          * 입찰하지 않음 핸들러
          */
         onNotBid : function(e){
-            this.postBid([0,0,0,0,0])
+            //this.postBid([0,0,0,0,0])
+            this.sendBid([0,0,0,0,0])
+        },
+
+        /**
+         * 관리자에게 입찰한 가격을 보내는 함수
+         */
+        sendBid:function(data){
+
+            var postData = {
+                'auctionNum':this.auctionID,
+                'roundNum':this.roundNum,
+                'companyName':this.bidder_company,
+                'priceA':data[0],
+                'priceB':data[1],
+                'priceC':data[2],
+                'priceD':data[3],
+                'priceE':data[4]
+            }
+
+            var priceList = Process.getBidFormatChange( postData );
+
+            Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
         },
 
 
 
-
+        /**
+         * 예상증분률을 표시하는 함수
+         */
         onSealPredictPercent:function(e){
             // 밀봉입찹순위 체크
             if(!this.validationSealBidRanking()) return;
@@ -490,7 +512,6 @@ define([
                 this.$el.find('._seal_bid_role').addClass('displayNone')
             }
         },
-
 
         /**
          * 밀봉입찰버튼 클릭 이벤트 핸들러
@@ -1238,367 +1259,7 @@ define([
 
 
 
-        /**
-         * 입찰 테이블 보이게 안보이게 하는 함수
-         */
-        onAccordion : function(e){
 
-            var result = $(e.currentTarget).find('i').hasClass('fa-arrow-up');
-
-            if(result) {
-                this.$el.find('._insert_bidder table').hide();
-
-                $(e.currentTarget).find('i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-
-            } else {
-                this.$el.find('._insert_bidder table').show();
-
-                $(e.currentTarget).find('i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-            }
-
-        },
-        testBidSuccess : function(data, textStatus, jqXHR){
-
-            var roundData = {
-                'round' : [
-                    {
-                        'roundNum' : 1,
-                        'frequency' : [
-                        {
-                            'name': 'A',
-                            'bandWidth':40,
-                            'hertz':'700',
-                            'type':'wideBand',
-                            'winBidder': 'KT',
-                            'winPrice': 7620,
-                            'bidders':[
-                                {'name':'KT', 'price':7620, 'vs':'win'},
-                                {'name':'SK', 'price':5000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'B',
-                            'bandWidth':20,
-                            'hertz':'18',
-                            'type':'narrow',
-                            'winBidder': 'KT',
-                            'winPrice': 7620,
-                            'bidders':[
-                                {'name':'KT', 'price':7620, 'vs':'win'},
-                                {'name':'SK', 'price':5000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'C',
-                            'bandWidth':20,
-                            'hertz':'21',
-                            'type':'wideBand',
-                            'winBidder': 'KT',
-                            'winPrice': 7620,
-                            'bidders':[
-                                {'name':'KT', 'price':7620, 'vs':'win'},
-                                {'name':'SK', 'price':5000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'D',
-                            'bandWidth':40,
-                            'hertz':'26',
-                            'type':'wideBand',
-                            'winBidder': 'KT',
-                            'winPrice': 7620,
-                            'bidders':[
-                                {'name':'KT', 'price':7620, 'vs':'win'},
-                                {'name':'SK', 'price':5000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'E',
-                            'bandWidth':20,
-                            'hertz':'26',
-                            'type':'narrow',
-                            'winBidder': 'KT',
-                            'winPrice': 7620,
-                            'bidders':[
-                                {'name':'KT', 'price':7620, 'vs':'win'},
-                                {'name':'SK', 'price':5000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        }]
-                    },
-                    {
-                        'roundNum' : 2,
-                        'frequency' : [
-                        {
-                            'name': 'A',
-                            'bandWidth':40,
-                            'hertz':'700',
-                            'type':'wideBand',
-                            'winBidder': 'KT',
-                            'winPrice': 8620,
-                            'bidders':[
-                                {'name':'KT', 'price':8620, 'vs':'win'},
-                                {'name':'SK', 'price':7000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'B',
-                            'bandWidth':20,
-                            'hertz':'18',
-                            'type':'narrow',
-                            'winBidder': 'KT',
-                            'winPrice': 8920,
-                            'bidders':[
-                                {'name':'KT', 'price':8920, 'vs':'win'},
-                                {'name':'SK', 'price':7000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'C',
-                            'bandWidth':20,
-                            'hertz':'21',
-                            'type':'wideBand',
-                            'winBidder': 'KT',
-                            'winPrice': 6500,
-                            'bidders':[
-                                {'name':'KT', 'price':5620, 'vs':'win'},
-                                {'name':'SK', 'price':5000, 'vs':'lose'},
-                                {'name':'LG', 'price':6500, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'D',
-                            'bandWidth':40,
-                            'hertz':'26',
-                            'type':'wideBand',
-                            'winBidder': 'KT',
-                            'winPrice': 5000,
-                            'bidders':[
-                                {'name':'KT', 'price':3620, 'vs':'win'},
-                                {'name':'SK', 'price':4000, 'vs':'lose'},
-                                {'name':'LG', 'price':5000, 'vs':'lose'}
-                            ]
-
-                        },
-                        {
-                            'name': 'E',
-                            'bandWidth':20,
-                            'hertz':'26',
-                            'type':'narrow',
-                            'winBidder': 'KT',
-                            'winPrice': 7000,
-                            'bidders':[
-                                {'name':'KT', 'price':6620, 'vs':'win'},
-                                {'name':'SK', 'price':7000, 'vs':'lose'},
-                                {'name':'LG', 'price':6000, 'vs':'lose'}
-                            ]
-
-                        }]
-                    }
-                ]
-            }
-
-            // var roundData = [
-            //     {'round': [
-            //         {
-            //             'name': 'A',
-            //             'bandWidth':40,
-            //             'hertz':'700',
-            //             'type':'wideBand',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'B',
-            //             'bandWidth':20,
-            //             'hertz':'18',
-            //             'type':'narrow',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'C',
-            //             'bandWidth':20,
-            //             'hertz':'21',
-            //             'type':'wideBand',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'D',
-            //             'bandWidth':40,
-            //             'hertz':'26',
-            //             'type':'wideBand',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'E',
-            //             'bandWidth':20,
-            //             'hertz':'26',
-            //             'type':'narrow',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         }
-            //
-            //
-            //     ]},
-            //     {'round': [
-            //         {
-            //             'name': 'A',
-            //             'bandWidth':40,
-            //             'hertz':'700',
-            //             'type':'wideBand',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'B',
-            //             'bandWidth':20,
-            //             'hertz':'18',
-            //             'type':'narrow',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'C',
-            //             'bandWidth':20,
-            //             'hertz':'21',
-            //             'type':'wideBand',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'D',
-            //             'bandWidth':40,
-            //             'hertz':'26',
-            //             'type':'wideBand',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         },
-            //         {
-            //             'name': 'E',
-            //             'bandWidth':20,
-            //             'hertz':'26',
-            //             'type':'narrow',
-            //             'bidders':[
-            //                 {'name':'KT', 'price':7620, 'vs':'win'},
-            //                 {'name':'SK', 'price':5000, 'vs':'lose'},
-            //                 {'name':'LG', 'price':6000, 'vs':'lose'}
-            //             ]
-            //
-            //         }
-            //
-            //
-            //     ]}
-            // ]
-
-
-            //className
-
-
-            //this.setRoundUI(roundData);
-
-            this.setRoundUI2(roundData)
-
-            //cloneData.ksyname = 'kkkk'
-
-            //console.log(cloneData)
-
-            var template = Handlebars.compile(this.roundListPricesTpl);
-            this.$el.find('.user_list').after(template(roundData));
-
-            var lastRound = _.last(roundData.round)
-
-            var lastRound2 = _.map(lastRound.frequency,function(frequency){
-
-                frequency.price = (_.max(frequency.bidders, function(bidder){ return bidder.price; })).price;
-
-                return frequency
-            })
-
-            this.setLowestBidPrices({'frequency':lastRound2});
-        },
-
-        setRoundUI2 : function(data){
-
-            _.each(data.round, function(round){
-
-                var frequency = _.map(round.frequency,function(frequency){
-
-                    var price = _.max(_.pluck(frequency.bidders,'price'));
-
-                    var bidders = _.map(frequency.bidders,function(bidder){
-
-                        var className = '';
-
-                        if(bidder.price === price){
-                            className = 'label label-' + bidder.name + '-l';
-                        } else {
-                            className = 'text-gray';
-                        }
-
-                        return _.extend(bidder,{'className':className})
-                    })
-
-                    //frequency.bidders = bidders;
-
-                    return bidders;
-
-                })
-
-            })
-        },
         /**
          * 로그아웃 핸들러
          */

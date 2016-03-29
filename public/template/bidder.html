@@ -23,11 +23,11 @@
     </div>
 
     <div class="row _bidder_info">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h4 style="float:left">입찰자 : </h4>
             <img class="bidder_logo" src="img/kt_logo.jpg" alt="" />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label class="col-md-3 control-label"><i class="fa fa-compass"></i> 입찰전략 :</label>
                 <div class="col-md-9">
@@ -35,9 +35,16 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6" style="text-align:right">
+        <div class="col-md-4" style="text-align:right">
             <span id='limit_hertz'></span>
             <button class="btn btn-default _logout_btn">로그아웃</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- <span class="_round_mark" style="font-size:30px">모의경매 시작전 잠시만 기다려주시기 바랍니다.</span> -->
+            <h3 class="_round_mark">모의경매 시작전 잠시만 기다려주시기 바랍니다.</h3>
         </div>
     </div>
 
@@ -60,9 +67,6 @@
                     <div class="panel panel-navy _insert_bidder">
                         <div class="panel-heading">
                             <i class="fa fa-arrow-circle-right"></i><strong> 최저경쟁가격</strong>
-                            <button type="button" class="btn btn-default btn-sm _accordion_btn">
-                                <i class="fa fa-arrow-up"></i>
-                            </button>
                         </div>
                         <table class="table table-bordered">
                             <thead>
@@ -163,12 +167,21 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12" style="text-align:center">
-                            <button type="button" class="btn btn-default _bid_btn" style="margin-right:10px;"><strong><i class="fa fa-check"></i> 입찰</strong></button>
-                            <button type="button" class="btn btn-default _not_bid_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 입찰안함</strong></button>
-                            <button type="button" class="btn btn-default delay_btn" style="margin-right:10px;"><strong><i class="fa fa-ban"></i> 유예</strong></button>
-                            <button type="button" class="btn btn-default giveup_btn"><strong><i class="fa fa-times"></i> 포기</strong></button>
-
-                            <button type="button" class="btn btn-default test_btn"><strong><i class="fa fa-times"></i> 테스트</strong></button>
+                            <button type="button" class="btn btn-default _bid_btn displayNone" style="margin-right:10px;">
+                                <strong><i class="fa fa-check"></i> 입찰</strong>
+                            </button>
+                            <button type="button" class="btn btn-default _bid_skip_btn displayNone" style="margin-right:10px;">
+                                <strong><i class="fa fa-check"></i> 입찰Skip</strong>
+                            </button>
+                            <button type="button" class="btn btn-default _not_bid_btn displayNone" style="margin-right:10px;">
+                                <strong><i class="fa fa-ban"></i> 입찰안함</strong>
+                            </button>
+                            <button type="button" class="btn btn-default _delay_bid_btn displayNone" style="margin-right:10px;">
+                                <strong><i class="fa fa-ban"></i> 유예</strong>
+                            </button>
+                            <button type="button" class="btn btn-default _giveup_bid_btn  displayNone">
+                                <strong><i class="fa fa-times"></i> 포기</strong>
+                            </button>
                         </div>
                     </div>
                 </div>
