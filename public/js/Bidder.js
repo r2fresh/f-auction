@@ -146,8 +146,7 @@ define([
             var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
             this.startPriceList = JSON.parse( JSON.stringify( priceList ) );
 
-            var template1 = Handlebars.compile(this.bidderStartPriceListTpl);
-            this.$el.find('.bidder_start_price_list').append(template1({'priceList':priceList}));
+            //this.$el.find('.bidder_start_price_list').append(template1({'priceList':priceList}));
 
             var template2 = Handlebars.compile(this.startPriceListTpl);
             this.$el.find('.start_price_list').append(template2({'priceList':priceList}));

@@ -82,9 +82,9 @@
                             <tbody>
 
                                 <!-- 시작가 -->
-                                <tr class="bidder_start_price_list">
-                                    <td>시작가</td>
-                                    <script class="bidder_start_price_list_tpl" type="text/x-handlebars-template">
+                                <tr class="start_price_list">
+                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                        <td>시작가</td>
                                         <{{#priceList}}
                                         <td style="text-align:center;">
                                             <span>{{price}}</span>
@@ -207,14 +207,14 @@
                             <tbody class="_ascending_bid">
                                 <!-- 시작가 -->
                                 <tr class="start_price_list">
-                                    <td>시작가</td>
-                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                    <!-- <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                        <td>시작가</td>
                                         <{{#priceList}}
                                         <td style="text-align:center;" colspan=3>
                                             <span>{{price}}</span>
                                         </td>
                                         {{/priceList}}
-                                    </script>
+                                    </script> -->
                                 </tr><!--/ 시작가 -->
                             </tbody>
                         </table>
