@@ -55,11 +55,11 @@ define([
             {'name':'SK','state':false},
             {'name':'LG','state':false}
         ],
-        sealBandWidthList:[
-            {'name':'KT','ableBandWidth':0},
-            {'name':'SK','ableBandWidth':0},
-            {'name':'LG','ableBandWidth':0}
-        ],
+        // sealBandWidthList:[
+        //     {'name':'KT','ableBandWidth':0},
+        //     {'name':'SK','ableBandWidth':0},
+        //     {'name':'LG','ableBandWidth':0}
+        // ],
 
 
  		el: '.admin',
@@ -723,7 +723,8 @@ define([
                 }
             })
 
-            this.setSealBandWidthCheck(bidder)
+            //밀봉입찰조합에 필요한 통신사 지원 대역폭 저장
+            SealBidCombination.setSealBidBidderList(bidder);
 
             // true이면 밀봉입찰 조합 시작
             if(this.setSealBidCheck(bidder)) {
@@ -739,18 +740,6 @@ define([
         setSealBidPriceUI:function(data){
             var template = Handlebars.compile(this.sealBidPriceListTpl);
             this.$el.find('._seal_bid_price tbody').html(template({'bidderList':data}));
-        },
-
-        /**
-         * 입찰자들의 신청 가능 대역폭 저장
-         */
-        setSealBandWidthCheck:function(data){
-            var bidder = data;
-            _.each(this.sealBandWidthList,Function.prototype.bind.call(function(item){
-                if(item.name === bidder.name){
-                    item.ableBandWidth = bidder.ableBandWidth;
-                }
-            },this));
         },
 
         /**
@@ -774,14 +763,21 @@ define([
 
 
 
-
         /**
-         * 밀봉입찰조합시작
+         * 밀봉입찰 조합 시작
          */
         setSealBidCombination:function(){
-            SealBidCombination.setSealBandWidthList(this.sealBandWidthList);
             var combinationList = SealBidCombination.getCombinationList(this.sealBidBidderList);
             this.setCombinationListUI(combinationList);
+        },
+
+        /**
+         * 밀봉조합 조합 리스트를 화면에 렌더링
+         */
+        setCombinationListUI:function(data){
+            var combinationList = JSON.parse(JSON.stringify(data));
+            var template = Handlebars.compile(this.sealBidCombinationListTpl);
+            this.$el.find('._seal_bid_combination tbody').html(template({'combinationList':combinationList}));
         },
 
 

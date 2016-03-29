@@ -6,7 +6,11 @@ define([
 
        module.exports = {
            sealBidBidderList:null,
-           sealBandWidthList:null,
+           sealBandWidthList:[
+               {'name':'KT','ableBandWidth':0},
+               {'name':'SK','ableBandWidth':0},
+               {'name':'LG','ableBandWidth':0}
+           ],
            /**
             * 밀봉 입찰액 객체 설정
             */
@@ -17,13 +21,23 @@ define([
                return this.sealBidBidderList;
            },
            /**
-            * 통신사별 제한 주파수 배열 설정
+            * 입찰자들의 신청 가능 대역폭 저장
             */
-           setSealBandWidthList:function(data){
-               this.sealBandWidthList = JSON.parse( JSON.stringify(data) );
+           setSealBidBidderList:function(data){
+               var bidder = data;
+               _.each(this.sealBandWidthList,function(item){
+                   if(item.name === bidder.name){
+                       item.ableBandWidth = bidder.ableBandWidth;
+                   }
+               });
            },
            getSealBandWidthList:function(){
                return this.sealBandWidthList;
+           },
+           resetSealBandWidthList:function(){
+               _.each(this.sealBandWidthList,function(item){
+                   item.ableBandWidth = 0;
+               });
            },
 
            getCombinationList:function(data){
