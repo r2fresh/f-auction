@@ -84,7 +84,7 @@ define([
 
             Auction.io.emit('loginCheck',Auction.session.get('user_info').user);
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
-            //this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
+            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
         },
 
         /**
