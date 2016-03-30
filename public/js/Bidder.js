@@ -25,6 +25,8 @@ define([
         auctionStartPriceTpl : null,
         //최소입찰가격 리스트 템플릿
         lowestBidPricesTpl : null,
+        //승자패자 템플릿
+        bidVsTpl : null,
         //통신사마다 가능한 대역폭 상한서
         ableBandWidth : 0,
         //밀봉최소입찰액리스트
@@ -84,6 +86,9 @@ define([
             this.lowestBidPricesTpl         = this.$el.find(".lowest_bid_prices_tpl").html();
             //밀봉최소입찰가격 템플릿
             this.sealLowestBidPriceTpl      = this.$el.find("._seal_lowest_bid_price_tpl").html();
+            //승자패자 템플릿
+            this.bidVsTpl                   = this.$el.find("._bid_vs_tpl").html();
+
 
 
             this.roundResultTpl             = RoundResult
@@ -334,7 +339,7 @@ define([
             var priceList = _.map(defaultPriceList, function(item, index){
 
                 //승자인 주파수 포함
-                var winPrice = $(elements[index]).attr('winprice');
+                var winPrice = $(elements[index]).attr('price');
                 var winFlag = (typeof winPrice !== typeof undefined && winPrice !== false)
 
                 item.price = (winFlag) ? winPrice : $(elements[index]).val();
@@ -358,6 +363,8 @@ define([
             this.setLowestBidPriceUI( this.lowestBidPrices );
 
             this.setBidPrices(winPriceList);
+
+            this.setBidVsUI(frequencyList);
 
             return;
 
@@ -444,7 +451,7 @@ define([
                     $(this.$el.find('.bid_price')[index]).attr('price',item.price);
                     $(this.$el.find('.bid_price')[index]).attr('placeholder','입찰불가');
                 } else {
-                    $(this.$el.find('.bid_price')[index]).prop('disabled',true);
+                    $(this.$el.find('.bid_price')[index]).prop('disabled',false);
                     $(this.$el.find('.bid_price')[index]).removeAttr('vs');
                     $(this.$el.find('.bid_price')[index]).removeAttr('price');
                     $(this.$el.find('.bid_price')[index]).attr('placeholder','');
@@ -477,6 +484,64 @@ define([
             console.log(data)
             var template = Handlebars.compile(this.roundResultTpl);
             this.$el.find('._ascending_bid').append(template(data));
+        },
+        setBidVsUI:function(data){
+
+            // _.each(data,Function.prototype.bind.call(function(item,index){
+            //     if(item.bidder == this.bidder_company){
+            //         item.vs = '승자';
+            //     } else {
+            //         if(item.bidder != ''){
+            //             item.vs = '패자';
+            //         } else {
+            //             item.vs = ''
+            //         }
+            //     }
+            // },this))
+
+            var vsList = [];
+
+            var vs = '';
+
+            for(var i=0;i<data.length;++i){
+                for(var j=0;j<data[i].bidders.length;++j){
+
+                    if(data[i].bidders[j].name === this.bidder_company){
+                        if(data[i].bidders[j].vs === 'win'){
+                            vs = '승자';
+                        } else if(data[i].bidders[j].vs === 'lose'){
+                            vs = '패자';
+                        } else {
+                            vs = '';
+                        }
+                        vsList.push({'vs':vs})
+                    }
+
+                }
+            }
+
+            // var vsList = _.map(data,Function.prototype.bind.call(function(item,index){
+            //
+            //     var vs = _.map(item.bidders,Function.prototype.bind.call(function(bidder,index){
+            //
+            //         if(bidder.bidder === 'win'){
+            //             vs = '승자';
+            //         } else if(bidder.bidder === 'lose'){
+            //             vs = '패자';
+            //         } else {
+            //             vs = '';
+            //         }
+            //         return vs;
+            //     },this))
+            //
+            //     return vs;
+            //
+            // },this));
+
+            console.log(data)
+
+            var template = Handlebars.compile(this.bidVsTpl);
+            this.$el.find('._bid_vs').html(template({'vsList':vsList}));
         },
 
 

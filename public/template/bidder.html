@@ -146,13 +146,15 @@
                                         <input type="text" class="bid_price form-control" placeholder="">
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="text-center"><strong>승자,패자</strong></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                <tr class="_bid_vs">
+                                    <script class="_bid_vs_tpl" type="text/x-handlebars-template">
+                                        <td class="text-center"><strong>승자,패자</strong></td>
+                                        <{{#vsList}}
+                                        <td style="text-align:center;">
+                                            <span>{{vs}}<span>
+                                        </td>
+                                        {{/vsList}}
+                                    </script>
                                 </tr>
                                 <!-- <tr>
                                     <td>블록별가격증가율</td>
