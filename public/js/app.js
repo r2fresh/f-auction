@@ -53,6 +53,7 @@ function(Login, Admin, Bidder, Model, io){
 		var app, appName, hash = Auction.util.parseHash();
 
 		Auction.io = io();
+		//Auction.io = io.connect('');
 
 		routeStart();
 
