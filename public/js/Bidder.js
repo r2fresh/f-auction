@@ -138,7 +138,7 @@ define([
          */
         setSocketReceiveEvent:function(){
             Auction.io.on('LOGIN_CHECK', Function.prototype.bind.call(this.onLoginCheck,this) );
-            Auction.io.on('RUOND_START', Function.prototype.bind.call(this.onRoundStart,this) );
+            Auction.io.on('ROUND_START', Function.prototype.bind.call(this.onRoundStart,this) );
             Auction.io.on('ROUND_RESULT', Function.prototype.bind.call(this.onRoundResult,this) );
             Auction.io.on('SEAL_LOWEST_BID_PRICE', Function.prototype.bind.call(this.onSealLowestBidPrice,this) );
         },
