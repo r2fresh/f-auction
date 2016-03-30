@@ -382,7 +382,7 @@ define([
 
                     if(this.winCompanyList[index].name === ''){
                         winName = '';
-                        winPrice = AuctionData.startPriceList[index].price;
+                        winPrice = parseInt(AuctionData.startPriceList[index].price,0);
                     } else {
                         winName = this.winCompanyList[index].name;
                         winPrice = this.winCompanyList[index].price;
@@ -597,7 +597,7 @@ define([
             for(var i=0; i<companyData.length; ++i){
                 for(var j=0; j < companyData[i].priceList.length ;++j){
                     var companyPrice    = companyData[i].priceList[j].price;
-                    var startPrice      = AuctionData.startPriceList[j].price
+                    var startPrice      = parseInt(AuctionData.startPriceList[j].price,10)
                     companyData[i].priceList[j].percent = Math.ceil( (companyPrice/startPrice - 1) * 100 );
                 }
             }
@@ -1077,7 +1077,7 @@ define([
             for(var i=0; i<companyData.length; ++i){
                 for(var j=0; j < companyData[i].priceList.length ;++j){
                     var companyPrice    = companyData[i].priceList[j].price;
-                    var startPrice      = AuctionData.startPriceList[j].price;
+                    var startPrice      = parseInt(AuctionData.startPriceList[j].price,10);
                     companyData[i].priceList[j].price = ( companyPrice > startPrice ) ? companyPrice : startPrice;
                 }
             }
