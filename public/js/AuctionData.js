@@ -25,7 +25,7 @@ define({
         {'name':'priceD','bandWidth':40,'price':'6553','type':'wideBand'},
         {'name':'priceE','bandWidth':20,'price':'3277','type':'narrow'}
     ],
-    'round': {
+    'roundData': {
         'name':'',
         'frequency' : [
             {

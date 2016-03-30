@@ -112,7 +112,7 @@ io.on('connection', function(socket){
 
         console.log(roundList)
 
-        io.emit('loginCheck',JSON.stringify(loginData))
+        io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 
     socket.on('LOGIN_CHECK',function(msg){

@@ -20,7 +20,7 @@ define([
         auctionName : '',
         // 현재 라운드 정보
         roundNum : 1,
-
+        // 각 라운드 데이터
         roundData : null,
         // 시작가 리스트 템플릿
         startPriceListTpl:'',
@@ -66,28 +66,27 @@ define([
  		events :{
             // 로그아웃
             'click ._logout_btn' : 'onLogout',
-            // 갱매시작
-            'click ._auction_start_btn' : 'onAuctionStart',
             // 라운드 시작
             'click ._round_start_btn' : 'onRoundStart',
             //오름 차순 결과
             'click ._acending_btn' : 'onBiddingResult',
 
-            'click ._auction_end_btn' : 'onAuctionEnd',
+            //'click ._auction_end_btn' : 'onAuctionEnd',
+            // 갱매시작
+            //'click ._auction_start_btn' : 'onAuctionStart',
             //'click ._clear_interval_btn' : 'onClearInterval',
  		},
  		initialize:function(){
 		},
         render:function(){
             this.$el.html(Admin);
-
             this.setTpl();
-            this.setStartPriceList();
             this.setSocketReceiveEvent();
+            this.setStartPriceList();
 
             Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
         },
-
+        //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 시작 ////////////////////////////////////////////////////////////
         /**
          * 템플릿 정의
          */
@@ -101,7 +100,6 @@ define([
             this.$el.find("._seal_bid_price_list_tpl").remove();
 
 
-
             // 밀봉입찰 조합 결과
             this.sealBidCombinationListTpl = this.$el.find("._seal_bid_combination_list_tpl").html();
 
@@ -112,16 +110,6 @@ define([
             //접속자 유저 템플릿
             this.connectUserListTpl = this.$el.find(".connect_user_list_tpl").html();
         },
-
-        /**
-         * 시작가 설정
-         */
-        setStartPriceList:function(){
-            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
-            var template = Handlebars.compile(this.startPriceListTpl);
-            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
-        },
-
         /**
          * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
          */
@@ -130,11 +118,31 @@ define([
             Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
             Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
         },
-
         /**
-         * 경매 시작 이벤트 핸들러
+         * 시작가 설정
          */
-        onAuctionStart:function(e){
+        setStartPriceList:function(){
+            var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+            var template = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
+        },
+        //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 끝 ////////////////////////////////////////////////////////////
+
+        //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 시작 ////////////////////////////////////////////////////////////
+        /**
+         * 로그아웃 핸들러
+         */
+        onLogout : function(e){
+            e.preventDefault();
+            Auction.session.remove('user_info');
+            Cookies.remove('user');
+            window.location.href = '/';
+        },
+        /**
+         * 라운드 시작 이벤트
+         */
+        onRoundStart:function(e){
+            e.preventDefault();
 
             // var check = _.every(this.loginCheckList,function(item){
             //     return item.state === true;
@@ -145,10 +153,419 @@ define([
             //     return;
             // }
 
-            //this.$el.find(".round_price_list_tpl").remove();
+            /**
+             * 라운드 입찰 여부 리스트 리셋
+             */
+            _.each(this.bidCountList,function(item){
+                item.state = false;
+            })
 
-            this.postAuction();
+            this.setRoundTable();
+
+            this.setRoundMark();
+
+            this.$el.find('._round_start_btn').addClass('displayNone')
+
+            Auction.io.emit('ROUND_START',this.roundNum);
+
         },
+        /**
+         * 입찰 결과 핸들러
+         */
+        onBiddingResult:function(e){
+
+            this.getRoundList();
+            // console.log(this.originCompanyList)
+            //
+            // var resultArr = [
+            //     {'name':'KT'},
+            //     {'name':'SK'},
+            //     {'name':'LG'}
+            // ];
+            //
+            // var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
+            //     var companyList = _.filter(this.originCompanyList,function(company){
+            //         return company.companyName === result.name;
+            //     })
+            //     return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
+            //
+            // },this))
+            //
+            // console.log(bidderList)
+            //
+            // var biddingResultList = this.setBiddingResult(bidderList)
+            //
+            // //밀봉 입찰 최소액 셋팅
+            // this.setSealLowestBidPrice(biddingResultList)
+        },
+        //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
+
+        //////////////////////////////////////////////////////////// socket on Event start////////////////////////////////////////////////////////////
+        /**
+         * 경매 참여자의 접속 체크
+         */
+        onLoginCheck:function(msg){
+            this.loginCheckList = JSON.parse(msg);
+            var list = JSON.parse(msg);
+            _.each(list,function(item){
+                item.name = (item.name).toUpperCase();
+                item.className = (item.state) ? 'success' : 'danger';
+            })
+            this.$el.find('.connect_user_list').empty();
+            var template = Handlebars.compile(this.connectUserListTpl);
+            this.$el.find('.connect_user_list').html(template({'list':list}));
+        },
+        /**
+         * 입찰을 하고
+         */
+        onBid:function(msg){
+            var roundData = null;
+            var bidData = JSON.parse(msg);
+            //라운드의 데이터에 입찰자가 입찰한 데이터를 저장하는 함수
+            this.insertRoundBid(bidData);
+            //라운드에 입찰자가 모드 입찰을 했는지 체크하는 함수
+            var flag = this.checkBidCountList(bidData);
+
+            if(flag === true){
+                roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
+                this.postRound(roundData);
+            } else {
+                roundData = _.extend(this.roundData,{'name':this.roundNum});
+                this.setRoundUI(roundData);
+            }
+        },
+        /**
+         * 라운드의 데이터에 입찰자가 입찰한 데이터를 저장하는 함수
+         */
+        insertRoundBid:function(data){
+            var bidData = data;
+            for(var i=0; i<this.roundData.frequency.length; ++i){
+                for(var j=0; j<this.roundData.frequency[i].bidders.length; ++j){
+                    if(this.roundData.frequency[i].bidders[j].name === bidData.name){
+                        console.log(bidData.priceList[i].price)
+                        this.roundData.frequency[i].bidders[j].price = bidData.priceList[i].price;
+                    }
+                }
+            }
+        },
+        /**
+         * 라운드에 입찰자가 모드 입찰을 했는지 체크하는 함수
+         */
+        checkBidCountList:function(data){
+            var bidData = data;
+            _.each(this.bidCountList,function(item){
+                if(item.name === bidData.name){
+                    item.state = true;
+                }
+            })
+            return _.every(this.bidCountList,function(item){
+                return item.state == true;
+            })
+        },
+        /**
+         * 입찰한 통신사에서 승자와 패자 그리고 최고금액을 구하는 함수
+         */
+        getWinBidder:function(data){
+
+            var frequencyList = data.frequency;
+
+            _.each(frequencyList,Function.prototype.bind.call(function(frequency,index){
+
+                var emptyArr = _.filter(frequency.bidders,function(item){
+                    return item.price === '';
+                })
+
+                // 주파수에 지원한 통신사가 없을 경우 (모든 값은 ''이다.)
+                if(emptyArr.length === 3){
+                    frequency.winBidder = '';
+                    frequency.winPrice = '';
+                    _.each(frequency.bidders,function(item){
+                        item.vs = '';
+                    })
+
+                // 주파수에 지원한 통신사가 있을 경우
+                } else {
+                    // 최대 입찰 금액을 구함
+                    var tempMaxBidder   = _.max(frequency.bidders, function(item){ return item.price; })
+                    var maxPrice        = tempMaxBidder.price;
+
+                    // 주파수 최대 입찰금액 확인
+                    frequency.winPrice  = maxPrice;
+
+                    // 최대값인 통신사 리스트
+                    var maxBidderArr = _.filter(frequency.bidders,function(bidder){
+                        return bidder.price === maxPrice;
+                    })
+
+                    // 랜덤으로 최대값 통신사
+                    var randomIndex = parseInt(Math.random()*(maxBidderArr.length),10);
+                    var maxBidder   = maxBidderArr[randomIndex].name;
+
+                    // 계산한 최대값 통신사 입력
+                    frequency.winBidder  = maxBidder;
+
+                    // 계산된 최대값과 최대값 통신사를 비교하면 승자와 패자, 지원 안한자 구분하는 함수
+                    _.each(frequency.bidders,function(bidder){
+                        // 최대값과 통신사도 같으면 승자
+                        if(bidder.name == maxBidder && bidder.price == maxPrice){
+                            bidder.vs = 'win';
+                        // 최대값은 같지만, 통신사는 다르면 패자
+                        } else if(bidder.name != maxBidder && bidder.price == maxPrice){
+                            bidder.vs = 'lose';
+                        } else if(bidder.name != maxBidder && bidder.price != maxPrice){
+                            if(bidder.price === ''){
+                                bidder.vs = '';
+                            } else {
+                                bidder.vs = 'lose';
+                            }
+                        }
+                    })
+                }
+
+                // 승자 주파수에 표시를 하기 위한 함수
+                _.each(frequency.bidders,function(bidder){
+                    var className = '';
+                    if(bidder.vs === 'win'){
+                        className = 'label label-' + bidder.name + '-l';
+                    } else {
+                        className = 'text-gray';
+                    }
+                    bidder.className = className;
+                })
+
+            },this));
+            console.log(data);
+            return data;
+        },
+        /**
+         * 라운드별 주파수 정보를 저장
+         */
+        postRound:function(data){
+            Model.postRound({
+                 url: '/round',
+                 method : 'POST',
+                 contentType:"application/json; charset=UTF-8",
+                 data : JSON.stringify({
+                     'round':data
+                 }),
+                 success : Function.prototype.bind.call(this.postRoundSuccess,this),
+                 error : Function.prototype.bind.call(this.postRoundError,this)
+             })
+        },
+
+        /**
+         * 라운드별 주파수 정보를 저장 성공
+         */
+        postRoundSuccess:function(data, textStatus, jqXHR){
+            if(textStatus === 'success'){
+                alert('1라운드 모든 입찰자가 입찰하였습니다.')
+                Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
+                this.setRoundUI(data);
+                this.roundNum += 1;
+                this.$el.find('._round_mark').text(this.roundNum + '라운드');
+                this.$el.find('._round_start_btn').removeClass('displayNone')
+            }
+        },
+        /**
+         * 라운드별 주파수 정보를 저장 실패
+         */
+        postRoundError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
+        setRoundUI:function(data){
+            var template = Handlebars.compile(this.roundPriceListTpl);
+            this.$el.find('.round_price_list').last().html(template( data ));
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /**
+         * 입찰자가 밀봉입찰을 할경우 발생하는 이벤트 핸들러
+         */
+        onSealBidPrice:function(msg){
+
+            var bidder = JSON.parse(msg);
+            _.each(this.sealBidBidderList,function(item){
+                if(item.name === bidder.name){
+                    item.priceList = _.extend(item.priceList,bidder.priceList);
+                }
+            })
+
+            //밀봉입찰조합에 필요한 통신사 지원 대역폭 저장
+            SealBidCombination.setSealBidBidderList(bidder);
+
+            // true이면 밀봉입찰 조합 시작
+            if(this.setSealBidCheck(bidder)) {
+                this.setSealBidCombination()
+            }
+
+            // 밀봉입찰액 UI 렌더링
+            this.setSealBidPriceUI(this.sealBidBidderList);
+        },
+        //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
+
+        /**
+         * 라운드 빈 테이블 생성
+         */
+        setRoundTable:function(){
+            var $roundPriceList = $('<tr class="round_price_list"></tr>');
+            this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.roundData,{'name':this.roundNum}) ) );
+            var template = Handlebars.compile(this.roundPriceListTpl);
+            $roundPriceList.html(template( _.extend(AuctionData.roundData,{'name':this.roundNum}) ));
+            this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList);
+        },
+        /**
+         * 라운드 진행 표시
+         */
+        setRoundMark:function(){
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 진행중...');
+        },
+        /**
+         * 전체 라운드 리스트 호출
+         */
+        getRoundList:function(){
+            Model.getRoundList({
+                 url: '/round',
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getRoundListSuccess,this),
+                 error : Function.prototype.bind.call(this.getRoundListError,this)
+             })
+        },
+        /**
+         * 전체 라운드 리스트 호출 성공
+         */
+        getRoundListSuccess:function(data, textStatus, jqXHR){
+            if(textStatus === 'success'){
+                console.log(data);
+                var biddingResultList = this.setBiddingResult(data);
+
+                this.setSealLowestBidPrice(biddingResultList);
+
+                // 밀봉입찰액 테이블 셋팅
+                this.setSealBidPrice();
+            }
+        },
+        /**
+         * 전체 라운드 리스트 호출 실패
+         */
+        getRoundListError:function(jsXHR, textStatus, errorThrown){
+
+        },
+        /**
+         * 입찰 결과 UI 렌더링
+         */
+        setBiddingResult:function(data){
+
+            var companyArr = [
+                {'name':'KT'},
+                {'name':'SK'},
+                {'name':'LG'}
+            ];
+
+            var priceList = _.map(companyArr,Function.prototype.bind.call(function(company){
+
+                return _.extend( company,{'priceList':this.setFrequencyList(company,data)} )
+
+            },this))
+
+            //this.companyPercent(priceList);
+
+            console.log(priceList);
+
+
+            var companyData = this.companyPercent(priceList);
+            var bidderList = this.setResultRanking(companyData);
+
+            console.log('== 입찰결과 ==')
+            console.log(bidderList);
+            console.table(bidderList);
+
+            var template = Handlebars.compile(this.biddingResultTpl);
+            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
+            this.$el.find('._ascending_bidding_result').removeClass('displayNone');
+
+            return bidderList;
+        },
+        /**
+         * 밀봉 입찰 최소액 셋팅
+         */
+        setSealLowestBidPrice:function(data){
+            var bidderList = this.secondCompanyMaxPrice(data)
+
+            Auction.io.emit('SEAL_LOWEST_BID_PRICE',JSON.stringify(bidderList))
+
+            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
+            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
+        },
+        /**
+         * 밀봉입찰액 기본 테이블 생성
+         */
+        setSealBidPrice:function(){
+            var bidderList = JSON.parse( JSON.stringify(AuctionData.binderList) );
+            this.sealBidBidderList = _.map(bidderList,function(item){
+                var defaultPriceList = JSON.parse( JSON.stringify(AuctionData.defaultPriceList) );
+                var priceList = _.map(defaultPriceList,function(item){
+                    item.price = '';
+                    return item
+                })
+                return _.extend(item,{'priceList':priceList});
+            })
+            console.log(this.sealBidBidderList);
+            this.setSealBidPriceUI(this.sealBidBidderList)
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /**
          * 경매 생성
@@ -185,7 +602,6 @@ define([
                 alert('경매 생성에 실패 하였습니다.')
             }
         },
-
         /**
          * 경매 생성 실패
          */
@@ -193,67 +609,13 @@ define([
             alert('경매 생성에 실패 하였습니다.')
         },
 
-        /**
-         * 라운드 시작 이벤트
-         */
-        onRoundStart:function(e){
-            e.preventDefault();
 
-            // var check = _.every(this.loginCheckList,function(item){
-            //     return item.state === true;
-            // })
-            //
-            // if(!check){
-            //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
-            //     return;
-            // }
 
-            /**
-             * 라운드 입찰 여부 리스트 리셋
-             */
-            _.each(this.bidCountList,function(item){
-                item.state = false;
-            })
 
-            this.setRoundTable();
 
-            this.setRoundMark();
 
-            this.$el.find('._round_start_btn').addClass('displayNone')
 
-            Auction.io.emit('ROUND_START',this.roundNum);
 
-        },
-        /**
-         * 라운드 빈 테이블 생성
-         */
-        setRoundTable:function(){
-            var $roundPriceList = $('<tr class="round_price_list"></tr>');
-            this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.round,{'name':this.roundNum}) ) );
-            var template = Handlebars.compile(this.roundPriceListTpl);
-            $roundPriceList.html(template( _.extend(AuctionData.round,{'name':this.roundNum}) ));
-            this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList);
-        },
-        /**
-         * 라운드 진행 표시
-         */
-        setRoundMark:function(){
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 진행중...');
-        },
-        /**
-         * 경매 참여자의 접속 체크
-         */
-        onLoginCheck:function(msg){
-            this.loginCheckList = JSON.parse(msg);
-            var list = JSON.parse(msg);
-            _.each(list,function(item){
-                item.name = (item.name).toUpperCase();
-                item.className = (item.state) ? 'success' : 'danger';
-            })
-            this.$el.find('.connect_user_list').empty();
-            var template = Handlebars.compile(this.connectUserListTpl);
-            this.$el.find('.connect_user_list').html(template({'list':list}));
-        },
 
 
 
@@ -285,250 +647,14 @@ define([
 
 
 
-        /**
-         * 입찰을 하고
-         */
-        onBid:function(msg){
 
-            var roundData = null;
 
-            var bidData = JSON.parse(msg);
 
-            for(var i=0; i<this.roundData.frequency.length; ++i){
 
-                for(var j=0; j<this.roundData.frequency[i].bidders.length; ++j){
 
-                    if(this.roundData.frequency[i].bidders[j].name === bidData.name){
 
-                        console.log(bidData.priceList[i].price)
 
-                        this.roundData.frequency[i].bidders[j].price = bidData.priceList[i].price;
 
-                    }
-
-                }
-
-            }
-
-            _.each(this.bidCountList,function(item){
-                if(item.name === bidData.name){
-                    item.state = true;
-                }
-            })
-
-            var flag = _.every(this.bidCountList,function(item){
-                return item.state == true;
-            })
-
-            if(flag === true){
-                roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
-                this.postRound(roundData);
-            } else {
-                roundData = _.extend(this.roundData,{'name':this.roundNum});
-                this.setRoundUI(roundData);
-            }
-
-        },
-
-        postRound:function(data){
-            Model.postRound({
-                 url: '/round',
-                 method : 'POST',
-                 contentType:"application/json; charset=UTF-8",
-                 data : JSON.stringify({
-                     'round':data
-                 }),
-                 success : Function.prototype.bind.call(this.postRoundSuccess,this),
-                 error : Function.prototype.bind.call(this.postRoundError,this)
-             })
-        },
-
-        postRoundSuccess:function(data, textStatus, jqXHR){
-            if(textStatus === 'success'){
-                alert('1라운드 모든 입찰자가 입찰하였습니다.')
-                Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
-                this.setRoundUI(data);
-                this.roundNum += 1;
-                this.$el.find('._round_mark').text(this.roundNum + '라운드');
-                this.$el.find('._round_start_btn').removeClass('displayNone')
-            }
-        },
-        postRoundError:function(jsXHR, textStatus, errorThrown){
-
-        },
-
-        setRoundUI:function(data){
-            var template = Handlebars.compile(this.roundPriceListTpl);
-            this.$el.find('.round_price_list').last().html(template( data ));
-        },
-
-        getWinBidder:function(data){
-
-            _.each(data.frequency,Function.prototype.bind.call(function(item,index){
-
-                console.log(item)
-
-                var winPrice = ( _.max(item.bidders, function(bidder){ return bidder.price; }) ).price;
-
-                var winName = '';
-
-                console.log('WINPRICE : ' + winPrice)
-
-                if(winPrice === 0){
-
-                    item.bidders = _.map(item.bidders,function(bidder){
-                        return _.extend(bidder,{'className':'text-gray'})
-                    })
-
-                    if(this.winCompanyList[index].name === ''){
-                        winName = '';
-                        winPrice = parseInt(AuctionData.startPriceList[index].price,0);
-                    } else {
-                        winName = this.winCompanyList[index].name;
-                        winPrice = this.winCompanyList[index].price;
-                    }
-
-                } else {
-
-                    this.winCompanyList[index].price = winPrice;
-
-                    var winArr = _.filter(item.bidders,function(bidder){
-                        return winPrice === bidder.price
-                    })
-
-                    console.log(winArr)
-
-                    var win = null;
-
-                    if(winArr.length > 1){
-                        win = winArr[ parseInt(Math.random()*(winArr.length),10) ]
-                    } else {
-                        win = winArr[0];
-                    }
-                    winName = win.name;
-
-                    this.winCompanyList[index].name = win.name;
-
-                    item.bidders = _.map(item.bidders,function(bidder){
-
-                        var className = '';
-
-                        if(bidder.price === winPrice && bidder.name === winName){
-                            className = 'label label-' + bidder.name + '-l';
-                        } else {
-                            className = 'text-gray';
-                        }
-
-                        return _.extend(bidder,{'className':className})
-                    })
-                }
-
-                item.winBidder = winName;
-                item.winPrice = winPrice;
-            },this));
-
-            return data
-
-        },
-
-        /**
-         * 입찰 결과 핸들러
-         */
-        onBiddingResult:function(e){
-
-            this.getRoundList();
-            // console.log(this.originCompanyList)
-            //
-            // var resultArr = [
-            //     {'name':'KT'},
-            //     {'name':'SK'},
-            //     {'name':'LG'}
-            // ];
-            //
-            // var bidderList = _.map( resultArr, Function.prototype.bind.call(function(result){
-            //     var companyList = _.filter(this.originCompanyList,function(company){
-            //         return company.companyName === result.name;
-            //     })
-            //     return _.extend(result,{'priceList':this.companyMaxPrice(companyList)})
-            //
-            // },this))
-            //
-            // console.log(bidderList)
-            //
-            // var biddingResultList = this.setBiddingResult(bidderList)
-            //
-            // //밀봉 입찰 최소액 셋팅
-            // this.setSealLowestBidPrice(biddingResultList)
-        },
-
-        /**
-         * 전체 라운드 리스트 호출
-         */
-        getRoundList:function(){
-            Model.getRoundList({
-                 url: '/round',
-                 method : 'GET',
-                 contentType:"application/json; charset=UTF-8",
-                 success : Function.prototype.bind.call(this.getRoundListSuccess,this),
-                 error : Function.prototype.bind.call(this.getRoundListError,this)
-             })
-        },
-        /**
-         * 전체 라운드 리스트 호출 성공
-         */
-        getRoundListSuccess:function(data, textStatus, jqXHR){
-            if(textStatus === 'success'){
-                console.log(data);
-                var biddingResultList = this.setBiddingResult(data);
-
-                this.setSealLowestBidPrice(biddingResultList);
-
-                // 밀봉입찰액 테이블 셋팅
-                this.setSealBidPrice();
-            }
-        },
-        /**
-         * 전체 라운드 리스트 호출 실패
-         */
-        getRoundListError:function(jsXHR, textStatus, errorThrown){
-
-        },
-
-        /**
-         * 입찰 결과 UI 렌더링
-         */
-        setBiddingResult:function(data){
-
-            var companyArr = [
-                {'name':'KT'},
-                {'name':'SK'},
-                {'name':'LG'}
-            ];
-
-            var priceList = _.map(companyArr,Function.prototype.bind.call(function(company){
-
-                return _.extend( company,{'priceList':this.setFrequencyList(company,data)} )
-
-            },this))
-
-            //this.companyPercent(priceList);
-
-            console.log(priceList);
-
-
-            var companyData = this.companyPercent(priceList);
-            var bidderList = this.setResultRanking(companyData);
-
-            console.log('== 입찰결과 ==')
-            console.log(bidderList);
-            console.table(bidderList);
-
-            var template = Handlebars.compile(this.biddingResultTpl);
-            this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
-            this.$el.find('._ascending_bidding_result').removeClass('displayNone');
-
-            return bidderList;
-        },
 
         setFrequencyList:function(company, data){
 
@@ -672,45 +798,7 @@ define([
 
         },
 
-        /**
-         * 밀봉입찰액 기본 테이블 생성
-         */
-        setSealBidPrice:function(){
-            var bidderList = JSON.parse( JSON.stringify(AuctionData.binderList) );
-            this.sealBidBidderList = _.map(bidderList,function(item){
-                var defaultPriceList = JSON.parse( JSON.stringify(AuctionData.defaultPriceList) );
-                var priceList = _.map(defaultPriceList,function(item){
-                    item.price = '';
-                    return item
-                })
-                return _.extend(item,{'priceList':priceList});
-            })
-            console.log(this.sealBidBidderList);
-            this.setSealBidPriceUI(this.sealBidBidderList)
-        },
-        /**
-         * 입찰자가 밀봉입찰을 할경우 발생하는 이벤트 핸들러
-         */
-        onSealBidPrice:function(msg){
 
-            var bidder = JSON.parse(msg);
-            _.each(this.sealBidBidderList,function(item){
-                if(item.name === bidder.name){
-                    item.priceList = _.extend(item.priceList,bidder.priceList);
-                }
-            })
-
-            //밀봉입찰조합에 필요한 통신사 지원 대역폭 저장
-            SealBidCombination.setSealBidBidderList(bidder);
-
-            // true이면 밀봉입찰 조합 시작
-            if(this.setSealBidCheck(bidder)) {
-                this.setSealBidCombination()
-            }
-
-            // 밀봉입찰액 UI 렌더링
-            this.setSealBidPriceUI(this.sealBidBidderList);
-        },
         /**
          * 밀봉입찰액 템플릿 설정
          */
@@ -775,7 +863,24 @@ define([
 
 
 
+        /**
+         * 경매 시작 이벤트 핸들러
+         */
+        onAuctionStart:function(e){
 
+            // var check = _.every(this.loginCheckList,function(item){
+            //     return item.state === true;
+            // })
+            //
+            // if(!check){
+            //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
+            //     return;
+            // }
+
+            //this.$el.find(".round_price_list_tpl").remove();
+
+            this.postAuction();
+        },
 
 
 
@@ -1057,17 +1162,7 @@ define([
 
 
 
-        /**
-         * 밀봉 입찰 최소액 셋팅
-         */
-        setSealLowestBidPrice:function(data){
-            var bidderList = this.secondCompanyMaxPrice(data)
 
-            Auction.io.emit('SEAL_LOWEST_BID_PRICE',JSON.stringify(bidderList))
-
-            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
-            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
-        },
 
         /**
          * 시작가와 최고가 주파수를 비교해서 최고가를 만듬
@@ -1371,7 +1466,7 @@ define([
         //
         //     //roundData.name = 'ksy';
         //
-        //     //console.log(AuctionData.round);
+        //     //console.log(AuctionData.roundData);
         //     //console.log(roundData)
         //
         //     // roundlist : [
@@ -1424,7 +1519,7 @@ define([
         //
         //     for(var i=0; i<data.length; ++i) {
         //
-        //         var frequencyFormat = JSON.parse( JSON.stringify( AuctionData.round.frequency ) );
+        //         var frequencyFormat = JSON.parse( JSON.stringify( AuctionData.roundData.frequency ) );
         //         roundList.push({'round':i+1,'frequency':frequencyFormat})
         //
         //         for(var j=0; j<frequencyFormat.lengh ; ++j){
@@ -1474,21 +1569,13 @@ define([
         /**
          * 경매정보 호출에 관련된 인터벌 함수 클리어 하는 함수
          */
-        onClearInterval:function(){
-            if(Auction.interval.has('auctionInfo')){
-                Auction.interval.clear('auctionInfo')
-            }
-        },
+        // onClearInterval:function(){
+        //     if(Auction.interval.has('auctionInfo')){
+        //         Auction.interval.clear('auctionInfo')
+        //     }
+        // },
 
-        /**
-         * 로그아웃 핸들러
-         */
-        onLogout : function(e){
-            e.preventDefault();
-            Auction.session.remove('user_info');
-            Cookies.remove('user');
-            window.location.href = '/';
-        },
+
 
         /**
          * 페이지 숨김
