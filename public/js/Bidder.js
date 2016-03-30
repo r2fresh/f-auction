@@ -175,7 +175,7 @@ define([
             this.sendBid(_.map(this.$el.find('.bid_price'),function(element){
                  return $(element).val()
             }))
-            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, .delay_btn, .giveup_btn').addClass('displayNone');
+            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
             alert(this.roundNum + '라운드 입찰신청이 되었습니다.');
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
