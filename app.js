@@ -5,7 +5,7 @@ var cookieParser = require('./src/cookie-parser')
 
 var app = express();
 
-app.set('port', (process.env.PORT || 5001));
+app.set('port', (process.env.PORT || 6000));
 
 // parse application/json
 app.use(bodyParser.json())
