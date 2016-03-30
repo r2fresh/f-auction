@@ -5,10 +5,9 @@ define([
    'js/AuctionData',
    'js/Validation',
    'js/Model',
-   'js/Process',
    'js/BidValidation'
    ],
-   function(module, Bidder, RoundResult, AuctionData, Validation, Model, Process, BidValidation){
+   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation){
 
 	'use strict'
 
@@ -85,7 +84,7 @@ define([
             //밀봉최소입찰가격 템플릿
             this.sealLowestBidPriceTpl      = this.$el.find("._seal_lowest_bid_price_tpl").html();
 
-        
+
             this.roundResultTpl             = RoundResult
             this.sealBidPercentListTpl      = this.$el.find("._seal_bid_percent_list_tpl").html();
             //접속자 유저 템플릿

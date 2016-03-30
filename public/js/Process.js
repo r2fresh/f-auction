@@ -36,16 +36,16 @@ define([
         roundList : function(data){
 
         },
-        /**
-         * 입찰자가 입력한 값을 변행
-         */
-        getBidFormatChange:function(data){
-            var priceList = JSON.parse( JSON.stringify(AuctionData.defaultPriceList) )
-            _.each(priceList, function(item, index){
-                item.price = data[item.name];
-            })
-            return priceList;
-        },
+        // /**
+        //  * 입찰자가 입력한 값을 변행
+        //  */
+        // getBidFormatChange:function(data){
+        //     var priceList = JSON.parse( JSON.stringify(AuctionData.defaultPriceList) )
+        //     _.each(priceList, function(item, index){
+        //         item.price = data[item.name];
+        //     })
+        //     return priceList;
+        // },
     }
     /*
         roundList = {
