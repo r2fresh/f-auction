@@ -15,11 +15,13 @@ define([
         //auctionID : 1,
 
         roundNum : 1,
-
+        //입찰자 통신사
         bidder_company: '',
-
         //최소입찰증분 (단위는 퍼센트)
         lowestBidAdd : 4,
+
+
+
 
         //시작가(최저입찰가격) 리스트 템플릿
         auctionStartPriceTpl : null,
@@ -82,6 +84,7 @@ define([
 
             Auction.io.emit('loginCheck',Auction.session.get('user_info').user);
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
+            //this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
         },
 
         /**
@@ -99,6 +102,7 @@ define([
             //접속자 유저 템플릿
             this.connectUserListTpl         = this.$el.find(".connect_user_list_tpl").html();
         },
+        //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 시작 ////////////////////////////////////////////////////////////
         /**
          * 입찰 회사 설정
          */
@@ -133,8 +137,8 @@ define([
          * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
          */
         setSocketReceiveEvent:function(){
-            Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
-            Auction.io.on('ROUND_NUMBER', Function.prototype.bind.call(this.setRoundNum,this) );
+            Auction.io.on('LOGIN_CHECK', Function.prototype.bind.call(this.onLoginCheck,this) );
+            Auction.io.on('RUOND_START', Function.prototype.bind.call(this.onRoundStart,this) );
             Auction.io.on('ROUND_RESULT', Function.prototype.bind.call(this.onRoundResult,this) );
             Auction.io.on('SEAL_LOWEST_BID_PRICE', Function.prototype.bind.call(this.onSealLowestBidPrice,this) );
         },
@@ -144,79 +148,262 @@ define([
          */
         setStartPriceList:function(){
             var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
-            this.startPriceList = JSON.parse( JSON.stringify( priceList ) );
+            this.startPriceList     = JSON.parse( JSON.stringify( priceList ) );
+            this.lowestBidPrices    = JSON.parse( JSON.stringify( priceList ) );
+            this.setStartPriceListUI(priceList);
+            this.setLowestBidPriceUI(priceList);
+        },
+        //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 끝 ////////////////////////////////////////////////////////////
 
-            //this.$el.find('.bidder_start_price_list').append(template1({'priceList':priceList}));
-
-            var template2 = Handlebars.compile(this.startPriceListTpl);
-            this.$el.find('.start_price_list').append(template2({'priceList':priceList}));
-
-            this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
-
-            this.setLowestBidPriceUI(priceList)
+        //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 시작 ////////////////////////////////////////////////////////////
+        /**
+         * 로그아웃 핸들러
+         */
+        onLogout : function(e){
+            e.preventDefault();
+            Auction.session.remove('user_info');
+            window.location.href = '/';
         },
 
         /**
-         * 라우든 Number 설정
+         * 입찰버튼 클릭이벤트 핸들러
          */
-        setRoundNum:function(num){
-            console.log('ROUND_NUMBER : ' + num)
-            this.roundNum = num;
+        onBid:function(){
 
-            alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+            if(!this.validationBid()){return;}
 
-            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, .delay_btn, .giveup_btn').removeClass('displayNone');
+            this.sendBid(_.map(this.$el.find('.bid_price'),function(element){
+                 return $(element).val()
+            }))
+            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, .delay_btn, .giveup_btn').addClass('displayNone');
+            alert(this.roundNum + '라운드 입찰신청이 되었습니다.');
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
 
+        /**
+         * 스킵버튼 클릭이벤트 핸들러
+         */
+        onSkipBid:function(){
+            e.preventDefault();
+        },
+        /**
+         * 입찰않은 클릭이벤트 핸들러
+         */
+        onNotBid:function(){
+            e.preventDefault();
+        },
+        /**
+         * 유예신청 클릭이벤트 핸들러
+         */
+        onDelayBid:function(){
+            e.preventDefault();
+        },
+        /**
+         * 포기 클릭이벤트 핸들러
+         */
+        onGiveupBid:function(){
+            e.preventDefault();
+        },
+        //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
+
+        //////////////////////////////////////////////////////////// socket on Event start////////////////////////////////////////////////////////////
         /**
          * 경매 참여자의 접속 체크
          */
         onLoginCheck:function(msg){
-
-            console.table(JSON.parse(msg))
-
             var list = JSON.parse(msg);
-
             _.each(list,function(item){
                 item.name = (item.name).toUpperCase();
                 item.className = (item.state) ? 'success' : 'danger';
             })
-
             this.$el.find('.connect_user_list').empty();
-
             var template = Handlebars.compile(this.connectUserListTpl);
             this.$el.find('.connect_user_list').html(template({'list':list}));
         },
-
-
-
+        /**
+         * 라우드 시작을 알려주는 핸들러
+         */
+        onRoundStart:function(num){
+            console.log('ROUND_NUMBER : ' + num)
+            this.roundNum = num;
+            alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').removeClass('displayNone');
+        },
+        /**
+         * 라운드가 끝나면 알려주는 핸들러
+         */
         onRoundResult:function(msg){
-
             var data = JSON.parse(msg);
-
             console.log(data);
-
+            //최소입찰액을 설정
             this.setLowestBidPrice(data);
-
+            //라운드 승자표시 설정
             this.setRoundWinPrice(data);
-
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
         },
-
         /**
          * 밀봉 최소 입찰액 설정
          */
-         onSealLowestBidPrice:function(msg){
-             var data = JSON.parse(msg);
-             var bidderList = _.filter(data,Function.prototype.bind.call(function(item){
-                 return item.name === this.bidder_company;
-             },this))
-             var bidder = bidderList[0];
-             this.sealLowestBidPriceList = JSON.parse(JSON.stringify(bidder));
-             var template = Handlebars.compile(this.sealLowestBidPriceTpl);
-             this.$el.find('._seal_lowest_bid_price').html(template(bidder));
-         },
+        onSealLowestBidPrice:function(msg){
+            var data = JSON.parse(msg);
+            var bidderList = _.filter(data,Function.prototype.bind.call(function(item){
+                return item.name === this.bidder_company;
+            },this))
+            var bidder = bidderList[0];
+            this.sealLowestBidPriceList = JSON.parse(JSON.stringify(bidder));
+            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
+            this.$el.find('._seal_lowest_bid_price').html(template(bidder));
+        },
+        //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
+
+        /**
+         * 시작가 UI 설정
+         **/
+        setStartPriceListUI:function(data){
+            var priceList = data;
+            var template = Handlebars.compile(this.startPriceListTpl);
+            this.$el.find('.start_price_list').append(template({'priceList':priceList}));
+        },
+        /**
+         * 최소 입찰액 UI 설정
+         */
+        setLowestBidPriceUI : function(data){
+            var template = Handlebars.compile(this.lowestBidPricesTpl);
+            this.$el.find('.lowest_bid_prices').empty().html(template({'priceList':data}));
+        },
+
+        /**
+          * 1순위 블록 필요 입찰액
+          */
+
+        validationBid : function(){
+
+            var bidPriceEl = this.$el.find('.bid_price');
+
+            // 빈 주파수 입력창 체크
+            if(!this.checkEmptyBidField(bidPriceEl)){
+                return false;
+            }
+
+            //return
+
+            // 통신사 대역폭 체크
+            var maxBandWidth = _.reduce(
+                _.map(AuctionData.defaultPriceList, Function.prototype.bind.call(function(item, index){
+                    var bidPriceValue = $(this.$el.find('.bid_price')[index]).val();
+                    return ( bidPriceValue != '' ) ? item.bandWidth : 0;
+                },this)),
+                function(memo, num){ return memo + num; },
+                0
+            );
+            if(maxBandWidth > this.ableBandWidth){
+                alert('정해진 대역폭을 초과 하셨습니다.');
+                return;
+            }
+
+            // 광대역은 하나만 신청가능하다는 것을 체크
+            var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
+                return AuctionData.defaultPriceList[index].type === 'wideBand'
+            })
+            var limitWideBandArr = _.filter(wideBandArr,function(element){
+                return $(element).val() != '';
+            })
+            if(limitWideBandArr.length > 1) {
+                alert('광대역하나만 신청 가능합니다.');
+                return;
+            }
+
+            // 최소입찰가격이상을 입력했는지 체크
+            var lowestBidPriceCheck = _.every(this.$el.find('.bid_price'), Function.prototype.bind.call(function(element, index){
+
+                var result = null
+
+                if($(element).val() === ''){
+                    result = true;
+                } else {
+                    result = ( this.lowestBidPrices[index].price <= parseInt($(element).val(),10) ) ? true : false
+                }
+
+                return result;
+            },this))
+            if(!lowestBidPriceCheck){
+                alert('최소입찰액 이상 입력하시기 바랍니다.');
+                return;
+            }
+
+            return true;
+
+            // this.postBid(_.map(this.$el.find('.bid_price'),function(element){
+            //      return $(element).val()
+            // }))
+        },
+        /**
+         * 빈 주파수 입력창 체크
+         */
+        checkEmptyBidField:function(elements){
+            var flag = true;
+            // 빈 필드 체크 (모드 빈필드이면 : true, 하나라도 있으면 : false)
+            var emptyCheck = _.every(elements, function(element){
+                return $(element).val() === '';
+            })
+            // 빈 필드에서 승자가 있는지 체크 (승자가 하나라도 있으면 : true, 없으면 : false)
+            var winCheck = _.some(elements, function(element){
+                var attr = $(element).attr('vs');
+                return (typeof attr !== typeof undefined && attr !== false && attr === 'win')
+            })
+
+            if(emptyCheck) {
+                if(!winCheck){
+                    alert('한 주파수 이상의 입찰금액을 입력해 주시기 바랍니다.');
+                    flag = false;
+                }
+            }
+            return flag;
+        },
+        /**
+         * 최소입찰가격 이상을 입력했는지 체크
+         */
+        checkLowestBidPrice:function(elements){
+
+            //lowestBidPrices
+
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /**
          * 최소 입찰액 설정
@@ -266,22 +453,21 @@ define([
 
         },
 
-        /**
-         * 최소 입찰액 UI 설정
-         */
-        setLowestBidPriceUI : function(data){
-            var template = Handlebars.compile(this.lowestBidPricesTpl);
-            this.$el.find('.lowest_bid_prices').empty().html(template({'priceList':data}));
-        },
+
 
         runLowestBidAdd:function(data){
             var priceList = _.map(data, Function.prototype.bind.call(function(item,index){
 
                 var startPrice  = this.lowestBidPrices[index].price;
 
+                console.log(JSON.parse(JSON.stringify(item)).price)
+
                 if(startPrice != item.price){
-                    item.price = Math.ceil( item.price + (item.price*this.lowestBidAdd/100))
+                    item.price = parseInt(item.price,10) + Math.ceil(item.price*this.lowestBidAdd/100)
+                } else {
+                    item.price = parseInt(startPrice,10)
                 }
+                console.log(item.price)
 
                 return item
             },this));
@@ -333,80 +519,7 @@ define([
             this.$el.find('._ascending_bid').append(template(data));
         },
 
-        /**
-          * 1순위 블록 필요 입찰액
-          */
 
-        onBid : function(){
-
-            var bidPriceEl = this.$el.find('.bid_price');
-
-            // 빈 입찰가격 체크 (true : 입찰가격모두빈칸, false : 입찰가격을 하나라도 입력했을경우)
-            var emptyCheck = _.every(bidPriceEl, function(element){
-                return $(element).val() === '';
-            })
-            if(emptyCheck) {
-                alert('입찰가격을 입력하여 주십시오');
-                return;
-            }
-
-            // 통신사 대역폭 체크
-            var maxBandWidth = _.reduce(
-                _.map(AuctionData.defaultPriceList, Function.prototype.bind.call(function(item, index){
-                    var bidPriceValue = $(this.$el.find('.bid_price')[index]).val();
-                    return ( bidPriceValue != '' ) ? item.bandWidth : 0;
-                },this)),
-                function(memo, num){ return memo + num; },
-                0
-            );
-            if(maxBandWidth > this.ableBandWidth){
-                alert('정해진 대역폭을 초과 하셨습니다.');
-                return;
-            }
-
-            // 광대역은 하나만 신청가능하다는 것을 체크
-            var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
-                return AuctionData.defaultPriceList[index].type === 'wideBand'
-            })
-            var limitWideBandArr = _.filter(wideBandArr,function(element){
-                return $(element).val() != '';
-            })
-            if(limitWideBandArr.length > 1) {
-                alert('광대역하나만 신청 가능합니다.');
-                return;
-            }
-
-            // 최소입찰가격이상을 입력했는지 체크
-            var lowestBidPriceCheck = _.every(this.$el.find('.bid_price'), Function.prototype.bind.call(function(element, index){
-
-                var result = null
-
-                if($(element).val() === ''){
-                    result = true;
-                } else {
-                    result = ( this.lowestBidPrices[index].price <= parseInt($(element).val(),10) ) ? true : false
-                }
-
-                return result;
-            },this))
-            if(!lowestBidPriceCheck){
-                alert('최소입찰액 이상 입력하시기 바랍니다.');
-                return;
-            }
-
-            this.sendBid(_.map(this.$el.find('.bid_price'),function(element){
-                 return $(element).val()
-            }))
-
-            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, .delay_btn, .giveup_btn').addClass('displayNone');
-
-            alert(this.roundNum + '라운드 입찰신청이 되었습니다.');
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
-
-            // this.postBid(_.map(this.$el.find('.bid_price'),function(element){
-            //      return $(element).val()
-            // }))
-        },
 
         /**
          * 입찰 급액 등록
@@ -1259,14 +1372,7 @@ define([
 
 
 
-        /**
-         * 로그아웃 핸들러
-         */
-        onLogout : function(e){
-            e.preventDefault();
-            Auction.session.remove('user_info');
-            window.location.href = '/';
-        },
+
 
         /**
          * 경매정보 호출에 관련된 인터벌 함수 클리어 하는 함수

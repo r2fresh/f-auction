@@ -94,7 +94,6 @@ io.on('connection', function(socket){
 
         // cookieData 없을 경우 리턴
         if(!cookieData.user) return;
-        console.log("12112")
 
         _.each(loginData,function(item){
             if(item.name === cookieData.user){
@@ -102,12 +101,23 @@ io.on('connection', function(socket){
             }
         })
 
+        var logFlag = _.every(loginData,function(item){
+            return item.state == false;
+        })
+
+        if(logFlag){
+            roundList = null;
+            roundList = [];
+        }
+
+        console.log(roundList)
+
         io.emit('loginCheck',JSON.stringify(loginData))
     })
 
-    socket.on('loginCheck',function(msg){
+    socket.on('LOGIN_CHECK',function(msg){
         console.log(msg)
-        io.emit('loginCheck',JSON.stringify(loginData))
+        io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 
     socket.on('AUCTION_ID',function(msg){
@@ -115,9 +125,9 @@ io.on('connection', function(socket){
         io.emit('AUCTION_ID',msg)
     })
 
-    socket.on('ROUND_NUMBER',function(msg){
+    socket.on('ROUND_START',function(msg){
         console.log(msg)
-        io.emit('ROUND_NUMBER',msg)
+        io.emit('ROUND_START',msg)
     })
 
     socket.on('BID',function(msg){

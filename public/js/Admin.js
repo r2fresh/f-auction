@@ -85,7 +85,7 @@ define([
             this.setStartPriceList();
             this.setSocketReceiveEvent();
 
-            Auction.io.emit('loginCheck',Auction.session.get('user_info').user);
+            Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
         },
 
         /**
@@ -126,7 +126,7 @@ define([
          * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
          */
         setSocketReceiveEvent:function(){
-            Auction.io.on('loginCheck', Function.prototype.bind.call(this.onLoginCheck,this) );
+            Auction.io.on('LOGIN_CHECK', Function.prototype.bind.call(this.onLoginCheck,this) );
             Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
             Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
         },
@@ -221,7 +221,7 @@ define([
 
             this.$el.find('._round_start_btn').addClass('displayNone')
 
-            Auction.io.emit('ROUND_NUMBER',this.roundNum);
+            Auction.io.emit('ROUND_START',this.roundNum);
 
         },
         /**

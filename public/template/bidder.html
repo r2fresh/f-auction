@@ -60,6 +60,15 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="home">
 
+            <div class="alert alert-info" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <p>입찰 버튼은 승자 유무와 상관없이, 입찰금액을 입력 후 클릭하시면 됩니다.</p>
+                <p>입찰 스킵은 승자가 있는데, 추가입찰을 안하는 경우 클릭하시면 됩니다.</p>
+                <p>입찰 안함은 승자가 없는데, 입찰을 하지 않는 경우 클릭하시면 됩니다.</p>
+                <p>유예는 승자 유무와 상관없이, 입찰을 하지 안으시면 클릭하시면 됩니다.(2번 이상입찰제한)</p>
+                <p>포기는 이번 경매에서 포기 하실경우 클릭하시면 됩니다.</p>
+            </div>
+
             <!--  최저경쟁가격-->
             <div class="row">
 
@@ -71,12 +80,12 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>구분</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -84,7 +93,7 @@
                                 <!-- 시작가 -->
                                 <tr class="start_price_list">
                                     <script class="start_price_list_tpl" type="text/x-handlebars-template">
-                                        <td>시작가</td>
+                                        <td class="text-center"><strong>시작가</strong></td>
                                         <{{#priceList}}
                                         <td style="text-align:center;">
                                             <span>{{price}}</span>
@@ -96,7 +105,7 @@
                                 <!-- 최소경쟁가격 -->
                                 <tr class="lowest_race_prices">
                                     <script class="lowest_race_prices_tpl" type="text/x-handlebars-template">
-                                        <td>최저경쟁가격</td>
+                                        <td class="text-center"><strong>최저경쟁가격</strong></td>
                                         {{#priceList}}
                                         <td style="text-align:center;">
                                             <span>{{price}}</span>
@@ -108,7 +117,7 @@
                                 <!-- 최소입찰액 -->
                                 <tr class="lowest_bid_prices">
                                     <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
-                                        <td>최소입찰액</td>
+                                        <td class="text-center"><strong>최소입찰액</strong></td>
                                         <{{#priceList}}
                                         <td style="text-align:center;">
                                             <span class="lowest_bid_price">{{price}}<span>
@@ -119,7 +128,7 @@
 
 
                                 <tr class="bid_prices">
-                                    <td>입찰금액</td>
+                                    <td class="text-center" style="padding-top:15px;"><strong>입찰금액</strong></td>
                                     <td>
                                         <input type="text" class="bid_price form-control" placeholder="">
                                     </td>
@@ -137,6 +146,14 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td class="text-center"><strong>승자,패자</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <!-- <tr>
                                     <td>블록별가격증가율</td>
                                     <td></td>
                                     <td></td>
@@ -159,7 +176,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
 
@@ -167,19 +184,19 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12" style="text-align:center">
-                            <button type="button" class="btn btn-default _bid_btn displayNone" style="margin-right:10px;">
+                            <button type="button" class="btn btn-default _bid_btn" style="margin-right:10px;">
                                 <strong><i class="fa fa-check"></i> 입찰</strong>
                             </button>
-                            <button type="button" class="btn btn-default _bid_skip_btn displayNone" style="margin-right:10px;">
+                            <button type="button" class="btn btn-default _bid_skip_btn" style="margin-right:10px;">
                                 <strong><i class="fa fa-check"></i> 입찰Skip</strong>
                             </button>
-                            <button type="button" class="btn btn-default _not_bid_btn displayNone" style="margin-right:10px;">
+                            <button type="button" class="btn btn-default _not_bid_btn" style="margin-right:10px;">
                                 <strong><i class="fa fa-ban"></i> 입찰안함</strong>
                             </button>
-                            <button type="button" class="btn btn-default _delay_bid_btn displayNone" style="margin-right:10px;">
+                            <button type="button" class="btn btn-default _delay_bid_btn" style="margin-right:10px;">
                                 <strong><i class="fa fa-ban"></i> 유예</strong>
                             </button>
-                            <button type="button" class="btn btn-default _giveup_bid_btn  displayNone">
+                            <button type="button" class="btn btn-default _giveup_bid_btn">
                                 <strong><i class="fa fa-times"></i> 포기</strong>
                             </button>
                         </div>
@@ -196,25 +213,17 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>구분</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                 </tr>
                             </thead>
                             <tbody class="_ascending_bid">
                                 <!-- 시작가 -->
                                 <tr class="start_price_list">
-                                    <!-- <script class="start_price_list_tpl" type="text/x-handlebars-template">
-                                        <td>시작가</td>
-                                        <{{#priceList}}
-                                        <td style="text-align:center;" colspan=3>
-                                            <span>{{price}}</span>
-                                        </td>
-                                        {{/priceList}}
-                                    </script> -->
                                 </tr><!--/ 시작가 -->
                             </tbody>
                         </table>
