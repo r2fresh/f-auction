@@ -295,21 +295,15 @@ define([
             if(!this.checkBidWideBand(bidPriceEl)){
                 return false;
             }
+            // 입찰금액이 최소입찰금액 이상인지 체크 하는 함수
+
+            if(!this.checkBidPrice(bidPriceEl)){
+                return false;
+            }
 
             return;
 
-            // 광대역은 하나만 신청 가능 체크
-            // // 광대역은 하나만 신청가능하다는 것을 체크
-            // var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
-            //     return AuctionData.defaultPriceList[index].type === 'wideBand'
-            // })
-            // var limitWideBandArr = _.filter(wideBandArr,function(element){
-            //     return $(element).val() != '';
-            // })
-            // if(limitWideBandArr.length > 1) {
-            //     alert('광대역하나만 신청 가능합니다.');
-            //     return;
-            // }
+
             //
             // // 최소입찰가격이상을 입력했는지 체크
             // var lowestBidPriceCheck = _.every(this.$el.find('.bid_price'), Function.prototype.bind.call(function(element, index){
@@ -379,6 +373,9 @@ define([
                 },this)),
                 function(memo, num){ return memo + num; },0
             );
+
+            console.log('입찰한 최대 대역폭 : ' + maxBandWidth);
+
             if(maxBandWidth > this.ableBandWidth){
                 alert('정해진 대역폭을 초과 하셨습니다.');
                 flag = false;
@@ -395,18 +392,47 @@ define([
          */
         checkBidWideBand:function(elements){
             var flag = true;
+            var defaultPriceList = JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
 
-            // 광대역은 하나만 신청가능하다는 것을 체크
-            var wideBandArr = _.filter(this.$el.find('.bid_price'),function(element, index){
-                return AuctionData.defaultPriceList[index].type === 'wideBand'
+            var wideBandList = _.filter(elements,function(element,index){
+                // 입력 폼
+                var bidPriceValue = $(elements[index]).val();
+
+                //승자인 주파수 포함
+                var attr = $(elements[index]).attr('vs');
+                var winFlag = (typeof attr !== typeof undefined && attr !== false && attr === 'win')
+
+                return ( (bidPriceValue != '' || winFlag === true) && defaultPriceList[index].type == 'wideBand' )
             })
-            var limitWideBandArr = _.filter(wideBandArr,function(element){
-                return $(element).val() != '';
-            })
-            if(limitWideBandArr.length > 1) {
-                alert('광대역하나만 신청 가능합니다.');
-                return;
+
+            console.log('신청한 광대역 갯수 : ' + wideBandList.length)
+
+            if(wideBandList.length > 1) {
+                alert('광대역은 하나만 신청 가능합니다.');
+                flag = false;
             }
+            return flag;
+        },
+        /**
+         * 입찰금액이 최소입찰금액 이상인지 체크 하는 함수
+         */
+        checkBidPrice:function(elements){
+            var flag = true;
+            var priceList = _.filter(elements,Function.prototype.bind.call(function(element,index){
+                // 입력 폼
+                var bidPriceValue = $(elements[index]).val();
+
+                //승자인 주파수 포함
+                var attr = $(elements[index]).attr('vs');
+                var winFlag = (typeof attr !== typeof undefined && attr !== false && attr === 'win')
+
+                return (bidPriceValue != '' && winFlag === false && parseInt(bidPriceValue,10) < this.lowestBidPrices[index].price)
+            },this));
+            if(priceList.length > 0){
+                alert('입찰금액은 최소입찰액 이상으로 입력하셔야 합니다.')
+                flag = false;
+            }
+            return flag;
         },
 
 

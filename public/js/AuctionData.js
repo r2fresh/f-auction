@@ -10,11 +10,11 @@ define({
         {'name':'LG', 'price':0, 'vs':'win'}
     ],
     'defaultPriceList':[
-        {'name':'priceA','bandWidth':40,'price':0,'type':'wideBand'},
-        {'name':'priceB','bandWidth':20,'price':0,'type':'narrow'},
-        {'name':'priceC','bandWidth':20,'price':0,'type':'wideBand'},
-        {'name':'priceD','bandWidth':40,'price':0,'type':'wideBand'},
-        {'name':'priceE','bandWidth':20,'price':0,'type':'narrow'}
+        {'name':'priceA','bandWidth':40,'price':null,'type':'wideBand'},
+        {'name':'priceB','bandWidth':20,'price':null,'type':'narrow'},
+        {'name':'priceC','bandWidth':20,'price':null,'type':'wideBand'},
+        {'name':'priceD','bandWidth':40,'price':null,'type':'wideBand'},
+        {'name':'priceE','bandWidth':20,'price':null,'type':'narrow'}
     ],
 
     'startPriceList':[
