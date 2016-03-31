@@ -174,8 +174,12 @@ io.on('connection', function(socket){
         io.emit('SEAL_BID_FINISH',msg);
     })
 
-
-
+    /**
+     * 입찰자가 라운드의 결과를 확인 했는지 알림 이벤트
+     */
+    socket.on('ROUND_RESULT_CHEK',function(msg){
+        io.emit('ROUND_RESULT_CHEK',msg);
+    })
 });
 
 

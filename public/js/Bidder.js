@@ -31,6 +31,12 @@ define([
         ableBandWidth : 0,
         //밀봉최소입찰액리스트
         sealLowestBidPriceList : null,
+        //오른입찰신청 타입
+        ascendingBiddingType : '',
+        //입찰유예횟수체크
+        biddingDelayCount : 0,
+        //자동입찰 체크
+        autoBiddingFlag : false,
 
         //라운드 리스트 탬플릿
         //roundListPrices : null,
@@ -50,7 +56,7 @@ define([
             // 입찰안함 이벤트
             'click ._not_bid_btn' : 'onNotBid',
             // 유예버튼 이벤트
-            'click ._delay_bid_btn' : 'onDelayBid',
+            'click ._bid_delay_btn' : 'onDelayBid',
             // 포기버튼 이벤트
             'click ._giveup_bid_btn' : 'onGiveupBid',
             // 밀봉입찰 예상 증분율 확인 하는 이벤트
@@ -74,7 +80,8 @@ define([
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
 
             this.$el.find('._seal_bid_tap').addClass('displayNone');
-            //this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
+            //입찰 관련 버튼 모두 숨김
+            this.biddingBtnListDisplay(false);
         },
 
         //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 시작 ////////////////////////////////////////////////////////////
@@ -169,14 +176,23 @@ define([
          * 입찰버튼 클릭이벤트 핸들러
          */
         onBid:function(){
+            this.ascendingBiddingType = '';
             var bidPriceElementList = this.$el.find('.bid_price');
             //입찰 값 유효성 체크
-            if(!this.bidValidation(bidPriceElementList)) return;
+            if(!this.autoBiddingFlag){
+                if(!this.bidValidation(bidPriceElementList)) return;
+            }
             //입찰금액을 관리자 화면에 보내는 함수
             this.sendBid(bidPriceElementList);
+            //입찰 관련 버튼 모두 숨김
+            this.biddingBtnListDisplay(false);
 
-            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
-            alert(this.roundNum + '라운드 입찰신청이 되었습니다.');
+            if(this.autoBiddingFlag) {
+                alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
+                this.autoBiddingFlag = false;
+            } else {
+                alert(this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.');
+            }
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
 
@@ -184,25 +200,26 @@ define([
          * 스킵버튼 클릭이벤트 핸들러
          */
         onSkipBid:function(){
-            e.preventDefault();
+            this.ascendingBiddingType = '스킵';
+            this.resetBidPrice();
+            this.onBid();
         },
         /**
-         * 입찰않은 클릭이벤트 핸들러
+         * 입찰않음 클릭이벤트 핸들러
          */
-        onNotBid:function(){
-            e.preventDefault();
+        onNotBid:function(e){
         },
         /**
          * 유예신청 클릭이벤트 핸들러
          */
         onDelayBid:function(){
-            e.preventDefault();
+            this.biddingDelayCount += 1
+            this.biddingBtnListDisplay(false);
         },
         /**
          * 포기 클릭이벤트 핸들러
          */
         onGiveupBid:function(){
-            e.preventDefault();
         },
         /**
          * 예상증분률을 표시하는 함수
@@ -283,12 +300,20 @@ define([
             this.roundNum = num;
             alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
-            this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').removeClass('displayNone');
+            //입찰 관련 버튼 모두 보임
+            this.biddingBtnListDisplay(true);
+            // 자동입찰 체크
+            console.log('this.autoBiddingFlag : ' + this.autoBiddingFlag);
+            if(this.autoBiddingFlag){
+                this.setAutoBidding();
+            }
         },
         /**
          * 라운드가 끝나면 알려주는 핸들러
          */
         onRoundResult:function(msg){
+            //오름입찰타입 리셋
+            this.ascendingBiddingType = '';
             var data = JSON.parse(msg);
             console.log(data);
             //최소입찰액을 설정
@@ -297,6 +322,7 @@ define([
             this.setRoundWinPrice(data);
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
             alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
+            Auction.io.emit('ROUND_RESULT_CHEK',this.bidder_company);
         },
         /**
          * 오름입찰완료 알림 이벤트
@@ -387,6 +413,10 @@ define([
             this.lowestBidPrices = JSON.parse(JSON.stringify( this.setLowestBidPrice(winPriceList) ));
             // 최소입찰가격UI설정
             this.setLowestBidPriceUI( this.lowestBidPrices );
+
+            // 자동입찰 체크
+            this.checkAutoBidding(frequencyList);
+
             // 입찰 결과에 따른 입력 필드 UI 설정
             this.setBidPrices(winPriceList);
             // 승자 패자 표시 UI
@@ -422,7 +452,7 @@ define([
                     $(this.$el.find('.bid_price')[index]).attr('price',item.price);
                     $(this.$el.find('.bid_price')[index]).attr('placeholder','입찰불가');
                 } else {
-                    $(this.$el.find('.bid_price')[index]).prop('disabled',false);
+                    $(this.$el.find('.bid_price')[index]).prop('disabled',this.autoBiddingFlag);
                     $(this.$el.find('.bid_price')[index]).removeAttr('vs');
                     $(this.$el.find('.bid_price')[index]).removeAttr('price');
                     $(this.$el.find('.bid_price')[index]).attr('placeholder','');
@@ -472,6 +502,90 @@ define([
             var template = Handlebars.compile(this.bidVsTpl);
             this.$el.find('._bid_vs').html(template({'vsList':vsList}));
         },
+        /**
+         * 모든 입찰 신청 관련버튼들 Display 유무
+         */
+        biddingBtnListDisplay:function(flag){
+            this.biddingBtnDisplay(flag);
+            this.biddingSkipBtnDisplay(flag);
+            this.biddingDelayBtnDisplay(flag);
+        },
+        /**
+         * 입찰 신청 버튼 Display 유무
+         */
+        biddingBtnDisplay:function(flag){
+            if(flag){
+                this.$el.find('._bid_btn').removeClass('displayNone');
+            } else {
+                this.$el.find('._bid_btn').addClass('displayNone');
+            }
+        },
+        /**
+         * 입찰 스킵 신청 버튼 Display 유무
+         */
+        biddingSkipBtnDisplay:function(flag){
+            if(flag){
+                if(this.roundNum === 1){
+                    this.$el.find('._bid_skip_btn').addClass('displayNone');
+                } else {
+                    this.$el.find('._bid_skip_btn').removeClass('displayNone');
+                }
+            } else {
+                this.$el.find('._bid_skip_btn').addClass('displayNone');
+            }
+        },
+        /**
+         * 입찰 유예 신청 버튼 Display 유무
+         */
+        biddingDelayBtnDisplay:function(flag){
+            if(flag){
+                if(this.biddingDelayCount > 2){
+                    this.$el.find('._bid_delay_btn').addClass('displayNone');
+                } else {
+                    if(this.roundNum === 1){
+                        this.$el.find('._bid_delay_btn').addClass('displayNone');
+                    } else {
+                        this.$el.find('._bid_delay_btn').removeClass('displayNone');
+                    }
+                }
+            } else {
+                this.$el.find('._bid_delay_btn').addClass('displayNone');
+            }
+        },
+
+        /**
+         * 자동입찰 체크와 가능하면 자동입찰 실행
+         */
+        checkAutoBidding:function(data){
+            var bandWidthTotal = 0;
+            for(var i=0;i<data.length;++i){
+                for(var j=0;j<data[i].bidders.length;++j){
+                    if(data[i].bidders[j].name === this.bidder_company){
+                        if(data[i].bidders[j].vs === 'win'){
+                            bandWidthTotal = bandWidthTotal + data[i].bandWidth;
+                        }
+                    }
+
+                }
+            }
+            console.log('BAND_WITH_TOTAL : ' + bandWidthTotal);
+            console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
+
+            this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
+        },
+        setAutoBidding:function(){
+            this.ascendingBiddingType = '';
+            var bidPriceElementList = this.$el.find('.bid_price');
+            //입찰금액을 관리자 화면에 보내는 함수
+            this.sendBid(bidPriceElementList);
+            //입찰 관련 버튼 모두 숨김
+            this.biddingBtnListDisplay(false);
+
+            alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
+            this.autoBiddingFlag = false;
+            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
+        },
+
 
 
 

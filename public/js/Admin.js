@@ -61,6 +61,12 @@ define([
         //     {'name':'LG','ableBandWidth':0}
         // ],
 
+        roundResultCheck:[
+            {'name':'KT','state':false},
+            {'name':'SK','state':false},
+            {'name':'LG','state':false}
+        ],
+
 
  		el: '.admin',
  		events :{
@@ -87,7 +93,7 @@ define([
             this.setStartPriceList();
 
             // 밀봉입찰버튼 비활성화
-            //this.$el.find('._seal_bid_start_btn').addClass('displayNone');
+            this.$el.find('._seal_bid_start_btn').addClass('displayNone');
             // 밀봉입찰탭 비활성화
             this.$el.find('._seal_bid_tap').addClass('displayNone');
 
@@ -124,6 +130,7 @@ define([
             Auction.io.on('LOGIN_CHECK', Function.prototype.bind.call(this.onLoginCheck,this) );
             Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
             Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
+            Auction.io.on('ROUND_RESULT_CHEK', Function.prototype.bind.call(this.onRoundResultCheck,this) );
         },
         /**
          * 시작가 설정
@@ -148,8 +155,7 @@ define([
         /**
          * 라운드 시작 이벤트
          */
-        onRoundStart:function(e){
-            e.preventDefault();
+        onRoundStart:function(){
 
             // var check = _.every(this.loginCheckList,function(item){
             //     return item.state === true;
@@ -159,6 +165,29 @@ define([
             //     alert(' 모든 경매 참가자가 참여하지 않았습니다.');
             //     return;
             // }
+
+            if(!this.roundResultCheckFlag && this.roundNum > 1){
+
+                var notCheckStr = ''
+
+                for(var i=0;i<this.roundResultCheck.length;++i){
+                    var state = this.roundResultCheck[i].state;
+                    if(state == false){
+                        if(i != this.roundResultCheck.length-1){
+                            notCheckStr = notCheckStr + this.roundResultCheck[i].name + ',';
+                        } else {
+                            notCheckStr = notCheckStr + this.roundResultCheck[i].name;
+                        }
+
+                    }
+                }
+                alert(notCheckStr + ' 입찰자가 라운드 결과를 확인하지 않으셨습니다.\n 입찰자에게 확인 요청 드립니다.')
+                return;
+            }
+            _.each(this.roundResultCheck,function(item){
+                item.state = false;
+            })
+            this.roundResultCheckFlag = false;
 
             /**
              * 라운드 입찰 여부 리스트 리셋
@@ -376,13 +405,13 @@ define([
         postRoundSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
                 this.setRoundUI(data);
-                this.$el.find('._round_mark').text(this.roundNum + '라운드');
-                this.$el.find('._round_start_btn').removeClass('displayNone');
 
                 alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
                 Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
 
                 this.roundNum += 1;
+                this.$el.find('._round_mark').text(this.roundNum + '라운드');
+                this.$el.find('._round_start_btn').removeClass('displayNone');
             }
         },
         /**
@@ -435,6 +464,21 @@ define([
             // 밀봉입찰액 UI 렌더링
             this.setSealBidPriceUI(this.sealBidBidderList);
         },
+        /**
+         * 입찰자가 라운드 결과를 확인했는지 체크 하는 함수
+         */
+        onRoundResultCheck:function(msg){
+            console.log(msg)
+            _.each(this.roundResultCheck,function(item){
+                if(item.name == msg){
+                    item.state = true;
+                }
+            })
+
+            this.roundResultCheckFlag = _.every(this.roundResultCheck,function(item){
+                return item.state == true;
+            })
+        },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
 
         /**
@@ -477,7 +521,7 @@ define([
                 // 밀봉입찰액 테이블 셋팅
                 this.setSealBidPrice();
                 // 밀봉입찰 시작 버튼 활성화
-                this.$el.find('._seal_bid_start_btn').removeClass('displayNOne');
+                this.$el.find('._seal_bid_start_btn').removeClass('displayNone');
                 // 오름입찰 완료 입찰자에게 알림
                 Auction.io.emit('ASCENDING_BIDDING_FINISH','acendingBiddingFinish')
             }
