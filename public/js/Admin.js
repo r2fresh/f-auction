@@ -70,6 +70,8 @@ define([
             'click ._round_start_btn' : 'onRoundStart',
             //오름 차순 결과
             'click ._acending_btn' : 'onBiddingResult',
+            //밀봉 입찰 시작
+            'click ._seal_bid_start_btn' : 'onSealBidStart'
 
             //'click ._auction_end_btn' : 'onAuctionEnd',
             // 갱매시작
@@ -83,6 +85,11 @@ define([
             this.setTpl();
             this.setSocketReceiveEvent();
             this.setStartPriceList();
+
+            // 밀봉입찰버튼 비활성화
+            //this.$el.find('._seal_bid_start_btn').addClass('displayNone');
+            // 밀봉입찰탭 비활성화
+            this.$el.find('._seal_bid_tap').addClass('displayNone');
 
             Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
         },
@@ -197,6 +204,16 @@ define([
             //
             // //밀봉 입찰 최소액 셋팅
             // this.setSealLowestBidPrice(biddingResultList)
+        },
+        /**
+         * 밀봉 입찰 시작
+         */
+        onSealBidStart:function(e){
+            this.$el.find('._acending_btn').addClass('displayNone');
+            this.$el.find('._seal_bid_start_btn').addClass('displayNone');
+            this.$el.find('._seal_bid_tap').removeClass('displayNone').tab('show');
+
+            Auction.io.emit('SEAL_BID_START','sealBidStart')
         },
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
 
@@ -358,12 +375,14 @@ define([
          */
         postRoundSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-                alert('1라운드 모든 입찰자가 입찰하였습니다.')
-                Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
                 this.setRoundUI(data);
-                this.roundNum += 1;
                 this.$el.find('._round_mark').text(this.roundNum + '라운드');
-                this.$el.find('._round_start_btn').removeClass('displayNone')
+                this.$el.find('._round_start_btn').removeClass('displayNone');
+
+                alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
+                Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
+
+                this.roundNum += 1;
             }
         },
         /**
@@ -409,6 +428,7 @@ define([
 
             // true이면 밀봉입찰 조합 시작
             if(this.setSealBidCheck(bidder)) {
+                alert('모든 입찰자가 밀봉입찰 신청을 하였습니다. 밀봉입찰 결과를 출력합니다.')
                 this.setSealBidCombination()
             }
 
@@ -454,9 +474,12 @@ define([
                 var biddingResultList = this.setBiddingResult(data);
 
                 this.setSealLowestBidPrice(biddingResultList);
-
                 // 밀봉입찰액 테이블 셋팅
                 this.setSealBidPrice();
+                // 밀봉입찰 시작 버튼 활성화
+                this.$el.find('._seal_bid_start_btn').removeClass('displayNOne');
+                // 오름입찰 완료 입찰자에게 알림
+                Auction.io.emit('ASCENDING_BIDDING_FINISH','acendingBiddingFinish')
             }
         },
         /**
@@ -829,11 +852,12 @@ define([
 
 
         /**
-         * 밀봉입찰 조합 시작
+         * 밀봉입찰 조합 설정
          */
         setSealBidCombination:function(){
             var combinationList = SealBidCombination.getCombinationList(this.sealBidBidderList);
             this.setCombinationListUI(combinationList);
+            Auction.io.emit('SEAL_BID_FINISH','sealBidFinish')
         },
 
         /**

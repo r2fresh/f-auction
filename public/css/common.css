@@ -1,5 +1,5 @@
 .displayNone {
-    display:none;
+    display:none!important
 }
 
 .body-login-bg {

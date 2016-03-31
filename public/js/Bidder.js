@@ -72,6 +72,8 @@ define([
 
             Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
+
+            this.$el.find('._seal_bid_tap').addClass('displayNone');
             //this.$el.find('._bid_btn, ._bid_skip_btn, ._not_bid_btn, ._delay_bid_btn, ._giveup_bid_btn').addClass('displayNone');
         },
 
@@ -134,7 +136,10 @@ define([
             Auction.io.on('LOGIN_CHECK', Function.prototype.bind.call(this.onLoginCheck,this) );
             Auction.io.on('ROUND_START', Function.prototype.bind.call(this.onRoundStart,this) );
             Auction.io.on('ROUND_RESULT', Function.prototype.bind.call(this.onRoundResult,this) );
+            Auction.io.on('ASCENDING_BIDDING_FINISH', Function.prototype.bind.call(this.onAscendingBiddingFinish,this) );
             Auction.io.on('SEAL_LOWEST_BID_PRICE', Function.prototype.bind.call(this.onSealLowestBidPrice,this) );
+            Auction.io.on('SEAL_BID_START', Function.prototype.bind.call(this.onSealBidStart,this) );
+            Auction.io.on('SEAL_BID_FINISH', Function.prototype.bind.call(this.onSealBidFinish,this) );
         },
 
         /**
@@ -291,6 +296,22 @@ define([
             //라운드 승자표시 설정
             this.setRoundWinPrice(data);
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
+            alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
+        },
+        /**
+         * 오름입찰완료 알림 이벤트
+         */
+        onAscendingBiddingFinish:function(msg){
+            alert('오름입찰이 종료되었습니다.');
+            this.$el.find('._round_mark').text('오름입찰이 종료되었습니다. 밀봉입찰 준비중입니다.');
+        },
+        /**
+         * 밀봉입찰 시작 알림
+         */
+        onSealBidStart:function(msg){
+            this.$el.find('._seal_bid_tap').removeClass('displayNone').tab('show');
+            alert('밀봉입찰이 시작');
+            this.$el.find('._round_mark').text('밀봉입찰이 진행중입니다.');
         },
         /**
          * 밀봉 최소 입찰액 설정
@@ -304,6 +325,12 @@ define([
             this.sealLowestBidPriceList = JSON.parse(JSON.stringify(bidder));
             var template = Handlebars.compile(this.sealLowestBidPriceTpl);
             this.$el.find('._seal_lowest_bid_price').html(template(bidder));
+        },
+        /**
+         * 밀봉입찰조합완료 알림이벤트
+         */
+        onSealBidFinish:function(msg){
+            alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
 
@@ -348,10 +375,9 @@ define([
             Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
         },
         /**
-         * 최소 입찰액 설정
+         * 각 라운드 입찰 완료
          */
         setRoundResult:function(data){
-
             var frequencyList = JSON.parse(JSON.stringify(data.frequency));
             // winPriceList 설정 (winPrice에는 ''도 있다.)
             var winPriceList = _.map(frequencyList,function(frequency){
@@ -359,56 +385,12 @@ define([
             })
             //최소 입찰액 리스트 설정
             this.lowestBidPrices = JSON.parse(JSON.stringify( this.setLowestBidPrice(winPriceList) ));
-            console.log(this.lowestBidPrices)
+            // 최소입찰가격UI설정
             this.setLowestBidPriceUI( this.lowestBidPrices );
-
+            // 입찰 결과에 따른 입력 필드 UI 설정
             this.setBidPrices(winPriceList);
-
+            // 승자 패자 표시 UI
             this.setBidVsUI(frequencyList);
-
-            return;
-
-            // var priceList = _.map(data.frequency,Function.prototype.bind.call(function(item,index){
-            //
-            //     var price = 0;
-            //
-            //     var startPrice  = this.lowestBidPrices[index].price;
-            //     var lowestPrice = item.winPrice;
-            //
-            //     if(item.winPrice === 0){
-            //         price = startPrice
-            //     } else {
-            //         price = (startPrice > lowestPrice) ? startPrice : lowestPrice;
-            //     }
-            //
-            //     return {'name':item.name, 'price':price}
-            // },this));
-            //
-            // //this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
-            //
-            // this.setBidPrices(data.frequency);
-            //
-            // this.lowestBidPrices = this.runLowestBidAdd(priceList)
-            //
-            // this.setLowestBidPriceUI( this.lowestBidPrices );
-
-            // var priceArr = ['priceA','priceB','priceC','priceD','priceE']
-            //
-            // var priceList = _.map(priceArr, Function.prototype.bind.call(function(item, index){
-            //
-            //     var startPrice  = this.startPriceList[index].price;
-            //     var lowestPrice = _.max(_.pluck(data, item));
-            //     var price = (startPrice > lowestPrice) ? startPrice : lowestPrice;
-            //
-            //     return {'name':item, 'price':price}
-            // },this));
-            //
-            // this.lowestBidPrices = JSON.parse( JSON.stringify( priceList ) );
-            //
-            // this.setBidPrices(priceList);
-            //
-            // this.setLowestBidPriceUI( this.runLowestBidAdd(priceList) );
-
         },
         /**
          * 최소 입찰액 리스트 설정
@@ -423,23 +405,12 @@ define([
                     item.price = parseInt(item.price,10) + Math.ceil(item.price*this.lowestBidAdd/100);
                 }
 
-                // var startPrice  = this.lowestBidPrices[index].price;
-                //
-                // console.log(JSON.parse(JSON.stringify(item)).price)
-                //
-                // if(startPrice != item.price){
-                //     item.price = parseInt(item.price,10) + Math.ceil(item.price*this.lowestBidAdd/100)
-                // } else {
-                //     item.price = parseInt(startPrice,10)
-                // }
-                // console.log(item.price)
-
                 return item
             },this));
             return priceList;
         },
         /**
-         * 입찰금액 리스트 설정
+         * 입찰 결과에 따른 입력 필드 UI 설정
          */
         setBidPrices : function(data){
 
@@ -459,16 +430,6 @@ define([
 
             },this));
 
-            // _.each(this.$el.find('.bid_price'),function(element,index){
-            //     if($(element).val() != '' && parseInt($(element).val(),10) === data[index].price) {
-            //         $(element).prop('disabled',true)
-            //         $(element).attr('placeholder','승자')
-            //     } else {
-            //         $(element).prop('disabled',false)
-            //         $(element).attr('placeholder','')
-            //     }
-            // })
-
             this.resetBidPrice();
         },
         /**
@@ -485,24 +446,12 @@ define([
             var template = Handlebars.compile(this.roundResultTpl);
             this.$el.find('._ascending_bid').append(template(data));
         },
+        /**
+         * 승자패자를 표시해 주는 함수
+         */
         setBidVsUI:function(data){
-
-            // _.each(data,Function.prototype.bind.call(function(item,index){
-            //     if(item.bidder == this.bidder_company){
-            //         item.vs = '승자';
-            //     } else {
-            //         if(item.bidder != ''){
-            //             item.vs = '패자';
-            //         } else {
-            //             item.vs = ''
-            //         }
-            //     }
-            // },this))
-
             var vsList = [];
-
             var vs = '';
-
             for(var i=0;i<data.length;++i){
                 for(var j=0;j<data[i].bidders.length;++j){
 
@@ -519,27 +468,7 @@ define([
 
                 }
             }
-
-            // var vsList = _.map(data,Function.prototype.bind.call(function(item,index){
-            //
-            //     var vs = _.map(item.bidders,Function.prototype.bind.call(function(bidder,index){
-            //
-            //         if(bidder.bidder === 'win'){
-            //             vs = '승자';
-            //         } else if(bidder.bidder === 'lose'){
-            //             vs = '패자';
-            //         } else {
-            //             vs = '';
-            //         }
-            //         return vs;
-            //     },this))
-            //
-            //     return vs;
-            //
-            // },this));
-
             console.log(data)
-
             var template = Handlebars.compile(this.bidVsTpl);
             this.$el.find('._bid_vs').html(template({'vsList':vsList}));
         },

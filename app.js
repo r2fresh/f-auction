@@ -140,6 +140,21 @@ io.on('connection', function(socket){
         io.emit('ROUND_RESULT',msg)
     })
 
+    /**
+     * 오른입찰완료 알림 이벤트
+     */
+    socket.on('ASCENDING_BIDDING_FINISH',function(msg){
+        console.log(msg)
+        io.emit('ASCENDING_BIDDING_FINISH',msg)
+    })
+
+    /**
+     * 밀봉입찰시작 알림 이벤트
+     */
+    socket.on('SEAL_BID_START',function(msg){
+        io.emit('SEAL_BID_START',msg)
+    })
+
     socket.on('SEAL_LOWEST_BID_PRICE',function(msg){
         console.log(msg)
         io.emit('SEAL_LOWEST_BID_PRICE',msg)
@@ -151,6 +166,15 @@ io.on('connection', function(socket){
     socket.on('SEAL_BID_PRICE',function(msg){
         io.emit('SEAL_BID_PRICE',msg);
     })
+
+    /**
+     * 입찰자 밀봉입찰
+     */
+    socket.on('SEAL_BID_FINISH',function(msg){
+        io.emit('SEAL_BID_FINISH',msg);
+    })
+
+
 
 });
 
