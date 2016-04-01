@@ -79,7 +79,7 @@ var server = app.listen(app.get('port'), function () {
 });
 
 
-var io = require('socket.io')(server);
+var io = require('socket.io')(server)//,{'pingTimeout':15000, 'pingInterval', 8000});
 
 io.on('connection', function(socket){
 

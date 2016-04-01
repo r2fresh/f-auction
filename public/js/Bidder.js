@@ -35,8 +35,11 @@ define([
         ascendingBiddingType : '',
         //입찰유예횟수체크
         biddingDelayCount : 0,
+        //입찰유예 신청 했는짖 체크
+        biddingDelayFlag : false,
         //자동입찰 체크
         autoBiddingFlag : false,
+
 
         //라운드 리스트 탬플릿
         //roundListPrices : null,
@@ -180,8 +183,21 @@ define([
             var bidPriceElementList = this.$el.find('.bid_price');
             //입찰 값 유효성 체크
             if(!this.autoBiddingFlag){
-                if(!this.bidValidation(bidPriceElementList)) return;
+                if(!this.bidValidation(bidPriceElementList)) {
+                    //유효성 체크 시 false이면 입차 유예 카운트는 증가 하지 않음 
+                    this.biddingDelayFlag = false;
+                    return;
+                }
             }
+
+            //입찰유예일 경우 체크
+            if(this.biddingDelayFlag){
+                this.biddingDelayCount += 1;
+                var countStr = '유예입찰가능횟수 : ' + (2-this.biddingDelayCount).toString();
+                this.$el.find('._bid_delay_count').text(countStr);
+                this.biddingDelayFlag = false;
+            }
+
             //입찰금액을 관리자 화면에 보내는 함수
             this.sendBid(bidPriceElementList);
             //입찰 관련 버튼 모두 숨김
@@ -213,8 +229,10 @@ define([
          * 유예신청 클릭이벤트 핸들러
          */
         onDelayBid:function(){
-            this.biddingDelayCount += 1
-            this.biddingBtnListDisplay(false);
+            this.ascendingBiddingType = '유예';
+            this.biddingDelayFlag = true;
+            this.resetBidPrice();
+            this.onBid();
         },
         /**
          * 포기 클릭이벤트 핸들러
@@ -539,7 +557,7 @@ define([
          */
         biddingDelayBtnDisplay:function(flag){
             if(flag){
-                if(this.biddingDelayCount > 2){
+                if(this.biddingDelayCount == 2){
                     this.$el.find('._bid_delay_btn').addClass('displayNone');
                 } else {
                     if(this.roundNum === 1){
