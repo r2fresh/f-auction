@@ -544,9 +544,7 @@ define([
             ];
 
             var priceList = _.map(companyArr,Function.prototype.bind.call(function(company){
-
                 return _.extend( company,{'priceList':this.setFrequencyList(company,data)} )
-
             },this))
 
             //this.companyPercent(priceList);
