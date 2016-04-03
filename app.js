@@ -161,11 +161,24 @@ io.on('connection', function(socket){
 
         console.log(roundList)
 
+        console.log("======== loginData ======")
+        console.log(loginData)
+
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 
     socket.on('LOGIN_CHECK',function(msg){
         console.log(msg)
+
+        for(var i=0; i<loginData.length ;++i){
+
+            if(loginData[i].name == msg){
+                if(!loginData[i].state){
+                    loginData[i].state = true;
+                }
+            }
+        }
+
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 

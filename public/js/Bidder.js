@@ -374,7 +374,11 @@ define([
          */
         onSealLowestBidPrice:function(msg){
             var data = JSON.parse(msg);
-            var bidderList = _.filter(data,Function.prototype.bind.call(function(item){
+
+            // 각 주파수 통신사 구분없이 최고가를 구함
+            var maxPriceData = JSON.parse(JSON.stringify(this.getFrequencyMaxPrice(data)));
+
+            var bidderList = _.filter(maxPriceData,Function.prototype.bind.call(function(item){
                 return item.name === this.bidder_company;
             },this))
             var bidder = bidderList[0];
@@ -389,6 +393,42 @@ define([
             alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
+
+        /**
+         * 각 입찰자의 순위는 다르지만 밀봉입찰최소액은 마지막 라운드 최대값으로 동일하게 하는 함수
+         */
+        getFrequencyMaxPrice:function(data){
+
+            var bidderList = JSON.parse(JSON.stringify(data));
+            var frequencyList = [[],[],[],[],[]];
+
+            console.log(bidderList)
+
+            for(var i=0; i<bidderList.length; ++i){
+                for(var j=0; j<bidderList[i].priceList.length; ++j){
+                    frequencyList[j][i] = (bidderList[i].priceList[j].price == '') ? 0 : parseInt(bidderList[i].priceList[j].price,10)
+                }
+            }
+
+            console.log(frequencyList)
+
+            var maxList = _.map(frequencyList,function(item){
+                return _.max(item);
+            })
+
+            console.log(maxList)
+
+            _.each(bidderList,function(bidder){
+                _.each(bidder.priceList,function(priceList,index){
+                    console.log('(maxList[index])' + (maxList[index]))
+                    priceList.price = (maxList[index]).toString();
+                })
+            })
+
+            console.log(bidderList);
+
+            return bidderList;
+        },
 
         /**
          * 시작가 UI 설정
