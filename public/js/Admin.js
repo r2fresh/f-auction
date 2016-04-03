@@ -18,6 +18,8 @@ define([
         auctionID : 0,
         // 생성된 경매의 이름
         auctionName : '',
+        // 증분율
+        lowestBidAdd : 0,
         // 현재 라운드 정보
         roundNum : 1,
         // 각 라운드 데이터
@@ -90,6 +92,7 @@ define([
             this.$el.html(Admin);
             this.setTpl();
             this.setSocketReceiveEvent();
+            this.setLowestBidAdd();
             this.setStartPriceList();
 
             // 밀봉입찰버튼 비활성화
@@ -131,6 +134,14 @@ define([
             Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
             Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
             Auction.io.on('ROUND_RESULT_CHEK', Function.prototype.bind.call(this.onRoundResultCheck,this) );
+        },
+        /**
+         * 증분율 설정
+         */
+        setLowestBidAdd : function(){
+            var userInfo = Auction.session.get('user_info');
+            this.lowestBidAdd = userInfo.rate;
+            this.$el.find('._bid_rate').text('증분율 : ' + this.lowestBidAdd + '%');
         },
         /**
          * 시작가 설정

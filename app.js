@@ -19,11 +19,14 @@ var loginData = [
     {'name':'kt','state':false},
     {'name':'sk','state':false},
     {'name':'lg','state':false}
-]
+];
 
 var roundList = [
 
 ];
+
+var pwd = 'zpdlqodzm';
+var rate = 0;
 
 /**
  * 로그인 함수
@@ -31,19 +34,64 @@ var roundList = [
 app.post('/login', function(req, res) {
     var result = false;
     var bodyData = req.body;
+    var pwdResult = false;
+    var overlap = false;
 
-    for(var i=0; i<loginData.length ;++i){
+    var resultStr = '';
 
-        if(loginData[i].name === bodyData.bidder){
-            if(!loginData[i].state){
-                loginData[i].state = true;
-                result = true;
-            } else {
-                result = false;
+    //console.log(bodyData)
+
+    //console.log(loginData)
+
+    // 관리자가 로그인을 할 경우
+    if(bodyData.bidder == 'admin'){
+        // 관리자는 비밀
+        if(bodyData.pwd == pwd){
+            rate = parseInt(bodyData.rate, 10);
+            pwdResult = true;
+            result = true;
+        } else {
+            resultStr = '비밀번호가 틀립니다.\n다시 입력해주시기 바랍니다.'
+            pwdResult = false;
+            result = false;
+        }
+    } else {
+        console.log('bodyData.bidder : ' + bodyData.bidder)
+        console.log('rate : ' + rate)
+        if(rate > 0){
+            resultStr = bodyData.bidder + '로 로그인 되었습니다.'
+            result = true;
+        } else {
+            resultStr = '관리자가 아직 로그인 되지 않았습니다.\n관리자 로그인 후 입찰자 로그인이 가능합니다.'
+            result = false;
+        }
+    }
+
+    //console.log(loginData)
+    //console.log('result : ' + result)
+
+    if(result == true){
+
+        // 중복된 로그인 체크
+        for(var i=0; i<loginData.length ;++i){
+
+            if(loginData[i].name == bodyData.bidder){
+                if(!loginData[i].state){
+                    loginData[i].state = true;
+                    console.log("34343344")
+                    overlap = true;
+                    result = true;
+                } else {
+                    console.log("121212")
+                    overlap = false;
+                    result = false;
+                }
             }
         }
     }
-    res.send({'result':result})
+    console.log(overlap)
+
+    res.send({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 })
 
 app.post('/round', function(req, res) {
@@ -96,7 +144,7 @@ io.on('connection', function(socket){
         if(!cookieData.user) return;
 
         _.each(loginData,function(item){
-            if(item.name === cookieData.user){
+            if(item.name == cookieData.user){
                 item.state = false;
             }
         })
@@ -108,6 +156,7 @@ io.on('connection', function(socket){
         if(logFlag){
             roundList = null;
             roundList = [];
+            rate = 0;
         }
 
         console.log(roundList)

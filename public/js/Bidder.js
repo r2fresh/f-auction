@@ -76,6 +76,7 @@ define([
             this.setBidderLogo();
             this.setBidStrategy();
             this.setLimitHertz();
+            this.setLowestBidAdd();
             this.setSocketReceiveEvent();
             this.setStartPriceList();
 
@@ -135,10 +136,21 @@ define([
          * 입찰 회사 제한 대역폭 설정
          */
         setLimitHertz : function(){
-            var userInfo = Auction.session.get('user_info');;
+            var userInfo = Auction.session.get('user_info');
             this.ableBandWidth = userInfo.hertz;
-            this.$el.find('#limit_hertz').text('제한주파수 : ' + userInfo.hertz + 'Hz');
+            this.$el.find('._able_hertz').text('지원가능주파수 : ' + userInfo.hertz + 'Hz');
+            this.$el.find('#limit_hertz').text(' / 제한주파수 : ' + userInfo.hertz + 'Hz');
         },
+
+        /**
+         * 증분율 설정
+         */
+        setLowestBidAdd : function(){
+            var userInfo = Auction.session.get('user_info');
+            this.lowestBidAdd = userInfo.rate;
+            this.$el.find('._bid_rate').text('증분율 : ' + this.lowestBidAdd + '%');
+        },
+
         /**
          * socket.io 서버에서 보내주는 이벤트를 받는 리시브 설정
          */
@@ -184,7 +196,7 @@ define([
             //입찰 값 유효성 체크
             if(!this.autoBiddingFlag){
                 if(!this.bidValidation(bidPriceElementList)) {
-                    //유효성 체크 시 false이면 입차 유예 카운트는 증가 하지 않음 
+                    //유효성 체크 시 false이면 입차 유예 카운트는 증가 하지 않음
                     this.biddingDelayFlag = false;
                     return;
                 }
@@ -590,7 +602,12 @@ define([
             console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
 
             this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
+            this.$el.find('._able_hertz').text('지원가능주파수 : ' + (this.ableBandWidth - bandWidthTotal) + 'Hz');
         },
+
+        /**
+         * 자동입찰을 실행하는 함수
+         */
         setAutoBidding:function(){
             this.ascendingBiddingType = '';
             var bidPriceElementList = this.$el.find('.bid_price');
@@ -604,6 +621,26 @@ define([
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
 
+        /**
+         * 지원 가능한 주파수를 계산하는 함수
+         */
+        // checkAutoBidding:function(data){
+        //     var bandWidthTotal = 0;
+        //     for(var i=0;i<data.length;++i){
+        //         for(var j=0;j<data[i].bidders.length;++j){
+        //             if(data[i].bidders[j].name === this.bidder_company){
+        //                 if(data[i].bidders[j].vs === 'win'){
+        //                     bandWidthTotal = bandWidthTotal + data[i].bandWidth;
+        //                 }
+        //             }
+        //
+        //         }
+        //     }
+        //     console.log('BAND_WITH_TOTAL : ' + bandWidthTotal);
+        //     console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
+        //
+        //     this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
+        // },
 
 
 

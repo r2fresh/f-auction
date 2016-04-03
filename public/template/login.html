@@ -4,59 +4,72 @@
 </div>
 <div style="background-color:#ffffff;padding:20px;">
     <form class="form-horizontal">
-      <div class="form-group">
-        <label for="inputEmail3" class="col-md-3 control-label"><i class="fa fa-user"></i> 사용자 :</label>
-        <div class="col-md-9 _login_bidder">
-            <label class="radio-inline">
-                <input type="radio" name="login_bidder" value="admin" checked> 관리자
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="login_bidder" value="kt"> KT
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="login_bidder" value="sk"> SK
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="login_bidder" value="lg"> LG
-            </label>
+        <div class="form-group _login_bidder">
+            <label for="inputEmail3" class="col-md-3 control-label"><i class="fa fa-user"></i> 사용자 :</label>
+            <div class="col-md-9">
+                <label class="radio-inline">
+                    <input type="radio" name="login_bidder" value="admin" checked> 관리자
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="login_bidder" value="kt"> KT
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="login_bidder" value="sk"> SK
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="login_bidder" value="lg"> LG
+                </label>
+            </div>
         </div>
-      </div>
 
-      <form class="form-horizontal">
+        <div class="form-group _login_password">
+            <label for="inputPassword3" class="col-sm-3 control-label"><i class="fa fa-lock"></i> 암호 :</label>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+            </div>
+        </div>
+
+        <div class="form-group _login_increaseRate">
+            <label for="inputPassword3" class="col-sm-3 control-label"><i class="fa fa-percent"></i> 증분율 :</label>
+            <div class="col-sm-9">
+                <select class="form-control" style="width:auto;">
+                    <option value="1" selected>1%</option>
+                    <option value="2">2%</option>
+                    <option value="3">3%</option>
+                    <option value="4">4%</option>
+                    <option value="5">5%</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group _login_hertz">
+            <label for="inputEmail3" class="col-md-3 control-label"><i class="fa fa-bolt"></i> 제한주파수 :</label>
+            <div class="col-md-9">
+                <label class="radio-inline">
+                    <input type="radio" name="hertz" value="20"> 20Hz
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="hertz" value="40"> 40Hz
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="hertz" value="60" checked> 60Hz
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group _login_bidder_strategy">
+            <label class="col-md-3 control-label"><i class="fa fa-compass"></i> 입찰전략 :</label>
+            <div class="col-md-9">
+                <textarea class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
         <div class="form-group">
-          <label for="inputEmail3" class="col-md-3 control-label"><i class="fa fa-bolt"></i> 제한주파수 :</label>
-          <div class="col-md-9 _login_hertz">
-              <label class="radio-inline">
-                  <input type="radio" name="hertz" value="20"> 20Hz
-              </label>
-              <label class="radio-inline">
-                  <input type="radio" name="hertz" value="40"> 40Hz
-              </label>
-              <label class="radio-inline">
-                  <input type="radio" name="hertz" value="60" checked> 60Hz
-              </label>
-          </div>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-block btn-flat _login_btn"><i class="fa fa-sign-in"></i><strong> 로그인</strong></button>
+            </div>
         </div>
-
-      <!-- <div class="form-group">
-        <label for="inputPassword3" class="col-md-3 control-label"><i class="fa fa-lock"></i> 암호 :</label>
-        <div class="col-md-9">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="암호">
-        </div>
-      </div> -->
-
-      <div class="form-group">
-        <label class="col-md-3 control-label"><i class="fa fa-compass"></i> 입찰전략 :</label>
-        <div class="col-md-9">
-         <textarea class="form-control _login_bidder_strategy" rows="3"></textarea>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-md-12">
-          <button type="submit" class="btn btn-primary btn-block btn-flat _login_btn"><i class="fa fa-sign-in"></i><strong> 로그인</strong></button>
-        </div>
-      </div>
     </form>
     <footer class="main-footer">
 
