@@ -297,10 +297,6 @@ define([
             // 금액 순위별 퍼센트 룰을 잘 준수 했는데 체크 하는 함수
             if(!this.checkSealBidPercent(sortPercentList)) return;
 
-            console.log(insertPriceList)
-            console.log(percentList)
-            console.log(sortPercentList);
-
             var priceList = _.map(percentList,Function.prototype.bind.call(function(item ,index){
                 var frequency = {'name':priceArr[index],'price':item.price, 'company':this.bidder_company}
                 return _.extend(defaultPriceList[index],frequency);
@@ -309,6 +305,8 @@ define([
             var bidderList = {'name':this.bidder_company,'ableBandWidth':this.ableBandWidth,'priceList':priceList};
 
             Auction.io.emit('SEAL_BID_PRICE', JSON.stringify(bidderList));
+
+            alert('밀봉입찰 신청을 완료 했습니다.');
         },
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
 

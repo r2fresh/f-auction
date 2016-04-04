@@ -113,10 +113,11 @@ define([
                var combinationSumSortList = this.setCombinationSumSort(combinationSumList);
                var combinationReverseList = this.setCombinationReverse(combinationSumSortList);
                var combinationRankingList = this.setCombinationRanking(combinationReverseList);
+               var combinationNamingList = this.setCombinationNaming(combinationRankingList);
 
-               console.log(combinationRankingList)
+               console.log(combinationNamingList)
 
-               return combinationRankingList;
+               return combinationNamingList;
            },
            /**
             * 밀봉 조합에서 광대역이 두개 들어가 있는 지 체크 하는 함수
@@ -266,6 +267,27 @@ define([
                }
                return combinationList;
            },
+           /**
+           * 각 통신사 명칭 변경 (SK -> SKT,LG -> LGU+)
+           */
+           setCombinationNaming:function(data){
+                var combinationList = JSON.parse(JSON.stringify(data));
+                var company = '';
+
+                for (var i=0; i<combinationList.length; ++i){
+                    for(var j=0; j<combinationList[i].combination.length; ++j){
+                        if(combinationList[i].combination[j].company == 'SK'){
+                            company = 'SKT';
+                        } else if(combinationList[i].combination[j].company == 'LG'){
+                            company = 'LGU+';
+                        } else {
+                            company = combinationList[i].combination[j].company;
+                        }
+                        combinationList[i].combination[j].company = company;
+                    }
+                }
+                return combinationList;
+           }
        }
    }
 )

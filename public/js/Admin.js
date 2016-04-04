@@ -179,15 +179,25 @@ define([
 
             if(!this.roundResultCheckFlag && this.roundNum > 1){
 
-                var notCheckStr = ''
+                var notCheckStr = '';
+                var companyName = '';
 
                 for(var i=0;i<this.roundResultCheck.length;++i){
                     var state = this.roundResultCheck[i].state;
                     if(state == false){
-                        if(i != this.roundResultCheck.length-1){
-                            notCheckStr = notCheckStr + this.roundResultCheck[i].name + ',';
+
+                        if(this.roundResultCheck[i].name == 'SK'){
+                            companyName = 'SKT';
+                        } else if(this.roundResultCheck[i].name == 'LG'){
+                            companyName = 'LGU+'
                         } else {
-                            notCheckStr = notCheckStr + this.roundResultCheck[i].name;
+                            companyName = this.roundResultCheck[i].name;
+                        }
+
+                        if(i != this.roundResultCheck.length-1){
+                            notCheckStr = notCheckStr + companyName + ',';
+                        } else {
+                            notCheckStr = notCheckStr + companyName;
                         }
 
                     }
@@ -253,7 +263,10 @@ define([
             this.$el.find('._seal_bid_start_btn').addClass('displayNone');
             this.$el.find('._seal_bid_tap').removeClass('displayNone').tab('show');
 
-            Auction.io.emit('SEAL_BID_START','sealBidStart')
+            // 밀봉입찰 시작 표시
+            this.$el.find('._round_mark').text('밀봉입찰 시작');
+
+            Auction.io.emit('SEAL_BID_START','sealBidStart');
         },
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
 
@@ -478,6 +491,8 @@ define([
             // true이면 밀봉입찰 조합 시작
             if(this.setSealBidCheck(bidder)) {
                 alert('모든 입찰자가 밀봉입찰 신청을 하였습니다. 밀봉입찰 결과를 출력합니다.')
+                // 오른입찰 완료 표시
+                this.$el.find('._round_mark').text('밀봉입찰 결과');
                 this.setSealBidCombination()
             }
 
@@ -540,8 +555,14 @@ define([
                 this.setSealLowestBidPrice(biddingResultList);
                 // 밀봉입찰액 테이블 셋팅
                 this.setSealBidPrice();
+
+                // 오른입찰 완료 표시
+                this.$el.find('._round_mark').text('오름입찰 완료');
+
                 // 밀봉입찰 시작 버튼 활성화
                 this.$el.find('._seal_bid_start_btn').removeClass('displayNone');
+                // 라운드 시작 버튼 비 활성화
+                this.$el.find('._round_start_btn').addClass('displayNone');
                 // 오름입찰 완료 입찰자에게 알림
                 Auction.io.emit('ASCENDING_BIDDING_FINISH','acendingBiddingFinish')
             }
