@@ -25,7 +25,7 @@ var roundList = [
 
 ];
 
-var pwd = 'zpdlqodzm';
+var pwd = 'wnvktnrudao';
 var rate = 0;
 
 /**
@@ -38,8 +38,6 @@ app.post('/login', function(req, res) {
     var overlap = false;
 
     var resultStr = '';
-
-    //console.log(bodyData)
 
     //console.log(loginData)
 

@@ -265,7 +265,13 @@ define([
             this.loginCheckList = JSON.parse(msg);
             var list = JSON.parse(msg);
             _.each(list,function(item){
-                item.name = (item.name).toUpperCase();
+                if(item.name == 'sk'){
+                    item.name = 'SKT';
+                } else if(item.name == 'lg'){
+                    item.name = 'LGU+'
+                } else {
+                    item.name = (item.name).toUpperCase();
+                }
                 item.className = (item.state) ? 'success' : 'danger';
             })
             this.$el.find('.connect_user_list').empty();
@@ -457,14 +463,17 @@ define([
         onSealBidPrice:function(msg){
 
             var bidder = JSON.parse(msg);
+            console.log(bidder)
             _.each(this.sealBidBidderList,function(item){
-                if(item.name === bidder.name){
+                if(item.name == bidder.name){
                     item.priceList = _.extend(item.priceList,bidder.priceList);
                 }
             })
+            console.log(JSON.parse(JSON.stringify(this.sealBidBidderList)))
+
 
             //밀봉입찰조합에 필요한 통신사 지원 대역폭 저장
-            SealBidCombination.setSealBidBidderList(bidder);
+            SealBidCombination.setSealBandWidthList(bidder);
 
             // true이면 밀봉입찰 조합 시작
             if(this.setSealBidCheck(bidder)) {

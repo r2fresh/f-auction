@@ -138,8 +138,8 @@ define([
         setLimitHertz : function(){
             var userInfo = Auction.session.get('user_info');
             this.ableBandWidth = userInfo.hertz;
-            this.$el.find('._able_hertz').text('지원가능주파수 : ' + userInfo.hertz + 'Hz');
-            this.$el.find('#limit_hertz').text(' / 제한주파수 : ' + userInfo.hertz + 'Hz');
+            this.$el.find('._able_hertz').text('남은내역폭 : ' + userInfo.hertz + 'Hz');
+            this.$el.find('#limit_hertz').text(' / 신청대역폭 : ' + userInfo.hertz + 'Hz');
         },
 
         /**
@@ -297,7 +297,11 @@ define([
             // 금액 순위별 퍼센트 룰을 잘 준수 했는데 체크 하는 함수
             if(!this.checkSealBidPercent(sortPercentList)) return;
 
-            var priceList = _.map(sortPercentList,Function.prototype.bind.call(function(item ,index){
+            console.log(insertPriceList)
+            console.log(percentList)
+            console.log(sortPercentList);
+
+            var priceList = _.map(percentList,Function.prototype.bind.call(function(item ,index){
                 var frequency = {'name':priceArr[index],'price':item.price, 'company':this.bidder_company}
                 return _.extend(defaultPriceList[index],frequency);
             },this));
@@ -315,7 +319,13 @@ define([
         onLoginCheck:function(msg){
             var list = JSON.parse(msg);
             _.each(list,function(item){
-                item.name = (item.name).toUpperCase();
+                if(item.name == 'sk'){
+                    item.name = 'SKT';
+                } else if(item.name == 'lg'){
+                    item.name = 'LGU+'
+                } else {
+                    item.name = (item.name).toUpperCase();
+                }
                 item.className = (item.state) ? 'success' : 'danger';
             })
             this.$el.find('.connect_user_list').empty();
@@ -376,9 +386,9 @@ define([
             var data = JSON.parse(msg);
 
             // 각 주파수 통신사 구분없이 최고가를 구함
-            var maxPriceData = JSON.parse(JSON.stringify(this.getFrequencyMaxPrice(data)));
+            //var maxPriceData = JSON.parse(JSON.stringify(this.getFrequencyMaxPrice(data)));
 
-            var bidderList = _.filter(maxPriceData,Function.prototype.bind.call(function(item){
+            var bidderList = _.filter(data,Function.prototype.bind.call(function(item){
                 return item.name === this.bidder_company;
             },this))
             var bidder = bidderList[0];
@@ -864,13 +874,15 @@ define([
 
         /**
          * 밀봉최소입찰금액에서 밀봉입찰금액 증액 퍼센트 구하는 함수
+         * 밀봉입찰액 증분율 공식 (밀봉입찰액-오름입찰액)/오름입찰액
          */
         getSealBidPercent:function(data){
             var insertPriceList = JSON.parse(JSON.stringify(data));
             var percentList = _.map(this.sealLowestBidPriceList.priceList,function(item,index){
                 var lowestPrice = item.price;
                 var insertPrice = insertPriceList[index].price;
-                var percent = Math.ceil( ( 1-(lowestPrice/insertPrice) )*100 );
+                //var percent = Math.ceil( ( 1-(lowestPrice/insertPrice) )*100 );
+                var percent = Math.ceil( ( (insertPrice-lowestPrice)/insertPrice )*100 );
                 return {'ranking':insertPriceList[index].ranking,'percent':percent,'price':insertPrice}
 
             })

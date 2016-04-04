@@ -5,7 +5,7 @@ define([
    function(module, AuctionData){
 
        module.exports = {
-           sealBidBidderList:null,
+           //sealBidBidderList:null,
            sealBandWidthList:[
                {'name':'KT','ableBandWidth':0},
                {'name':'SK','ableBandWidth':0},
@@ -14,16 +14,16 @@ define([
            /**
             * 밀봉 입찰액 객체 설정
             */
-           setSealBidBidderList:function(data){
-               this.sealBidBidderList = JSON.parse( JSON.stringify(data) );
-           },
-           getSealBidBidderList:function(){
-               return this.sealBidBidderList;
-           },
+        //    setSealBidBidderList:function(data){
+        //        this.sealBidBidderList = JSON.parse( JSON.stringify(data) );
+        //    },
+        //    getSealBidBidderList:function(){
+        //        return this.sealBidBidderList;
+        //    },
            /**
             * 입찰자들의 신청 가능 대역폭 저장
             */
-           setSealBidBidderList:function(data){
+           setSealBandWidthList:function(data){
                var bidder = data;
                _.each(this.sealBandWidthList,function(item){
                    if(item.name === bidder.name){
