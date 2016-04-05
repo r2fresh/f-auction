@@ -9,7 +9,6 @@ define({
         {'name':'SK', 'price':'', 'vs':'win'},
         {'name':'LG', 'price':'', 'vs':'win'}
     ],
-
     'defaultPriceList':[
         {'name':'priceA','bandWidth':40,'price':'','type':'wideBand'},
         {'name':'priceB','bandWidth':20,'price':'','type':'narrow'},

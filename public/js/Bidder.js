@@ -39,6 +39,8 @@ define([
         biddingDelayFlag : false,
         //자동입찰 체크
         autoBiddingFlag : false,
+        //입찰수 주파수 리스트
+        hertzList : null,
 
 
         //라운드 리스트 탬플릿
@@ -75,10 +77,12 @@ define([
             this.setBidderCompany();
             this.setBidderLogo();
             this.setBidStrategy();
-            this.setLimitHertz();
+            this.setLimitBandWidth();
             this.setLowestBidAdd();
+            this.setHertz();
             this.setSocketReceiveEvent();
             this.setStartPriceList();
+            this.setInsertHertzUI();
 
             Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
@@ -135,11 +139,11 @@ define([
         /**
          * 입찰 회사 제한 대역폭 설정
          */
-        setLimitHertz : function(){
+        setLimitBandWidth : function(){
             var userInfo = Auction.session.get('user_info');
-            this.ableBandWidth = userInfo.hertz;
-            this.$el.find('._able_hertz').text('남은내역폭 : ' + userInfo.hertz + 'Hz');
-            this.$el.find('#limit_hertz').text(' / 신청대역폭 : ' + userInfo.hertz + 'Hz');
+            this.ableBandWidth = userInfo.bandWidth;
+            this.$el.find('._able_bandWidth').text('남은내역폭 : ' + userInfo.bandWidth + 'Hz');
+            this.$el.find('._limit_bandWidth').text(' / 신청대역폭 : ' + userInfo.bandWidth + 'Hz');
         },
 
         /**
@@ -149,6 +153,15 @@ define([
             var userInfo = Auction.session.get('user_info');
             this.lowestBidAdd = userInfo.rate;
             this.$el.find('._bid_rate').text('증분율 : ' + this.lowestBidAdd + '%');
+        },
+
+        /**
+         * 입찰수 주파수 리스트 저장
+         */
+        setHertz : function(){
+            var userInfo = Auction.session.get('user_info');
+            this.hertzList = userInfo.hertzList;
+            Auction.io.emit('HERTZ_LIST',JSON.stringify({'name':this.bidder_company,'hertzList':this.hertzList}))
         },
 
         /**
@@ -174,6 +187,20 @@ define([
             this.setStartPriceListUI(priceList);
             this.setLowestBidPriceUI(priceList);
         },
+
+        /**
+         * 입찰한 주파수만 입력 필드를 활성화 시키는 함수
+         */
+        setInsertHertzUI:function(){
+            console.log(this.hertzList);
+            _.each( this.$el.find('._bid_price') ,Function.prototype.bind.call( function(element, index){
+                if(this.hertzList[index].flag){
+                    $(element).attr('hertzFlag',true).prop('disabled',false);
+                } else {
+                    $(element).attr({'hertzFlag':false,'placeholder':'미신청주파수'}).prop('disabled',true);
+                }
+            },this))
+        },
         //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 끝 ////////////////////////////////////////////////////////////
 
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 시작 ////////////////////////////////////////////////////////////
@@ -191,8 +218,11 @@ define([
          * 입찰버튼 클릭이벤트 핸들러
          */
         onBid:function(){
+
             this.ascendingBiddingType = '';
-            var bidPriceElementList = this.$el.find('.bid_price');
+
+            var bidPriceElementList = this.$el.find('._bid_price');
+
             //입찰 값 유효성 체크
             if(!this.autoBiddingFlag){
                 if(!this.bidValidation(bidPriceElementList)) {
@@ -360,7 +390,7 @@ define([
             this.setRoundWinPrice(data);
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
             alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
-            Auction.io.emit('ROUND_RESULT_CHEK',this.bidder_company);
+            Auction.io.emit('ROUND_RESULT_CHECK',this.bidder_company);
         },
         /**
          * 오름입찰완료 알림 이벤트
@@ -458,8 +488,11 @@ define([
           * 입찰금액 유효성 검사
           */
         bidValidation : function(elements){
+            // 가능 주파수 대역폭 설정
             BidValidation.setAbleBandWidth(this.ableBandWidth);
+            // 최소 입찰액 리스트 설정
             BidValidation.setlowestBidPrices(this.lowestBidPrices);
+            //입찰금액 체크
             return BidValidation.check(elements);
         },
         /**
@@ -525,15 +558,17 @@ define([
             _.each(data,Function.prototype.bind.call(function(item,index){
 
                 if(item.bidder == this.bidder_company && item.price != ''){
-                    $(this.$el.find('.bid_price')[index]).prop('disabled',true);
-                    $(this.$el.find('.bid_price')[index]).attr('vs','win');
-                    $(this.$el.find('.bid_price')[index]).attr('price',item.price);
-                    $(this.$el.find('.bid_price')[index]).attr('placeholder','입찰불가');
+                    $(this.$el.find('._bid_price')[index]).prop('disabled',true);
+                    $(this.$el.find('._bid_price')[index]).attr('vs','win');
+                    $(this.$el.find('._bid_price')[index]).attr('price',item.price);
+                    $(this.$el.find('._bid_price')[index]).attr('placeholder','입찰불가');
                 } else {
-                    $(this.$el.find('.bid_price')[index]).prop('disabled',this.autoBiddingFlag);
-                    $(this.$el.find('.bid_price')[index]).removeAttr('vs');
-                    $(this.$el.find('.bid_price')[index]).removeAttr('price');
-                    $(this.$el.find('.bid_price')[index]).attr('placeholder','');
+                    if(this.hertzList[index].flag){
+                        $(this.$el.find('._bid_price')[index]).prop('disabled',this.autoBiddingFlag);
+                        $(this.$el.find('._bid_price')[index]).removeAttr('vs');
+                        $(this.$el.find('._bid_price')[index]).removeAttr('price');
+                        $(this.$el.find('._bid_price')[index]).attr('placeholder','');
+                    }
                 }
 
             },this));
@@ -544,7 +579,7 @@ define([
          * 입찰금액 모두 리셋
          */
         resetBidPrice : function(){
-            this.$el.find('.bid_price').val('')
+            this.$el.find('._bid_price').val('')
         },
         /**
          * 각 라운드의 승자가격을 보여주는 함수
@@ -650,7 +685,7 @@ define([
             console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
 
             this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
-            this.$el.find('._able_hertz').text('지원가능주파수 : ' + (this.ableBandWidth - bandWidthTotal) + 'Hz');
+            this.$el.find('._able_bandWidth').text('지원가능주파수 : ' + (this.ableBandWidth - bandWidthTotal) + 'Hz');
         },
 
         /**
@@ -658,7 +693,7 @@ define([
          */
         setAutoBidding:function(){
             this.ascendingBiddingType = '';
-            var bidPriceElementList = this.$el.find('.bid_price');
+            var bidPriceElementList = this.$el.find('._bid_price');
             //입찰금액을 관리자 화면에 보내는 함수
             this.sendBid(bidPriceElementList);
             //입찰 관련 버튼 모두 숨김

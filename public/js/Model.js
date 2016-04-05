@@ -37,6 +37,10 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function getHertzList(data){
+		$.ajax(data);
+	}
+
 	module.exports = new (Backbone.Model.extend({
 		postLogin:postLogin,
 
@@ -45,6 +49,8 @@ define(function(require, exports, module){
 		putAuction:putAuction,
 
 		postRound:postRound,
+
+		getHertzList:getHertzList,
 
 		postBid:postBid,
 		getAuctionInfo:getAuctionInfo,

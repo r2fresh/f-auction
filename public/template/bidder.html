@@ -36,8 +36,8 @@
             </div>
         </div>
         <div class="col-md-4" style="text-align:right">
-            <span class="_able_hertz"></span>
-            <span id='limit_hertz'></span>
+            <span class="_able_bandWidth"></span>
+            <span class="_limit_bandWidth"></span>
             <button class="btn btn-default _logout_btn">로그아웃</button>
         </div>
     </div>
@@ -138,7 +138,7 @@
                                 </tr><!--/ 시작가 -->
 
                                 <!-- 최소경쟁가격 -->
-                                <tr class="lowest_race_prices">
+                                <!-- <tr class="lowest_race_prices">
                                     <script class="lowest_race_prices_tpl" type="text/x-handlebars-template">
                                         <td class="text-center"><strong>최저경쟁가격</strong></td>
                                         {{#priceList}}
@@ -147,7 +147,8 @@
                                         </td>
                                         {{/priceList}}
                                     </script>
-                                </tr><!--/ 최소경쟁가격 -->
+                                </tr> -->
+                                <!--/ 최소경쟁가격 -->
 
                                 <!-- 최소입찰액 -->
                                 <tr class="lowest_bid_prices">
@@ -162,23 +163,22 @@
                                 </tr><!--/ 최소입찰액 -->
 
 
-                                <tr class="bid_prices">
+                                <tr class="_bid_prices">
                                     <td class="text-center" style="padding-top:15px;"><strong>입찰금액</strong></td>
                                     <td>
-                                        <input type="text" class="bid_price form-control" placeholder="">
+                                        <input type="text" style="text-align:center" class="_bid_price form-control" placeholder="">
                                     </td>
                                     <td>
-                                        <input type="text" class="bid_price form-control" placeholder="">
+                                        <input type="text" style="text-align:center" class="_bid_price form-control" placeholder="">
                                     </td>
                                     <td>
-                                        <input type="text" class="bid_price form-control" placeholder="">
+                                        <input type="text" style="text-align:center" class="_bid_price form-control" placeholder="">
                                     </td>
                                     <td>
-                                        <input type="text" class="bid_price form-control" placeholder="">
-                                        <!-- <input type="text" class="bid_price form-control" placeholder="" winprice="6000" vs="win"> -->
+                                        <input type="text" style="text-align:center" class="_bid_price form-control" placeholder="">
                                     </td>
                                     <td>
-                                        <input type="text" class="bid_price form-control" placeholder="">
+                                        <input type="text" style="text-align:center" class="_bid_price form-control" placeholder="">
                                     </td>
                                 </tr>
                                 <tr class="_bid_vs">
@@ -191,33 +191,9 @@
                                         {{/vsList}}
                                     </script>
                                 </tr>
-                                <!-- <tr>
-                                    <td>블록별가격증가율</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>블록별가격증가율</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>1순위 블록 필요입찰액</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr> -->
+
                             </tbody>
                         </table>
-
 
                     </div>
 

@@ -20,7 +20,12 @@ define([
             this.$el.html(Login);
 
             this.$el.find('._login_password, ._login_increaseRate').show();
-            this.$el.find('._login_hertz, ._login_bidder_strategy').hide();
+            this.$el.find('._login_bandWidth, ._login_bidder_strategy, ._login_hertz').hide();
+
+            // 입찰 시 지원한 주파수 저장
+            this.$el.find('._hertz:input:checkbox').each(function(){
+                $(this).prop('checked', true);
+            })
         },
         /**
          * 사용자 선택 핸들러
@@ -31,10 +36,10 @@ define([
 
             if(radioValue === 'admin'){
                 this.$el.find('._login_password, ._login_increaseRate').show();
-                this.$el.find('._login_hertz, ._login_bidder_strategy').hide();
+                this.$el.find('._login_bandWidth, ._login_bidder_strategy, ._login_hertz').hide();
             } else {
                 this.$el.find('._login_password, ._login_increaseRate').hide();
-                this.$el.find('._login_hertz, ._login_bidder_strategy').show();
+                this.$el.find('._login_bandWidth, ._login_bidder_strategy, ._login_hertz').show();
             }
 
         },
@@ -81,8 +86,8 @@ define([
             //입찰자 정보
             var bidder = this.$el.find('._login_bidder input[name=login_bidder]:checked');
 
-            //제한 대역폭
-            var hertz = this.$el.find('._login_hertz input[name=hertz]:checked');
+            //신청 대역폭
+            var bandWidth = this.$el.find('._login_bandWidth input[name=bandWidth]:checked');
 
             //입찰전략
             var bid_strategy = this.$el.find('._login_bidder_strategy textarea');
@@ -111,10 +116,30 @@ define([
                 }
             }
 
-            Auction.session.set('user_info',{'type':type, 'user':bidder.val(), 'strategy':bid_strategy.val(), 'hertz':hertz.val(), 'rate':data.rate})
+            var hertzList = (data.bidder === 'admin') ? '' : this.getCheckedHertz();
+
+            Auction.session.set('user_info',{
+                    'type' : type,
+                    'user' : bidder.val(),
+                    'strategy' : bid_strategy.val(),
+                    'bandWidth' : bandWidth.val(),
+                    'rate' : data.rate,
+                    'hertzList' : hertzList
+                }
+            )
             Cookies.set('user', bidder.val());
 
             window.location.reload();
+        },
+
+        /**
+         * 입찰 시 지원한 주파수 저장
+         */
+        getCheckedHertz:function(){
+            return _.map(this.$el.find('._hertz:input:checkbox'),function(element){
+                var flag = $(element).prop('checked');
+                return {'name':$(element).val(),'flag':flag}
+            })
         },
 
         postLoginError:function(jsXHR, textStatus, errorThrown){

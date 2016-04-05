@@ -25,6 +25,12 @@ var roundList = [
 
 ];
 
+var hertzList = [
+    {'name':'KT','hertzList':null},
+    {'name':'SK','hertzList':null},
+    {'name':'LG','hertzList':null},
+]
+
 var pwd = 'wnvktnrudao';
 var rate = 0;
 
@@ -110,6 +116,11 @@ app.get('/round', function(req, res) {
     res.send(roundList)
 })
 
+app.get('/hertzList', function(req, res) {
+    var bodyData = req.body;
+    res.send(hertzList)
+})
+
 /**
  * index.html router
  */
@@ -155,6 +166,10 @@ io.on('connection', function(socket){
             roundList = null;
             roundList = [];
             rate = 0;
+            
+            _.each(hertzList,function(item){
+                item.hertzList = null;
+            })
         }
 
         console.log(roundList)
@@ -237,9 +252,26 @@ io.on('connection', function(socket){
     /**
      * 입찰자가 라운드의 결과를 확인 했는지 알림 이벤트
      */
-    socket.on('ROUND_RESULT_CHEK',function(msg){
-        io.emit('ROUND_RESULT_CHEK',msg);
+    socket.on('ROUND_RESULT_CHECK',function(msg){
+        io.emit('ROUND_RESULT_CHECK',msg);
     })
+
+    /**
+     * 각 일찰자가 지원한 주파수 리스트를 관리자에게 전달
+     */
+    socket.on('HERTZ_LIST',function(msg){
+
+        var list = JSON.parse(msg);
+
+        _.each(hertzList,function(item){
+            if(item.name == list.name){
+                item.hertzList = list.hertzList;
+            }
+        })
+
+        io.emit('HERTZ_LIST',JSON.stringify(hertzList));
+    })
+
 });
 
 
