@@ -129,14 +129,21 @@ define([
                var flag = true;
 
                for(var i=0; i<companyList.length; ++i){
+                   // 조합에서 해당 입찰자가 포함된 객체 배열 생성
                    var companyDissolve = _.filter(combination,function(item){
                        return item.company === companyList[i];
                    })
 
-                   // 미주파수 제거
-
+                   // 입찰자 배열이 두개 이상이면 실행
                    if(companyDissolve.length>1){
-                       var wideBandList = _.filter(companyDissolve,function(item){
+
+                       // 지원하지 않은 주파수에 해당하는 입찰자 객체를 제외하고 배열 생성
+                       var hertzList = _.filter(companyDissolve,function(item){
+                           return item.hertzFlag == true;
+                       })
+
+                       // 입찰자 배열에서 광대역에 해당하는 입찰자 객체 배열 생성
+                       var wideBandList = _.filter(hertzList,function(item){
                            return item.type === 'wideBand';
                        })
                        if(wideBandList.length>1){ flag = false}
@@ -162,9 +169,12 @@ define([
                        return item.company === companyList[i];
                    })
 
-                   // 미신청 주파수를 제거
+                   // 지원하지 않은 주파수에 해당하는 입찰자 객체를 제외하고 배열 생성
+                   var hertzList = _.filter(companyDissolve,function(item){
+                       return item.hertzFlag == true;
+                   })
 
-                   var bandWidthList   = _.pluck(companyDissolve,'bandWidth');
+                   var bandWidthList   = _.pluck(hertzList,'bandWidth');
 
                    var bandWidthSum    = _.reduce(bandWidthList, function(memo, num){ return memo + num; }, 0);
 

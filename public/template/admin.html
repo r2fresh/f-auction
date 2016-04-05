@@ -271,8 +271,14 @@
                                     <tr class="_seal_bid_combination_list">
                                         <td class="text-center"><strong>{{ranking}}</strong></td>
                                         {{#combination}}
-                                            <td class="text-center"><strong>{{price}}</strong></td>
                                             <td class="text-center"><span class="label label-{{labelClass}}-s">{{company}}</span></td>
+                                            {{#isHertz}}
+                                                <td class="text-center"><strong>{{price}}</strong></td>
+                                            {{else}}
+                                                <td style="text-align:center;vertical-align: middle;">
+                                                    <span class="text-gray"><small>미신청주파수</small></span>
+                                                </td>
+                                            {{/isHertz}}
                                         {{/combination}}
                                         <td class="text-center"><strong>{{priceSum}}</strong></td>
                                     </tr>

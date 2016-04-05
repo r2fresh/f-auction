@@ -719,6 +719,15 @@ define([
          */
         setCombinationListUI:function(data){
             var combinationList = JSON.parse(JSON.stringify(data));
+
+            Handlebars.registerHelper('isHertz', function(options) {
+              if(this.hertzFlag == true){
+                  return options.fn(this);
+              } else {
+                  return options.inverse(this);
+              }
+            });
+
             var template = Handlebars.compile(this.sealBidCombinationListTpl);
             this.$el.find('._seal_bid_combination tbody').html(template({'combinationList':combinationList}));
         },
