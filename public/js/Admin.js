@@ -108,6 +108,7 @@ define([
             // 밀봉입찰탭 비활성화
             this.$el.find('._seal_bid_tap').addClass('displayNone');
 
+            Auction.io.emit('RATE',Auction.session.get('user_info').rate);
             Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
         },
         getHertzList:function(){
@@ -123,6 +124,18 @@ define([
             console.log(data)
             if(textStatus == 'success'){
                 this.hertzList = data;
+
+                var userInfo = Auction.session.get('user_info')
+
+                Auction.session.set('user_info',{
+                        'type' : userInfo.type,
+                        'user' : userInfo.user,
+                        'strategy' : userInfo.strategy,
+                        'bandWidth' : userInfo.bandWidth,
+                        'rate' : userInfo.rate,
+                        'hertzList' : this.hertzList
+                    }
+                )
             }
         },
         getHertzListError:function(jsXHR, textStatus, errorThrown){
@@ -313,8 +326,8 @@ define([
             for(var i=0; i<this.roundData.frequency.length; ++i){
                 for(var j=0; j<this.roundData.frequency[i].bidders.length; ++j){
                     if(this.roundData.frequency[i].bidders[j].name === bidData.name){
-                        console.log(bidData.priceList[i].price)
                         this.roundData.frequency[i].bidders[j].price = bidData.priceList[i].price;
+                        this.roundData.frequency[i].bidders[j].hertzFlag = (bidData.priceList[i].hertzFlag == 'true') ? true : false;
                     }
                 }
             }
@@ -405,7 +418,6 @@ define([
                 })
 
             },this));
-            console.log(data);
             return data;
         },
         /**
@@ -440,7 +452,18 @@ define([
             }
         },
 
+        /**
+        * 각 입찰자가 입찰을 하면 입찰가격에 따라 라운드 UI렌더링
+        */
         setRoundUI:function(data){
+            Handlebars.registerHelper('isHertz', function(options) {
+              if(this.hertzFlag == true || this.hertzFlag == undefined){
+                  return options.fn(this);
+              } else {
+                  return options.inverse(this);
+              }
+            });
+
             var template = Handlebars.compile(this.roundPriceListTpl);
             this.$el.find('.round_price_list').last().html(template( data ));
         },
@@ -493,12 +516,7 @@ define([
         * 각 입찰자 마다 입찰한 주파수 목록
         */
         onHertzList:function(msg){
-            this.hertzList = JSON.parse(msg);
-
-            _.each(this.hertzList,function(item){
-                console.table(item);
-            })
-
+            this.getHertzList();
         },
 
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
@@ -509,9 +527,22 @@ define([
         setRoundTable:function(){
             var $roundPriceList = $('<tr class="round_price_list"></tr>');
             this.roundData = JSON.parse( JSON.stringify( _.extend(AuctionData.roundData,{'name':this.roundNum}) ) );
-            var template = Handlebars.compile(this.roundPriceListTpl);
-            $roundPriceList.html(template( _.extend(AuctionData.roundData,{'name':this.roundNum}) ));
+
+            // Handlebars.registerHelper('isHertz', function(options) {
+            //
+            //     console.log(this.hertzFlag)
+            //
+            //   if(this.hertzFlag == true || this.hertzFlag == undefined){
+            //       return options.fn(this);
+            //   } else {
+            //       return options.inverse(this);
+            //   }
+            // });
+            //
+            // var template = Handlebars.compile(this.roundPriceListTpl);
+            // $roundPriceList.html(template( _.extend(AuctionData.roundData,{'name':this.roundNum}) ));
             this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList);
+            this.setRoundUI(this.roundData);
         },
         /**
          * 라운드 진행 표시
@@ -536,6 +567,7 @@ define([
          */
         getRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
+                BiddingResult.setHertzFlagList(this.hertzList)
                 var biddingResultList = BiddingResult.getBiddingResult(data);
                 // 오름입찰결과 UI 셋팅
                 this.setAscendingBiddingResultUI(biddingResultList);
@@ -556,6 +588,15 @@ define([
             Auction.io.emit('ASCENDING_BIDDING_FINISH','acendingBiddingFinish');
 
             var bidderList = JSON.parse(JSON.stringify(data));
+
+            Handlebars.registerHelper('isHertz', function(options) {
+                if(this.hertzFlag == true){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
+
             var template = Handlebars.compile(this.biddingResultTpl);
             this.$el.find('._ascending_bidding_result tbody').html(template({'bidderList':bidderList}));
             this.$el.find('._ascending_bidding_result').removeClass('displayNone');
@@ -584,6 +625,14 @@ define([
             var bidderList = this.secondCompanyMaxPrice(data)
 
             Auction.io.emit('SEAL_LOWEST_BID_PRICE',JSON.stringify(bidderList))
+
+            Handlebars.registerHelper('isHertz', function(options) {
+                if(this.hertzFlag == true){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
 
             var template = Handlebars.compile(this.sealLowestBidPriceTpl);
             this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
@@ -625,8 +674,19 @@ define([
          * 밀봉입찰액 템플릿 설정
          */
         setSealBidPriceUI:function(data){
+
+            var bidderList = data;
+
+            Handlebars.registerHelper('isHertz', function(options) {
+              if(this.hertzFlag == true || this.hertzFlag == undefined){
+                  return options.fn(this);
+              } else {
+                  return options.inverse(this);
+              }
+            });
+
             var template = Handlebars.compile(this.sealBidPriceListTpl);
-            this.$el.find('._seal_bid_price tbody').html(template({'bidderList':data}));
+            this.$el.find('._seal_bid_price tbody').html(template({'bidderList':bidderList}));
         },
 
         /**

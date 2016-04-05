@@ -138,7 +138,7 @@ define([
         getCheckedHertz:function(){
             return _.map(this.$el.find('._hertz:input:checkbox'),function(element){
                 var flag = $(element).prop('checked');
-                return {'name':$(element).val(),'flag':flag}
+                return {'name':$(element).val(),'hertzFlag':flag}
             })
         },
 

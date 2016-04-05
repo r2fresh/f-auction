@@ -1,10 +1,16 @@
 <td>{{name}}</td>
 {{#frequency}}
     {{#bidders}}
-    <td style="text-align:center;">
-        <!--  label label-{{name}}-l -->
-        <span class="{{className}}">{{price}}</span>
-    </td>
+        {{#isHertz}}
+        <td style="text-align:center;vertical-align: middle;">
+            <span class="{{className}}">{{price}}</span>
+        </td>
+        {{else}}
+        <td style="text-align:center;vertical-align: middle;">
+            <span class="{{className}}"><small>미신청<br>주파수</small></span>
+        </td>
+        {{/isHertz}}
+
     {{/bidders}}
     {{^bidders}}
     <td style="text-align:center;">진행중</td>

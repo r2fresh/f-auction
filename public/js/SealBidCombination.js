@@ -98,9 +98,9 @@ define([
 
                                    if(this.setCombinationWideBandOverlapCheck(combination)){
                                        if(this.setCombinationBandWidthCheck(combination)){
-                                           if(this.setCombinationWideBandCheck(combination)){
+                                           //if(this.setCombinationWideBandCheck(combination)){
                                                combinationList.push(combination);
-                                           }
+                                           //}
                                        }
                                    }
                                }
@@ -133,6 +133,8 @@ define([
                        return item.company === companyList[i];
                    })
 
+                   // 미주파수 제거
+
                    if(companyDissolve.length>1){
                        var wideBandList = _.filter(companyDissolve,function(item){
                            return item.type === 'wideBand';
@@ -159,6 +161,8 @@ define([
                    var companyDissolve = _.filter(combination,function(item){
                        return item.company === companyList[i];
                    })
+
+                   // 미신청 주파수를 제거
 
                    var bandWidthList   = _.pluck(companyDissolve,'bandWidth');
 
@@ -188,7 +192,7 @@ define([
            },
 
            /**
-            * 밀봉 조합에서 각 통신사 마다 광대역을 하나씩은 가지고 가는 조합을 만드는 함수
+            * 밀봉 조합에서 각 통신사 마다 광대역을 하나씩은 가지고 가는 조합을 만드는 함수 (제거 가능성 있음)
             */
            setCombinationWideBandCheck:function(data){
                var companyList = ['KT','SK','LG'];
@@ -276,6 +280,8 @@ define([
 
                 for (var i=0; i<combinationList.length; ++i){
                     for(var j=0; j<combinationList[i].combination.length; ++j){
+                        combinationList[i].combination[j].labelClass = combinationList[i].combination[j].company;
+
                         if(combinationList[i].combination[j].company == 'SK'){
                             company = 'SKT';
                         } else if(combinationList[i].combination[j].company == 'LG'){

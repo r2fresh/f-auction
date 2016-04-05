@@ -137,11 +137,19 @@
                                 <script class="bindding_result_tpl" type="text/x-handlebars-template">
                                     {{#bidderList}}
                                     <tr>
-                                        <td>{{name}}</td>
+                                        <td style="text-align:center;vertical-align: middle;">{{name}}</td>
                                         {{#priceList}}
-                                            <td>{{price}}</td>
-                                            <td>{{percent}}%</td>
-                                            <td><span class="label label-{{labelClass}}">{{ranking}} 순위</span></td>
+                                            {{#isHertz}}
+                                                <td style="text-align:center;vertical-align: middle;">
+                                                    <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
+                                                </td>
+                                                <td style="text-align:center;vertical-align: middle;">{{price}}</td>
+                                                <td style="text-align:center;vertical-align: middle;">{{percent}}%</td>
+                                            {{else}}
+                                                <td style="text-align:center;vertical-align: middle;" colspan=3>
+                                                    <span class="text-gray"><small>미신청주파수</small></span>
+                                                </td>
+                                            {{/isHertz}}
                                         {{/priceList}}
                                     </tr>
                                     {{/bidderList}}
@@ -178,8 +186,16 @@
                                     <tr>
                                         <td>{{name}}</td>
                                         {{#priceList}}
-                                            <td>{{price}}</td>
-                                            <td><span class="label label-{{labelClass}}">{{ranking}} 순위</span></td>
+                                            {{#isHertz}}
+                                                <td style="text-align:center;vertical-align: middle;">
+                                                    <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
+                                                </td>
+                                                <td style="text-align:center;vertical-align: middle;">{{price}}</td>
+                                            {{else}}
+                                                <td style="text-align:center;vertical-align: middle;" colspan=2>
+                                                    <span class="text-gray"><small>미신청주파수</small></span>
+                                                </td>
+                                            {{/isHertz}}
                                         {{/priceList}}
                                     </tr>
                                     {{/bidderList}}
@@ -213,7 +229,13 @@
                                     <tr class="_seal_bid_price_list">
                                         <td  class="text-center"><strong>{{name}}</strong></td>
                                         {{#priceList}}
-                                            <td class="text-center">{{price}}</td>
+                                            {{#isHertz}}
+                                                <td class="text-center">{{price}}</td>
+                                            {{else}}
+                                                <td style="text-align:center;vertical-align: middle;">
+                                                    <span class="text-gray"><small>미신청주파수</small></span>
+                                                </td>
+                                            {{/isHertz}}
                                         {{/priceList}}
                                     </tr>
                                     {{/bidderList}}
@@ -250,7 +272,7 @@
                                         <td class="text-center"><strong>{{ranking}}</strong></td>
                                         {{#combination}}
                                             <td class="text-center"><strong>{{price}}</strong></td>
-                                            <td class="text-center"><span class="label label-{{company}}-s">{{company}}</span></td>
+                                            <td class="text-center"><span class="label label-{{labelClass}}-s">{{company}}</span></td>
                                         {{/combination}}
                                         <td class="text-center"><strong>{{priceSum}}</strong></td>
                                     </tr>

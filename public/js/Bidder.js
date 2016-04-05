@@ -194,10 +194,10 @@ define([
         setInsertHertzUI:function(){
             console.log(this.hertzList);
             _.each( this.$el.find('._bid_price') ,Function.prototype.bind.call( function(element, index){
-                if(this.hertzList[index].flag){
-                    $(element).attr('hertzFlag',true).prop('disabled',false);
+                if(this.hertzList[index].hertzFlag){
+                    $(element).attr('hertz_flag',true).prop('disabled',false);
                 } else {
-                    $(element).attr({'hertzFlag':false,'placeholder':'미신청주파수'}).prop('disabled',true);
+                    $(element).attr({'hertz_flag':false,'placeholder':'미신청주파수'}).prop('disabled',true);
                 }
             },this))
         },
@@ -293,6 +293,7 @@ define([
             if(!this.validationSealBidPrice(insertPriceList)) return;
             // 밀봉최소입찰금액에서 밀봉입찰금액 증액 퍼센트 구하는 함수
             var percentList = this.getSealBidPercent(insertPriceList);
+            console.log(percentList)
             // 계산한 퍼센트를 순위별 랭킹으로 오른차순 정열
             var sortPercentList = this.sortSealBidPercent(percentList);
             // 입찰한 급액의 증분율 표시
@@ -312,7 +313,7 @@ define([
             var priceArr = ['priceA','priceB','priceC','priceD','priceE'];
             var defaultPriceList = JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
 
-            // 밀봉입찹순위 체크
+            // 밀봉입찰순위 체크
             if(!this.validationSealBidRanking()) return;
             // 입력한 밀봉 입찰 금액 리스트
             var insertPriceList = this.getInsertSealBidPrice();
@@ -328,11 +329,13 @@ define([
             if(!this.checkSealBidPercent(sortPercentList)) return;
 
             var priceList = _.map(percentList,Function.prototype.bind.call(function(item ,index){
-                var frequency = {'name':priceArr[index],'price':item.price, 'company':this.bidder_company}
+                var frequency = {'name':priceArr[index],'price':item.price, 'company':this.bidder_company, 'hertzFlag':item.hertzFlag}
                 return _.extend(defaultPriceList[index],frequency);
             },this));
 
             var bidderList = {'name':this.bidder_company,'ableBandWidth':this.ableBandWidth,'priceList':priceList};
+
+            console.log(bidderList);
 
             Auction.io.emit('SEAL_BID_PRICE', JSON.stringify(bidderList));
 
@@ -421,8 +424,10 @@ define([
             },this))
             var bidder = bidderList[0];
             this.sealLowestBidPriceList = JSON.parse(JSON.stringify(bidder));
-            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
-            this.$el.find('._seal_lowest_bid_price').html(template(bidder));
+
+            this.setSealLowestBidPriceUI(bidder);
+            console.log(bidder)
+            this.setInsertRankingPrice(bidder);
         },
         /**
          * 밀봉입찰조합완료 알림이벤트
@@ -431,6 +436,43 @@ define([
             alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
+
+        /**
+         * 밀봉 입찰 최소액 셋팅
+         */
+        setSealLowestBidPriceUI:function(data){
+            var bidder = JSON.parse(JSON.stringify(data));
+            Handlebars.registerHelper('isHertz', function(options) {
+                if(this.hertzFlag == true){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
+
+            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
+            this.$el.find('._seal_lowest_bid_price').html(template(bidder));
+        },
+        /**
+        * 미신청주파수를 밀봉입찰 하는 UI에 적용해 주는 함수
+        */
+        setInsertRankingPrice:function(data){
+            var bidder = JSON.parse(JSON.stringify(data));
+            _.each(bidder.priceList,Function.prototype.bind.call(function(item, index){
+
+                var rankingEl   = $(this.$el.find('._seal_bid_ranking')[index])
+                var priceEl     = $(this.$el.find('._seal_bid_price')[index])
+
+                if(bidder.priceList[index].hertzFlag == true){
+                    rankingEl.attr({'hertz_flag':true})
+                    priceEl.attr({'hertz_flag':true})
+                } else {
+                    rankingEl.prop('disabled',true).attr({'placeholder':'미신청주파수','hertz_flag':false})
+                    priceEl.prop('disabled',true).attr({'placeholder':'미신청주파수','hertz_flag':false})
+                }
+
+            },this));
+        },
 
         /**
          * 각 입찰자의 순위는 다르지만 밀봉입찰최소액은 마지막 라운드 최대값으로 동일하게 하는 함수
@@ -507,6 +549,9 @@ define([
                 var winFlag = (typeof winPrice !== typeof undefined && winPrice !== false)
 
                 item.price = (winFlag) ? winPrice : $(elements[index]).val();
+
+                item.hertzFlag = $(elements[index]).attr('hertz_flag');
+
                 return item;
             })
             Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
@@ -563,7 +608,7 @@ define([
                     $(this.$el.find('._bid_price')[index]).attr('price',item.price);
                     $(this.$el.find('._bid_price')[index]).attr('placeholder','입찰불가');
                 } else {
-                    if(this.hertzList[index].flag){
+                    if(this.hertzList[index].hertzFlag == true){
                         $(this.$el.find('._bid_price')[index]).prop('disabled',this.autoBiddingFlag);
                         $(this.$el.find('._bid_price')[index]).removeAttr('vs');
                         $(this.$el.find('._bid_price')[index]).removeAttr('price');
@@ -725,8 +770,148 @@ define([
         //     this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
         // },
 
+        /**
+         * 밀봉입찹순위 체크 하는 함수
+         */
+        validationSealBidRanking:function(){
+            // 밀봉입찰순위를 모두 입력했는지 체크
+            var sealBidRanking = this.$el.find('._seal_bid_ranking');
+            var sealBidRankingFlag = _.every(sealBidRanking,function(element){
+                console.log(typeof $(element).attr('hertz_flag'))
+                console.log($(element).attr('hertz_flag'))
+                return $(element).val() != '' || $(element).attr('hertz_flag') == 'false'
+            })
+
+            var flag = true;
+            if(!sealBidRankingFlag) {
+                alert('밀봉 입찰 순위를 모두 입력해 주시기 바랍니다.')
+                flag = false;
+            }
+
+            return flag;
+        },
+
+        /**
+         * 밀봉입찰금액 체크 하는 함수
+         */
+        validationSealBidPrice:function(data){
+            var insertPriceList = data;
+            var priceList = JSON.parse(JSON.stringify(this.sealLowestBidPriceList.priceList));
+            var flag = _.every(insertPriceList,function(item,index){
+                return item.price >= priceList[index].price || item.hertzFlag == false;
+            })
+            if(!flag){
+                alert('밀봉입찰액은 밀봉최소입착액 이상으로 입력하셔야 합니다.')
+            }
+            return flag
+        },
 
 
+        /**
+         * 입력한 밀봉 입찰 금액 리스트
+         */
+        getInsertSealBidPrice(){
+            var $sealBidPrice   = this.$el.find('._seal_bid_price');
+            var $sealBidRanking = this.$el.find('._seal_bid_ranking');
+
+            var rankingAdd = 5;
+
+            var priceList = JSON.parse(JSON.stringify(this.sealLowestBidPriceList.priceList));
+            var insertPriceList = _.map($sealBidPrice,function(item,index){
+                var ranking = null;
+
+                if($($sealBidRanking[index]).val() == ''){
+                    ranking = rankingAdd = rankingAdd + 1;
+                } else {
+                    ranking = parseInt( $($sealBidRanking[index]).val(), 10);
+                }
+
+                var price = null;
+
+                if($(item).val() == '' || parseInt( $(item).val(),10 ) == 0){
+                     if(priceList[index].hertzFlag == true){
+                         price = priceList[index].price
+                     } else {
+                         price = 0
+                     }
+                } else {
+                    price = parseInt( $(item).val(),10 )
+                }
+
+                var hertzFlag = priceList[index].hertzFlag;
+                return {'ranking':ranking, 'price':price, 'hertzFlag':hertzFlag}
+            })
+            console.dirxml(insertPriceList);
+            return insertPriceList;
+        },
+
+        /**
+         * 밀봉최소입찰금액에서 밀봉입찰금액 증액 퍼센트 구하는 함수
+         * 밀봉입찰액 증분율 공식 (밀봉입찰액-오름입찰액)/오름입찰액
+         */
+        getSealBidPercent:function(data){
+            var insertPriceList = JSON.parse(JSON.stringify(data));
+            var percentList = _.map(this.sealLowestBidPriceList.priceList,function(item,index){
+                var lowestPrice = item.price;
+                var insertPrice = insertPriceList[index].price;
+                //var percent = Math.ceil( ( 1-(lowestPrice/insertPrice) )*100 );
+                var percent = null;
+                if(item.hertzFlag == true){
+                    percent = Math.ceil( ( (insertPrice-lowestPrice)/insertPrice )*100 );
+                } else {
+                    percent = 0;
+                }
+                return {'ranking':insertPriceList[index].ranking,'percent':percent,'price':insertPrice,'hertzFlag':item.hertzFlag}
+
+            })
+            console.dirxml(percentList);
+            return percentList;
+        },
+        /**
+         * 계산한 퍼센트를 순위별 랭킹으로 오른차순 정열
+         */
+        sortSealBidPercent:function(data){
+            var sortPriceList =_.sortBy(data,'ranking');
+            console.dirxml(sortPriceList);
+            return sortPriceList;
+        },
+        /**
+         * 금액 순위별 퍼센트 룰을 잘 준수 했는데 체크 하는 함수
+         */
+        checkSealBidPercent:function(data){
+            var percentList = data;
+            var percent = null;
+            var flag = true;
+            for(var i=0; i<percentList.length; ++i){
+                if(percent == null){
+                    percent = percentList[i].percent;
+                } else {
+                    if(percent < percentList[i].percent){
+                        alert((i+1) + '순위 입찰액은 ' + i + '순위 증분 퍼센트보다 이하로 입력하셔야합니다.');
+                        flag = false;
+                        break
+                    }
+                    percent = percentList[i].percent
+                }
+            }
+            return flag;
+        },
+
+        setSealBidPercentUI:function(data){
+            console.log(data)
+            var percentList = JSON.parse(JSON.stringify(data));
+
+            Handlebars.registerHelper('isHertz', function(options) {
+                if(this.hertzFlag == true){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
+
+            var template = Handlebars.compile(this.sealBidPercentListTpl);
+            this.$el.find('._seal_bid_percent_list').html(template({'percentList':percentList}));
+        },
 
 
 
@@ -858,106 +1043,8 @@ define([
 
 
 
-        /**
-         * 밀봉입찹순위 체크 하는 함수
-         */
-        validationSealBidRanking:function(){
-            // 밀봉입찰순위를 모두 입력했는지 체크
-            var sealBidRanking = this.$el.find('._seal_bid_ranking');
-            var sealBidRankingFlag = _.every(sealBidRanking,function(element){ return $(element).val() != '' })
-            var flag = true;
-            if(!sealBidRankingFlag) {
-                alert('밀봉 입찰 순위를 모두 입력해 주시기 바랍니다.')
-                falg = false;
-            }
-            return flag;
-        },
 
-        /**
-         * 밀봉입찹순위 체크 하는 함수
-         */
-        validationSealBidPrice:function(data){
-            var insertPriceList = data;
-            var priceList = JSON.parse(JSON.stringify(this.sealLowestBidPriceList.priceList));
-            var flag = _.every(insertPriceList,function(item,index){
-                return item.price >= priceList[index].price;
-            })
-            if(!flag){
-                alert('밀봉입찰액은 밀봉최소입착액 이상으로 입력하셔야 합니다.')
-            }
-            return flag
-        },
 
-        /**
-         * 입력한 밀봉 입찰 금액 리스트
-         */
-        getInsertSealBidPrice(){
-            var $sealBidPrice   = this.$el.find('._seal_bid_price');
-            var $sealBidRanking = this.$el.find('._seal_bid_ranking');
-
-            var priceList = JSON.parse(JSON.stringify(this.sealLowestBidPriceList.priceList));
-            var insertPriceList = _.map($sealBidPrice,function(item,index){
-                var ranking = parseInt( $($sealBidRanking[index]).val(), 10);
-                var price = ($(item).val() == '' || parseInt( $(item).val(),10 ) == 0) ? priceList[index].price : parseInt( $(item).val(),10 )
-                return {'ranking':ranking, 'price':price}
-            })
-            console.dirxml(insertPriceList);
-            return insertPriceList;
-        },
-
-        /**
-         * 밀봉최소입찰금액에서 밀봉입찰금액 증액 퍼센트 구하는 함수
-         * 밀봉입찰액 증분율 공식 (밀봉입찰액-오름입찰액)/오름입찰액
-         */
-        getSealBidPercent:function(data){
-            var insertPriceList = JSON.parse(JSON.stringify(data));
-            var percentList = _.map(this.sealLowestBidPriceList.priceList,function(item,index){
-                var lowestPrice = item.price;
-                var insertPrice = insertPriceList[index].price;
-                //var percent = Math.ceil( ( 1-(lowestPrice/insertPrice) )*100 );
-                var percent = Math.ceil( ( (insertPrice-lowestPrice)/insertPrice )*100 );
-                return {'ranking':insertPriceList[index].ranking,'percent':percent,'price':insertPrice}
-
-            })
-            console.dirxml(percentList);
-            return percentList;
-        },
-        /**
-         * 계산한 퍼센트를 순위별 랭킹으로 오른차순 정열
-         */
-        sortSealBidPercent:function(data){
-            var sortPriceList =_.sortBy(data,'ranking');
-            console.dirxml(sortPriceList);
-            return sortPriceList;
-        },
-        /**
-         * 금액 순위별 퍼센트 룰을 잘 준수 했는데 체크 하는 함수
-         */
-        checkSealBidPercent:function(data){
-            var percentList = data;
-            var percent = null;
-            var flag = true;
-            for(var i=0; i<percentList.length; ++i){
-                if(percent == null){
-                    percent = percentList[i].percent;
-                } else {
-                    if(percent < percentList[i].percent){
-                        alert((i+1) + '순위 입찰액은 ' + i + '순위 증분 퍼센트보다 이하로 입력하셔야합니다.');
-                        flag = false;
-                        break
-                    }
-                    percent = percentList[i].percent
-                }
-            }
-            return flag;
-        },
-
-        setSealBidPercentUI:function(data){
-            console.log(data)
-            var percentList = JSON.parse(JSON.stringify(data));
-            var template = Handlebars.compile(this.sealBidPercentListTpl);
-            this.$el.find('._seal_bid_percent_list').html(template({'percentList':percentList}));
-        },
 
 
 
@@ -1171,14 +1258,7 @@ define([
 
         },
 
-        /**
-         * 밀봉 입찰 최소액 셋팅
-         */
-        setSealLowestBidPrice:function(data){
-            var bidderList = this.secondCompanyMaxPrice(data)
-            var template = Handlebars.compile(this.sealLowestBidPriceTpl);
-            this.$el.find('.seal_lowest_bid_price tbody').html(template({'bidderList':bidderList}));
-        },
+
 
         /**
          * 시작가와 최고가 주파수를 비교해서 최고가를 만듬

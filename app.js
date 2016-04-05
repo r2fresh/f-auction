@@ -166,7 +166,7 @@ io.on('connection', function(socket){
             roundList = null;
             roundList = [];
             rate = 0;
-            
+
             _.each(hertzList,function(item){
                 item.hertzList = null;
             })
@@ -254,6 +254,13 @@ io.on('connection', function(socket){
      */
     socket.on('ROUND_RESULT_CHECK',function(msg){
         io.emit('ROUND_RESULT_CHECK',msg);
+    })
+
+    /**
+     * 입찰자가 라운드의 결과를 확인 했는지 알림 이벤트
+     */
+    socket.on('RATE',function(msg){
+        rate = parseInt(msg,10);
     })
 
     /**

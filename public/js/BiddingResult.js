@@ -5,6 +5,13 @@ define([
    function(module, AuctionData){
 
        module.exports = {
+
+           hertzFlagList : null,
+
+           setHertzFlagList:function(data){
+               this.hertzFlagList = JSON.parse(JSON.stringify(data));
+           },
+
            /**
             * 입찰 결과 UI 렌더링
             */
@@ -20,9 +27,25 @@ define([
                    return _.extend( company,{'priceList':this.setFrequencyList(company,data)} )
                },this))
 
-               var companyData = this.companyPercent(priceList);
+               var hertFlagList = this.setHertzFlag(priceList);
+
+               //var companyData = this.companyPercent(priceList);
+               var companyData = this.companyPercent(hertFlagList);
                var bidderList = this.setResultRanking(companyData);
 
+               return bidderList;
+           },
+           /**
+           * 미신청 주파수를 알기 위한 함수
+           */
+           setHertzFlag : function(data){
+               var bidderList = JSON.parse(JSON.stringify(data));
+
+               for(var i=0; i<bidderList.length; ++i){
+                   for(var j=0; j<bidderList[i].priceList.length; ++j){
+                       bidderList[i].priceList[j].hertzFlag = this.hertzFlagList[i].hertzList[j].hertzFlag;
+                   }
+               }
                return bidderList;
            },
            /**
