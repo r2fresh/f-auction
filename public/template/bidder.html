@@ -77,11 +77,9 @@
 
             <div class="alert alert-info" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <p>입찰 버튼은 승자 유무와 상관없이, 입찰금액을 입력 후 클릭하시면 됩니다.</p>
-                <p>입찰 스킵은 승자가 있는데, 추가입찰을 안하는 경우 클릭하시면 됩니다.</p>
-                <p>입찰 안함은 승자가 없는데, 입찰을 하지 않는 경우 클릭하시면 됩니다.</p>
-                <p>유예는 승자 유무와 상관없이, 입찰을 하지 안으시면 클릭하시면 됩니다.(2번 이상입찰제한)</p>
-                <p>포기는 이번 경매에서 포기 하실경우 클릭하시면 됩니다.</p>
+                <p>입찰 신청은 승자 유무와 상관없이, 입찰금액을 입력 후 클릭하시면 됩니다.</p>
+                <p>입찰 안함은 승자가 있는데, 추가입찰을 안하는 경우 클릭하시면 됩니다.</p>
+                <p>입찰 유예는 승자 유무와 상관없이, 입찰을 하지 안으시면 클릭하시면 됩니다.(2번 이상입찰제한)</p>
             </div>
 
             <!--  최저경쟁가격-->
@@ -248,7 +246,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>구분</th>
+                                    <th class="text-center">구분</th>
                                     <th class="text-center" colspan="2"><span class="label label-default">A</span> - 700Mhz (광)</th>
                                     <th class="text-center" colspan="2"><span class="label label-default">B</span> - 1.8Ghz (협)</th>
                                     <th class="text-center" colspan="2"><span class="label label-default">C</span> - 2.1Ghz (광)</th>
@@ -259,16 +257,16 @@
                             <tbody>
                                 <tr class="_seal_lowest_bid_price">
                                     <script class="_seal_lowest_bid_price_tpl" type="text/x-handlebars-template">
-                                        <td>밀봉최소입찰액</td>
+                                        <td class="text-center">밀봉최소입찰액</td>
                                         {{#priceList}}
                                             {{#isHertz}}
-                                                <td class="text-center;vertical-align: middle;">
+                                                <td class="text-center;" style="vertical-align: middle;">
                                                     <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
                                                 </td>
                                                 <td class="text-center">{{price}}</td>
                                             {{else}}
                                                 <td style="text-align:center;vertical-align: middle;" colspan=2>
-                                                    <span class="text-gray"><small>미신청주파수</small></span>
+                                                    <span class="text-gray">미신청주파수</span>
                                                 </td>
                                             {{/isHertz}}
                                         {{/priceList}}
@@ -281,7 +279,7 @@
                                     <td colspan="2"></td> -->
                                 </tr>
                                 <tr class="_seal_bid_ranking_list">
-                                    <td>밀봉입찰순위</td>
+                                    <td class="text-center">밀봉입찰순위</td>
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
@@ -289,7 +287,7 @@
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_ranking" maxlength="1" placeholder="원하시는 순위를 입력하세요"></td>
                                 </tr>
                                 <tr class="_seal_bid_price_list">
-                                    <td>밀봉입찰액</td>
+                                    <td class="text-center">밀봉입찰액</td>
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
                                     <td colspan="2"><input type="text" class="form-control _seal_bid_price" placeholder=""></td>
@@ -298,18 +296,38 @@
                                 </tr>
                                 <tr class="_seal_bid_percent_list">
                                     <script class="_seal_bid_percent_list_tpl" type="text/x-handlebars-template">
-                                        <td>밀봉입찰결과증분율</td>
+                                        <td class="text-center">밀봉입찰결과증분율</td>
                                         {{#percentList}}
                                             {{#isHertz}}
                                                 <td class="text-center" colspan="2"><strong>{{percent}}%</strong></td>
                                             {{else}}
                                                 <td style="text-align:center;vertical-align: middle;" colspan=2>
-                                                    <span class="text-gray"><small>미신청주파수</small></span>
+                                                    <span class="text-gray">미신청주파수</span>
                                                 </td>
                                             {{/isHertz}}
                                         {{/percentList}}
                                     </script>
-                                    <td>밀봉입찰결과증분율</td>
+                                    <td class="text-center">밀봉입찰결과증분율</td>
+                                    <td colspan="2"><span></span></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr class="_seal_max_bid_price_list">
+                                    <script class="_seal_max_bid_price_list_tpl" type="text/x-handlebars-template">
+                                        <td class="text-center">최대입찰액</td>
+                                        {{#maxPriceList}}
+                                            {{#isHertz}}
+                                                <td class="text-center" colspan="2"><strong style="color:#0000FF">{{maxPrice}}</strong></td>
+                                            {{else}}
+                                                <td style="text-align:center;vertical-align: middle;" colspan=2>
+                                                    <span class="text-gray">미신청주파수</span>
+                                                </td>
+                                            {{/isHertz}}
+                                        {{/maxPriceList}}
+                                    </script>
+                                    <td class="text-center">최대입찰액</td>
                                     <td colspan="2"><span></span></td>
                                     <td colspan="2"></td>
                                     <td colspan="2"></td>

@@ -105,6 +105,8 @@ define([
             this.sealLowestBidPriceTpl      = this.$el.find("._seal_lowest_bid_price_tpl").html();
             //승자패자 템플릿
             this.bidVsTpl                   = this.$el.find("._bid_vs_tpl").html();
+            // 밀봉 최대 입찰액 템플릿
+            this.sealMaxBiddingPriceListTpl = this.$el.find("._seal_max_bid_price_list_tpl").html();
 
 
 
@@ -296,6 +298,12 @@ define([
             console.log(percentList)
             // 계산한 퍼센트를 순위별 랭킹으로 오른차순 정열
             var sortPercentList = this.sortSealBidPercent(percentList);
+
+            // 1순위에 따른 최대 가능한 순위별 가능한 밀봉찰액 설정(최대입찰액설정)
+            var sealMaxBiddingPrice = this.setSealMaxBiddingPrice(percentList);
+            //console.dir(sealMaxBiddingPrice)
+            this.setSealMaxBiddingPriceUI(sealMaxBiddingPrice);
+
             // 입찰한 급액의 증분율 표시
             this.setSealBidPercentUI(percentList);
 
@@ -436,6 +444,61 @@ define([
             alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
+
+        /**
+        * 밀봉 최대입찰 가능 액 설정
+        */
+        setSealMaxBiddingPrice:function(data){
+
+            var priceList = JSON.parse(JSON.stringify(data));
+            var sortPercentList = JSON.parse(JSON.stringify( _.sortBy(priceList,'ranking') ));
+
+            var maxPrice = null;
+            var percent = null;
+
+            var maxPriceList = [];
+
+            for(var i=0; i<sortPercentList.length; ++i){
+                if(sortPercentList[i].ranking == 1){
+                    percent = sortPercentList[i].percent;
+                    maxPriceList.push({'ranking':sortPercentList[i].ranking,'maxPrice':'무제한'})
+                } else {
+                    maxPrice = Math.ceil( parseInt(sortPercentList[i].prePrice,10) * (1+(percent/100)) );
+                    maxPriceList.push({'ranking':sortPercentList[i].ranking,'maxPrice':maxPrice});
+                    percent = sortPercentList[i].percent;
+                }
+            }
+
+            for(var j=0; j<maxPriceList.length; ++j){
+                for(var k=0;k<priceList.length; ++k){
+                    if(maxPriceList[j].ranking == priceList[k].ranking){
+                        priceList[k].maxPrice = maxPriceList[j].maxPrice;
+                    }
+                }
+            }
+
+            console.log(priceList)
+            console.log(sortPercentList);
+            console.log(maxPriceList);
+
+            return priceList;
+        },
+        setSealMaxBiddingPriceUI:function(data){
+            var maxPriceList = JSON.parse(JSON.stringify(data));
+
+            console.log(maxPriceList);
+
+            Handlebars.registerHelper('isHertz', function(options) {
+                if(this.hertzFlag == true){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
+
+            var template = Handlebars.compile(this.sealMaxBiddingPriceListTpl);
+            this.$el.find('._seal_max_bid_price_list').html(template({'maxPriceList':maxPriceList}));
+        },
 
         /**
          * 밀봉 입찰 최소액 셋팅
@@ -839,7 +902,13 @@ define([
                 }
 
                 var hertzFlag = priceList[index].hertzFlag;
-                return {'ranking':ranking, 'price':price, 'hertzFlag':hertzFlag}
+                return {
+                    'ranking':ranking,
+                    'price':price,
+                    'hertzFlag':hertzFlag,
+                    'name': priceList[index].name,
+                    'prePrice':priceList[index].price
+                }
             })
             console.dirxml(insertPriceList);
             return insertPriceList;
@@ -861,7 +930,13 @@ define([
                 } else {
                     percent = 0;
                 }
-                return {'ranking':insertPriceList[index].ranking,'percent':percent,'price':insertPrice,'hertzFlag':item.hertzFlag}
+                return {
+                    'ranking':insertPriceList[index].ranking,
+                    'percent':percent,
+                    'price':insertPrice,
+                    'hertzFlag':item.hertzFlag,
+                    'prePrice':item.price
+                }
 
             })
             console.dirxml(percentList);
