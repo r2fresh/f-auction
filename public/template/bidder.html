@@ -10,7 +10,7 @@
                             <td>
                                 <span>사용자상태 : </span>
                             </td>
-                            <{{#list}}
+                            {{#list}}
                             <td class="connect_user">
                                 <span class="label label-{{className}}">{{name}}</span>
                             </td>
@@ -127,7 +127,7 @@
                                 <tr class="start_price_list">
                                     <script class="start_price_list_tpl" type="text/x-handlebars-template">
                                         <td class="text-center"><strong>시작가</strong></td>
-                                        <{{#priceList}}
+                                        {{#priceList}}
                                         <td style="text-align:center;">
                                             <span>{{price}}</span>
                                         </td>
@@ -152,7 +152,7 @@
                                 <tr class="lowest_bid_prices">
                                     <script class="lowest_bid_prices_tpl" type="text/x-handlebars-template">
                                         <td class="text-center"><strong>최소입찰액</strong></td>
-                                        <{{#priceList}}
+                                        {{#priceList}}
                                         <td style="text-align:center;">
                                             <span class="lowest_bid_price">{{price}}<span>
                                         </td>
@@ -182,14 +182,45 @@
                                 <tr class="_bid_vs">
                                     <script class="_bid_vs_tpl" type="text/x-handlebars-template">
                                         <td class="text-center"><strong>승자,패자</strong></td>
-                                        <{{#vsList}}
-                                        <td style="text-align:center;">
-                                            <span>{{vs}}<span>
+                                        {{#vsList}}
+                                        <td class="text-center">
+                                            {{#isVs}}
+                                                <strong style="color:#ff0000">{{{vsName}}}</strong>
+                                            {{else}}
+                                                <strong style="color:#0000ff">{{{vsName}}}</strong>
+                                            {{/isVs}}
                                         </td>
                                         {{/vsList}}
                                     </script>
+                                    <td class="text-center"><strong>승자,패자</strong></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
-
+                                <tr class="_bid_rate_increase">
+                                    <script class="_bid_rate_increase_tpl" type="text/x-handlebars-template">
+                                        <td class="text-center"><strong>현 증분율</strong></td>
+                                        {{#rateIncreaseList}}
+                                            {{#isHertz}}
+                                                <td style="text-align:center;">
+                                                    <strong style="color:#009600">{{rateIncrease}}%</strong>
+                                                </td>
+                                            {{else}}
+                                                <td style="text-align:center;vertical-align: middle;">
+                                                    <span class="text-gray">미신청주파수</span>
+                                                </td>
+                                            {{/isHertz}}
+                                        {{/rateIncreaseList}}
+                                    </script>
+                                    <td class="text-center"><strong>현 증분율</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
 

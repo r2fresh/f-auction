@@ -102,7 +102,11 @@ app.post('/round', function(req, res) {
     var result = false;
     var bodyData = req.body;
 
-    console.log(bodyData.round)
+    console.log(bodyData.round);
+
+    if(bodyData.round.name == 1){
+        roundList = [];
+    }
 
     roundList.push(bodyData.round);
 

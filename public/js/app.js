@@ -37,9 +37,10 @@ requirejs([
 	'js/Admin',
 	'js/Bidder',
 	'js/Model',
-	'socketio'
+	'socketio',
+	'js/NotRefresh'
 ],
-function(Login, Admin, Bidder, Model, io){
+function(Login, Admin, Bidder, Model, io, NotRefresh){
 
 	var prevView = null;
 
@@ -63,6 +64,8 @@ function(Login, Admin, Bidder, Model, io){
 		}
 
 		checkSession();
+
+		//NotRefresh.init();
 	}
 
 	/**

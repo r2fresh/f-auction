@@ -5,9 +5,10 @@ define([
    'js/AuctionData',
    'js/Validation',
    'js/Model',
-   'js/BidValidation'
+   'js/BidValidation',
+   'js/RoundRateIncrease'
    ],
-   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation){
+   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation, RoundRateIncrease){
 
 	'use strict'
 
@@ -105,10 +106,14 @@ define([
             this.sealLowestBidPriceTpl      = this.$el.find("._seal_lowest_bid_price_tpl").html();
             //승자패자 템플릿
             this.bidVsTpl                   = this.$el.find("._bid_vs_tpl").html();
+            this.$el.find("._bid_vs_tpl").remove();
+
             // 밀봉 최대 입찰액 템플릿
             this.sealMaxBiddingPriceListTpl = this.$el.find("._seal_max_bid_price_list_tpl").html();
 
-
+            // 입찰자 현 증분율 템플릿
+            this.bidRateIncreaseTpl         = this.$el.find("._bid_rate_increase_tpl").html();
+            this.$el.find("._bid_rate_increase_tpl").remove();
 
             this.roundResultTpl             = RoundResult
             this.sealBidPercentListTpl      = this.$el.find("._seal_bid_percent_list_tpl").html();
@@ -397,7 +402,7 @@ define([
             console.log(data);
             //최소입찰액을 설정
             this.setRoundResult(data);
-            //라운드 승자표시 설정
+            //라운드 승자의 가격만 표시
             this.setRoundWinPrice(data);
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
             alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
@@ -623,6 +628,13 @@ define([
          * 각 라운드 입찰 완료
          */
         setRoundResult:function(data){
+            console.log('ROUND RESULT : ');
+            console.log(data);
+            console.log('======================');
+
+            // 입찰자 마다의 라운드별 증분율
+            this.setRoundRateIncrease();
+
             var frequencyList = JSON.parse(JSON.stringify(data.frequency));
             // winPriceList 설정 (winPrice에는 ''도 있다.)
             var winPriceList = _.map(frequencyList,function(frequency){
@@ -641,6 +653,32 @@ define([
             // 승자 패자 표시 UI
             this.setBidVsUI(frequencyList);
         },
+
+        /**
+        * 각 주파수에 대한 각 입찰자의 시작가 대비 최종 가격 증분율
+        * 주파수의 승자가 가격이 아닌 입찰자가 입찰한 가장 마지막 가격
+        */
+        setRoundRateIncrease:function(){
+            RoundRateIncrease.setBidderCompany(this.bidder_company);
+            RoundRateIncrease.setRoundRateIncrease(Function.prototype.bind.call(this.setRoundRateIncreaseUI,this));
+        },
+
+        /**
+        * 현 증분율 UI 개발
+        */
+        setRoundRateIncreaseUI:function(data){
+            var rateIncreaseList = JSON.parse(JSON.stringify(data));
+            Handlebars.registerHelper('isHertz', function(options) {
+                if(this.hertzFlag == true){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
+            var template = Handlebars.compile(this.bidRateIncreaseTpl);
+            this.$el.find('._bid_rate_increase').html(template({'rateIncreaseList':rateIncreaseList}));
+        },
+
         /**
          * 최소 입찰액 리스트 설정
          */
@@ -702,23 +740,32 @@ define([
          */
         setBidVsUI:function(data){
             var vsList = [];
-            var vs = '';
+            var vsName = '';
             for(var i=0;i<data.length;++i){
                 for(var j=0;j<data[i].bidders.length;++j){
 
                     if(data[i].bidders[j].name === this.bidder_company){
                         if(data[i].bidders[j].vs === 'win'){
-                            vs = '승자';
+                            vsName = '<i class="fa fa-thumbs-o-up"></i> 승자';
                         } else if(data[i].bidders[j].vs === 'lose'){
-                            vs = '패자';
+                            vsName = '<i class="fa fa-thumbs-o-down"></i> 패자';
                         } else {
-                            vs = '';
+                            vsName = '';
                         }
-                        vsList.push({'vs':vs})
+                        vsList.push({'vsName':vsName,'vs':data[i].bidders[j].vs})
                     }
 
                 }
             }
+
+            Handlebars.registerHelper('isVs', function(options) {
+                if(this.vs == 'win' || this.vs == ''){
+                  return options.fn(this);
+                } else {
+                  return options.inverse(this);
+                }
+            });
+
             console.log(data)
             var template = Handlebars.compile(this.bidVsTpl);
             this.$el.find('._bid_vs').html(template({'vsList':vsList}));
@@ -976,7 +1023,7 @@ define([
             console.log(data)
             var percentList = JSON.parse(JSON.stringify(data));
 
-            Handlebars.registerHelper('isHertz', function(options) {
+            Handlebars.registerHelper('rtz', function(options) {
                 if(this.hertzFlag == true){
                   return options.fn(this);
                 } else {
