@@ -6,9 +6,10 @@ define([
    'js/Process',
    'js/AuctionData',
    'js/SealBidCombination',
-   'js/BiddingResult'
+   'js/BiddingResult',
+   'js/r2/r2Alert'
    ],
-   function(module, Admin, AdminRound, Model, Pro, AuctionData, SealBidCombination, BiddingResult){
+   function(module, Admin, AdminRound, Model, Pro, AuctionData, SealBidCombination, BiddingResult, R2Alert){
 
 	'use strict'
 
@@ -69,7 +70,7 @@ define([
             {'name':'SK','state':false},
             {'name':'LG','state':false}
         ],
-
+        roundResultCheckFlag:false,
         hertzList : [
             {'name':'KT','hertzList':null},
             {'name':'SK','hertzList':null},
@@ -79,6 +80,7 @@ define([
 
  		el: '.admin',
  		events :{
+            'keydown' : 'onkeydown',
             // 로그아웃
             'click ._logout_btn' : 'onLogout',
             // 라운드 시작
@@ -208,10 +210,19 @@ define([
          */
         onRoundStart:function(){
 
-            if(!this.roundResultCheckFlag && this.roundNum > 1){
+            var notCheckStr = '';
+            var companyName = '';
 
-                var notCheckStr = '';
-                var companyName = '';
+            var loginCheckFlag = _.every(this.loginCheckList,function(item){
+                return item.state == true;
+            })
+
+            if(!loginCheckFlag){
+                R2Alert.render({'msg':'로그인 안된 관리자 또는 입찰자가 있습니다.\n 모두 로그인 후 경매가 가능합니다.','w':400})
+                return;
+            }
+
+            if(!this.roundResultCheckFlag && this.roundNum > 1){
 
                 for(var i=0;i<this.roundResultCheck.length;++i){
                     var state = this.roundResultCheck[i].state;
@@ -233,9 +244,11 @@ define([
 
                     }
                 }
-                alert(notCheckStr + ' 입찰자가 라운드 결과를 확인하지 않으셨습니다.\n 입찰자에게 확인 요청 드립니다.')
+                //alert(notCheckStr + ' 입찰자가 라운드 결과를 확인하지 않으셨습니다.\n 입찰자에게 확인 요청 드립니다.')
+                R2Alert.render({'msg':notCheckStr + ' 입찰자가 라운드 결과를 확인하지 않으셨습니다.\n 입찰자에게 확인 요청 드립니다.','w':500})
                 return;
             }
+
             _.each(this.roundResultCheck,function(item){
                 item.state = false;
             })
@@ -261,6 +274,14 @@ define([
          * 입찰 결과 핸들러
          */
         onBiddingResult:function(e){
+            var loginCheckFlag = _.every(this.loginCheckList,function(item){
+                return item.state == true;
+            })
+
+            if(!loginCheckFlag){
+                R2Alert.render({'msg':'로그인 안된 관리자 또는 입찰자가 있습니다.\n 모두 로그인 후 경매가 가능합니다.','w':400})
+                return;
+            }
             this.getRoundList();
         },
         /**
@@ -279,6 +300,12 @@ define([
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
 
         //////////////////////////////////////////////////////////// socket on Event start////////////////////////////////////////////////////////////
+        /**
+        * Enter Key 비활성화
+        */
+        onkeydown : function(e){
+            if (e.keyCode == 13) return false;
+        },
         /**
          * 경매 참여자의 접속 체크
          */
@@ -441,15 +468,31 @@ define([
          */
         postRoundSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-                this.setRoundUI(data);
+                this.postRoundData = data;
 
-                alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
-                Auction.io.emit('ROUND_RESULT',JSON.stringify(data));
+                this.setRoundUI(this.postRoundData);
+
+                //alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
+                R2Alert.render({
+                    'msg':this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.',
+                    'w':300,
+                    'callback':Function.prototype.bind.call(this.emitRoundResult,this)
+                })
 
                 this.roundNum += 1;
                 this.$el.find('._round_mark').text(this.roundNum + '라운드');
                 this.$el.find('._round_start_btn').removeClass('displayNone');
+
             }
+        },
+
+        /**
+         * 모든 입찰자가 입찰 완료 되었다는 것을 알림
+         */
+        emitRoundResult : function(){
+            console.log(this.postRoundData)
+            Auction.io.emit('ROUND_RESULT',JSON.stringify(this.postRoundData));
+            this.postRoundData = null;
         },
 
         /**
@@ -488,10 +531,14 @@ define([
 
             // true이면 밀봉입찰 조합 시작
             if(this.setSealBidCheck(bidder)) {
-                alert('모든 입찰자가 밀봉입찰 신청을 하였습니다. 밀봉입찰 결과를 출력합니다.')
+                //alert('모든 입찰자가 밀봉입찰 신청을 하였습니다. 밀봉입찰 결과를 출력합니다.');
+                R2Alert.render({
+                    'msg':'모든 입찰자가 밀봉입찰 신청을 하였습니다.\n밀봉입찰 결과를 출력합니다.',
+                    'w':400,
+                    'callback':Function.prototype.bind.call(this.setSealBidCombination,this)
+                })
                 // 오른입찰 완료 표시
                 this.$el.find('._round_mark').text('밀봉입찰 결과');
-                this.setSealBidCombination()
             }
 
             // 밀봉입찰액 UI 렌더링
@@ -709,9 +756,9 @@ define([
          * 밀봉입찰 조합 설정
          */
         setSealBidCombination:function(){
+            Auction.io.emit('SEAL_BID_FINISH','sealBidFinish')
             var combinationList = SealBidCombination.getCombinationList(this.sealBidBidderList);
             this.setCombinationListUI(combinationList);
-            Auction.io.emit('SEAL_BID_FINISH','sealBidFinish')
         },
 
         /**

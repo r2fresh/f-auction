@@ -237,7 +237,7 @@ define([
 
                    var priceList = _.pluck(item, 'price');
 
-                   var sum = _.reduce(priceList, function(memo, num){ return memo + num; }, 0);
+                   var sum = _.reduce(priceList, function(memo, num){ return parseInt(memo,10) + parseInt(num,10); }, 0);
 
                    return {'priceSum':sum,'combination':item}
 

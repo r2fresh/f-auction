@@ -1,7 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
-var cookieParser = require('./src/cookie-parser')
+var cookieParser = require('./src/cookie-parser');
+
+var logger = require('tracer').colorConsole();
 
 var app = express();
 
@@ -60,8 +62,8 @@ app.post('/login', function(req, res) {
             result = false;
         }
     } else {
-        console.log('bodyData.bidder : ' + bodyData.bidder)
-        console.log('rate : ' + rate)
+        logger.log('bodyData.bidder : ' + bodyData.bidder)
+        logger.log('rate : ' + rate)
         if(rate > 0){
             resultStr = bodyData.bidder + '로 로그인 되었습니다.'
             result = true;
@@ -82,18 +84,18 @@ app.post('/login', function(req, res) {
             if(loginData[i].name == bodyData.bidder){
                 if(!loginData[i].state){
                     loginData[i].state = true;
-                    console.log("34343344")
+                    logger.log("34343344")
                     overlap = true;
                     result = true;
                 } else {
-                    console.log("121212")
+                    logger.log("121212")
                     overlap = false;
                     result = false;
                 }
             }
         }
     }
-    console.log(overlap)
+    logger.log(overlap)
 
     res.send({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 })
@@ -136,7 +138,7 @@ app.get('/',function(req, res){
  * express server start
  */
 var server = app.listen(app.get('port'), function () {
-    console.log('Example app listening on port 5000!');
+    logger.log('Example app listening on port 5000!');
 });
 
 
@@ -144,11 +146,11 @@ var io = require('socket.io')(server)//,{'pingTimeout':15000, 'pingInterval', 80
 
 io.on('connection', function(socket){
 
-    console.log('connection')
+    logger.log('connection')
 
     socket.on('disconnect', function(){
 
-        console.log('disconnection');
+        logger.log('disconnection');
 
         //var str = this.handshake.headers.cookie
         var cookieData = cookieParser.get( this.handshake.headers.cookie );
@@ -176,19 +178,18 @@ io.on('connection', function(socket){
             })
         }
 
-        console.log(roundList)
+        logger.log(roundList)
 
-        console.log("======== loginData ======")
-        console.log(loginData)
+        logger.log("======== loginData ======")
+        logger.log(loginData)
 
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 
     socket.on('LOGIN_CHECK',function(msg){
-        console.log(msg)
+        logger.log(msg)
 
         for(var i=0; i<loginData.length ;++i){
-
             if(loginData[i].name == msg){
                 if(!loginData[i].state){
                     loginData[i].state = true;
@@ -196,26 +197,24 @@ io.on('connection', function(socket){
             }
         }
 
+        logger.log(loginData)
+
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 
     socket.on('AUCTION_ID',function(msg){
-        console.log(msg)
         io.emit('AUCTION_ID',msg)
     })
 
     socket.on('ROUND_START',function(msg){
-        console.log(msg)
         io.emit('ROUND_START',msg)
     })
 
     socket.on('BID',function(msg){
-        console.log(msg)
         io.emit('BID',msg)
     })
 
     socket.on('ROUND_RESULT',function(msg){
-        console.log(msg)
         io.emit('ROUND_RESULT',msg)
     })
 
@@ -223,7 +222,6 @@ io.on('connection', function(socket){
      * 오른입찰완료 알림 이벤트
      */
     socket.on('ASCENDING_BIDDING_FINISH',function(msg){
-        console.log(msg)
         io.emit('ASCENDING_BIDDING_FINISH',msg)
     })
 
@@ -235,7 +233,6 @@ io.on('connection', function(socket){
     })
 
     socket.on('SEAL_LOWEST_BID_PRICE',function(msg){
-        console.log(msg)
         io.emit('SEAL_LOWEST_BID_PRICE',msg)
     })
 
@@ -284,178 +281,3 @@ io.on('connection', function(socket){
     })
 
 });
-
-
-
-
-
-// var express = require('express');
-// var app = express();
-// var http = require('http').Server(app);
-// var io = require('socket.io')(server);
-// var _ = require('underscore')
-//
-// // var login = [
-// //     {'name':'admin','state':false},
-// //     {'name':'kt','state':false},
-// //     {'name':'sk','state':false},
-// //     {'name':'lg','state':false}
-// // ]
-//
-// app.set('port', (process.env.PORT || 5000));
-//
-// app.use(express.static('public'));
-//
-// app.get('/', function(req, res){
-//
-//     req.on('close', function(){
-//
-//     })
-//
-//   res.sendFile(__dirname + '/index.html');
-// });
-//
-// http.on('clonse',function(){
-//     console.log("sdfdsfd")
-// })
-//
-// var allClients = [];
-// var loginUser = [];
-// var clientID = '';
-//
-// io.on('connection', function(socket){
-//
-//     allClients.push(socket);
-//
-//     //console.log(allClients.length)
-//     console.log(allClients)
-//
-//     socket.on('clientID',function(msg){
-//         clientID = msg
-//     })
-//
-//     socket.on('login', function(msg){
-//
-//         console.log(loginUser.indexOf(msg))
-//
-//         if(loginUser.indexOf(msg) < 0){
-//             loginUser.push(msg);
-//             io.emit('receiveLogin', clientID);
-//         } else {
-//             io.emit('receiveLogin', '');
-//         }
-//
-//     });
-//
-//
-//
-//     // socket.on('disconnect', function(socket){
-//     //     var index = allClients.indexOf(socket)
-//     //     allClients.splice(index,1);
-//     //     //loginUser.splice(index,1);
-//     //     console.log("==========================")
-//     //     console.log(allClients)
-//     // })
-//
-// });
-//
-//
-//
-// var server = app.listen(app.get('port'), function () {
-//   console.log('Example app listening on port 5000!');
-// });
-
-// var express = require('express');
-// //var path = require('path');
-// //var bodyParser = require("body-parser");
-//
-// var http = require('http')
-// var querystring = require('querystring')
-//
-// var io = require('socket.io')(http);
-//
-// var app = express();
-//
-// app.set('port', (process.env.PORT || 5000));
-//
-// //app.use(bodyParser.urlencoded({ extended: false }));
-// //app.use(bodyParser.json());
-//
-// app.use(express.static('public'));
-//
-// // app.get('/',function(req, res){
-// //     res.sendFile(path.join(__dirname + '/index.html'))
-// // })
-//
-// app.get('/',function(req, res){
-//     res.sendFile(__dirname + '/index.html')
-// })
-//
-// io.on('connection', function(socket){
-//   console.log('a user connected');
-// });
-// app.listen(app.get('port'), function () {
-//   console.log('Example app listening on port 5000!');
-// });
-//
-
-
-// // app.use(express.bodyParser());
-//
-// app.get('/api/bidding', function(req, res){
-//  // response.send(request.body);    // echo the result back
-//
-//  var postData = querystring.stringify(req.body)
-//
-//  var options = {
-//      host: 'hidden-wildwood-10621.herokuapp.com',
-//      //port: null,
-//      path: '/api/bidding',
-//      method: 'GET',
-//      headers: {
-//          'Content-Type': 'application/x-www-form-urlencoded',
-//          'Content-Length': postData.length
-//          //'Content-Length': Buffer.byteLength(postData, 'utf8')
-//      }
-//  };
-//
-//  var req2 = http.request(options, function(res1) {
-//      res1.setEncoding('utf8');
-//      res1.on('data', function (chunk) {
-//          console.log("body: " + chunk);
-//
-//          const buf1 = new Buffer(chunk);
-//
-//          //returnData = chunk;
-//          //res.end( decoder.write(chunk) );
-//
-//          // 전달 되는 값으 head값을 utf-8로 해줘야 한글이 깨지지 않는다
-//          // 참고 사이트
-//          // http://gakari.tistory.com/entry/Nodejs-responseend-한글-깨짐-현상-해결법
-//          // https://nodejs.org/api/http.html#http_response_writehead_statuscode_statusmessage_headers
-//          res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' });
-//          res.end( chunk );
-//      });
-//  });
-//
-//  req2.write(postData);
-//  req2.end();
-// });
-
-
-
-// app.get('/',function(req, res){
-//     res.sendFile(path.join(__dirname + '/index.html'))
-// })
-//
-// app.get('/auction',function(req, res){
-//     res.sendFile(path.join(__dirname + '/preAuction.html'))
-// })
-//
-// app.get('/login',function(req, res){
-//     res.sendFile(path.join(__dirname + '/login.html'))
-// })
-//
-// app.get('/insert',function(req, res){
-//     res.sendFile(path.join(__dirname + '/insertAuction.html'))
-// })

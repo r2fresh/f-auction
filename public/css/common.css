@@ -46,3 +46,50 @@
     width:10%;
     height:10%;
 }
+
+
+.r2-dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow: hidden;
+}
+
+.r2-dialog-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    opacity: .5;
+}
+
+/*@media (min-width: 768px){
+    .r2-dialog-main {
+        width: 600px;
+        margin: 30px auto;
+    }
+}*/
+
+.r2-dialog-main {
+    position: relative;
+    /*width: 600px;*/
+    margin: 30px auto;
+}
+
+.r2-loading {
+    width:400px;
+}
+
+.r2-loading-title {
+    text-align:center;
+    color : #fff;
+    font-size : 14px;
+}

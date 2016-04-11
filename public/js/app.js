@@ -53,7 +53,7 @@ function(Login, Admin, Bidder, Model, io, NotRefresh){
 
 		var app, appName, hash = Auction.util.parseHash();
 
-		Auction.io = io();
+		Auction.io = io({'timeout':200000});
 
 		routeStart();
 

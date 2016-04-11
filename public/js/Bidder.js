@@ -6,9 +6,10 @@ define([
    'js/Validation',
    'js/Model',
    'js/BidValidation',
-   'js/RoundRateIncrease'
+   'js/RoundRateIncrease',
+   'js/r2/r2Alert'
    ],
-   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation, RoundRateIncrease){
+   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation, RoundRateIncrease, R2Alert){
 
 	'use strict'
 
@@ -53,6 +54,7 @@ define([
 
  		el: '.bidder',
  		events :{
+            'keydown' : 'onkeydown',
             // 로그아웃 이벤트
             'click ._logout_btn' : 'onLogout',
             // 입찰 이벤트
@@ -212,6 +214,12 @@ define([
 
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 시작 ////////////////////////////////////////////////////////////
         /**
+        * Enter Key 비활성화
+        */
+        onkeydown : function(e){
+            if (e.keyCode == 13) return false;
+        },
+        /**
          * 로그아웃 핸들러
          */
         onLogout : function(e){
@@ -226,7 +234,7 @@ define([
          */
         onBid:function(){
 
-            this.ascendingBiddingType = '';
+            //this.ascendingBiddingType = '';
 
             var bidPriceElementList = this.$el.find('._bid_price');
 
@@ -253,10 +261,12 @@ define([
             this.biddingBtnListDisplay(false);
 
             if(this.autoBiddingFlag) {
-                alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
+                //alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
+                //R2Alert.render({'msg':'원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.','w':300})
                 this.autoBiddingFlag = false;
             } else {
-                alert(this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.');
+                //alert(this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.');
+                R2Alert.render({'msg':this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.','w':350})
             }
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
@@ -265,7 +275,7 @@ define([
          * 스킵버튼 클릭이벤트 핸들러
          */
         onSkipBid:function(){
-            this.ascendingBiddingType = '스킵';
+            this.ascendingBiddingType = '안함';
             this.resetBidPrice();
             this.onBid();
         },
@@ -348,11 +358,15 @@ define([
 
             var bidderList = {'name':this.bidder_company,'ableBandWidth':this.ableBandWidth,'priceList':priceList};
 
-            console.log(bidderList);
-
             Auction.io.emit('SEAL_BID_PRICE', JSON.stringify(bidderList));
 
-            alert('밀봉입찰 신청을 완료 했습니다.');
+            //예상증분율 버튼 숨기기
+            this.$el.find('._seal_predict_percent_btn').addClass('displayNone');
+            //밀봉입찰 버튼 숨기기
+            this.$el.find('._seal_bid_price_btn').addClass('displayNone');
+
+            //alert('밀봉입찰 신청을 완료 했습니다.');
+            R2Alert.render({'msg':'밀봉입찰 신청을 완료 했습니다.','w':300})
         },
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
 
@@ -382,14 +396,19 @@ define([
         onRoundStart:function(num){
             console.log('ROUND_NUMBER : ' + num)
             this.roundNum = num;
-            alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+            //alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
             //입찰 관련 버튼 모두 보임
             this.biddingBtnListDisplay(true);
             // 자동입찰 체크
             console.log('this.autoBiddingFlag : ' + this.autoBiddingFlag);
             if(this.autoBiddingFlag){
+                R2Alert.allDestroy();
+                R2Alert.render({'msg':this.roundNum + '라운드는 지원가능한 대역폭 없습니다. \n 자동입찰이 진행되었습니다.','w':400})
                 this.setAutoBidding();
+            } else {
+                R2Alert.allDestroy();
+                R2Alert.render({'msg':this.roundNum + '라운드 입찰 진행 하시기 바랍니다.','w':300})
             }
         },
         /**
@@ -405,14 +424,28 @@ define([
             //라운드 승자의 가격만 표시
             this.setRoundWinPrice(data);
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
-            alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
+
+            //alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
+            R2Alert.allDestroy();
+            R2Alert.render({
+                'msg':this.roundNum + '라운드 입찰이 완료되었습니다.',
+                'w':300,
+                'callback':Function.prototype.bind.call(this.emitRoundResultCheck,this)
+            })
+        },
+        /**
+        * 결과 확인을 알려줌
+        */
+        emitRoundResultCheck:function(){
             Auction.io.emit('ROUND_RESULT_CHECK',this.bidder_company);
         },
         /**
          * 오름입찰완료 알림 이벤트
          */
         onAscendingBiddingFinish:function(msg){
-            alert('오름입찰이 종료되었습니다.');
+            //alert('오름입찰이 종료되었습니다.');
+            R2Alert.allDestroy();
+            R2Alert.render({'msg':'오름입찰이 종료되었습니다.','w':300})
             this.$el.find('._round_mark').text('오름입찰이 종료되었습니다. 밀봉입찰 준비중입니다.');
         },
         /**
@@ -420,7 +453,9 @@ define([
          */
         onSealBidStart:function(msg){
             this.$el.find('._seal_bid_tap').removeClass('displayNone').tab('show');
-            alert('밀봉입찰이 시작');
+            //alert('밀봉입찰이 시작');
+            R2Alert.allDestroy();
+            R2Alert.render({'msg':'밀봉입찰을 시작하시기 바랍니다.','w':300})
             this.$el.find('._round_mark').text('밀봉입찰이 진행중입니다.');
         },
         /**
@@ -446,7 +481,10 @@ define([
          * 밀봉입찰조합완료 알림이벤트
          */
         onSealBidFinish:function(msg){
-            alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
+            console.log(msg)
+            //alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
+            R2Alert.allDestroy();
+            R2Alert.render({'msg':'밀봉입찰이 완료 되었습니다.\n입찰자는 관리자에게 결과를 확인하시기 바랍니다.','w':400})
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
 
@@ -635,7 +673,9 @@ define([
             // 입찰자 마다의 라운드별 증분율
             this.setRoundRateIncrease();
 
-            var frequencyList = JSON.parse(JSON.stringify(data.frequency));
+            var roundData = JSON.parse(JSON.stringify(data));
+
+            var frequencyList = JSON.parse(JSON.stringify(roundData.frequency));
             // winPriceList 설정 (winPrice에는 ''도 있다.)
             var winPriceList = _.map(frequencyList,function(frequency){
                 return {'name':frequency.name, 'bidder':frequency.winBidder, 'price':frequency.winPrice} ;
@@ -854,7 +894,8 @@ define([
             //입찰 관련 버튼 모두 숨김
             this.biddingBtnListDisplay(false);
 
-            alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
+            //alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
+            //R2Alert.render({'msg':'원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.','w':350})
             this.autoBiddingFlag = false;
             this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
@@ -894,7 +935,8 @@ define([
 
             var flag = true;
             if(!sealBidRankingFlag) {
-                alert('밀봉 입찰 순위를 모두 입력해 주시기 바랍니다.')
+                //alert('밀봉 입찰 순위를 모두 입력해 주시기 바랍니다.')
+                R2Alert.render({'msg':'밀봉 입찰 순위를 모두 입력해 주시기 바랍니다.','w':450})
                 flag = false;
             }
 
@@ -911,7 +953,8 @@ define([
                 return item.price >= priceList[index].price || item.hertzFlag == false;
             })
             if(!flag){
-                alert('밀봉입찰액은 밀봉최소입착액 이상으로 입력하셔야 합니다.')
+                //alert('밀봉입찰액은 밀봉최소입착액 이상으로 입력하셔야 합니다.');
+                R2Alert.render({'msg':'밀봉입찰액은 밀봉최소입착액 이상으로 입력하셔야 합니다.','w':450})
             }
             return flag
         },
@@ -1009,7 +1052,8 @@ define([
                     percent = percentList[i].percent;
                 } else {
                     if(percent < percentList[i].percent){
-                        alert((i+1) + '순위 입찰액은 ' + i + '순위 증분 퍼센트보다 이하로 입력하셔야합니다.');
+                        //alert((i+1) + '순위 입찰액은 ' + i + '순위 증분 퍼센트보다 이하로 입력하셔야합니다.');
+                        R2Alert.render({'msg':(i+1) + '순위 입찰액은 \n' + i + '순위 증분 퍼센트보다 이하로 입력하셔야합니다.','w':450})
                         flag = false;
                         break
                     }
@@ -1560,7 +1604,8 @@ define([
                     this.postBid();
                     //window.clearInterval(this.intervalAuctionList)
                 } else {
-                    alert('갱매가 중복적으로 생성되었습니다.')
+                    //alert('갱매가 중복적으로 생성되었습니다.');
+                    R2Alert.render({'msg':'갱매가 중복적으로 생성되었습니다.','w':300})
                 }
             }
         },
@@ -1626,7 +1671,8 @@ define([
                 //this.setRoundList(data);
 
             } else {
-                alert('경매 정보 호출에 실패하였습니다.')
+                //alert('경매 정보 호출에 실패하였습니다.')
+                R2Alert.render({'msg':'경매 정보 호출에 실패하였습니다.','w':300})
             }
         },
 
