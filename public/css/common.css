@@ -6,6 +6,11 @@
     background-color:#2D3E4F
 }
 
+.label-ALL-l,
+.label-ALL-s {
+    background-color: #777;
+}
+
 .label-KT-l,
 .label-KT-s {
     background-color: #ED1F27;

@@ -278,6 +278,9 @@ io.on('connection', function(socket){
         })
 
         io.emit('HERTZ_LIST',JSON.stringify(hertzList));
-    })
+    });
 
+    socket.on('AGAIN_SEAL_BID',function(msg){
+        io.emit('AGAIN_SEAL_BID',msg);
+    })
 });

@@ -109,11 +109,12 @@ define([
                    }
                }
 
-               var combinationSumList = this.setCombinationPriceSum(combinationList);
-               var combinationSumSortList = this.setCombinationSumSort(combinationSumList);
-               var combinationReverseList = this.setCombinationReverse(combinationSumSortList);
-               var combinationRankingList = this.setCombinationRanking(combinationReverseList);
-               var combinationNamingList = this.setCombinationNaming(combinationRankingList);
+               var combinationSumList       = this.setCombinationPriceSum(combinationList);
+               var combinationMergeList     = this.setCombinationMerge(combinationSumList);
+               var combinationSumSortList   = this.setCombinationSumSort(combinationMergeList);
+               var combinationReverseList   = this.setCombinationReverse(combinationSumSortList);
+               var combinationRankingList   = this.setCombinationRanking(combinationReverseList);
+               var combinationNamingList    = this.setCombinationNaming(combinationRankingList);
 
                console.log(combinationNamingList)
 
@@ -282,6 +283,91 @@ define([
                return combinationList;
            },
            /**
+           * 미신청주파수만 다르고 같은 것은 합쳐서 하나로 표시
+           */
+           setCombinationMerge : function(data){
+
+               // 기본 배열
+               var list = JSON.parse(JSON.stringify(data));
+               // 중복이 있을 경우 하나씩 빠지는 배열
+               var list_loop = JSON.parse(JSON.stringify(data));
+               // 중복된 것만 모아서 따로 만드는 배열
+               var list_temp = [];
+               // 중복된 안된 것과 중복된 것은 중복 처리후 저장하는 배열
+               var list_merge = [];
+
+               var mergeFlagArr = null;
+               var total = 5;
+
+               for(var i=0; i<list.length; ++i){
+
+                   list_temp = [];
+
+                   for(var j=0; j<list_loop.length; ++j){
+
+                       mergeFlagArr = [];
+
+                       for(var k=0; k < total; ++k){
+
+                           // 두개 모두 미선청 주파수 이면 true
+                           // 두개의 객체가 같으면 true
+                           if(list[i].combination[k].hertzFlag == false && list_loop[j].combination[k].hertzFlag == false){
+                               mergeFlagArr.push(true);
+                           } else {
+                               var equalFlag = _.isEqual(list[i].combination[k],list_loop[j].combination[k]);
+                               mergeFlagArr.push( equalFlag );
+                           }
+                       }
+
+                       // 모두가 true 이면 같은 조합
+                       var flag = _.every(mergeFlagArr,function(item){
+                           return item == true;
+                       })
+
+                       // 같은 조합이면 배열에서 제거후 list_temp에 추가
+                       if(flag){
+                           var overlap = list_loop.splice(j,1)
+                           list_temp.push(overlap[0]);
+                           j = j - 1;
+                       }
+
+                       mergeFlagArr = null;
+
+                   }
+
+                   // 중복된 조합은 company 를 수정후 첫번째 조합에 추가하고 첫번째 조합을
+                   // 중복이 제거처리한 배열에 저장한다.
+                   // list_temp가 하나인 것은 중복이 없는 것이며, 바로 추가한다.
+                   if(list_temp.length > 1){
+                       var companyArr = ['','','','',''];
+                       _.each(list_temp,function(item){
+                           _.each(item.combination,function(combination,index){
+                               if(companyArr[index] == ''){
+                                   companyArr[index] = combination.company;
+                               } else {
+                                   if(companyArr[index] != combination.company){
+                                       companyArr[index]  = companyArr[index] + ',' + combination.company;
+                                   }
+                               }
+                           })
+                       })
+                       console.log(companyArr)
+
+                       _.each(list_temp[0].combination,function(item, index){
+                           item.company = companyArr[index];
+                       })
+                       list_merge.push(list_temp[0]);
+                   } else if(list_temp.length == 1){
+                       list_merge.push(list_temp[0]);
+                   }
+
+                   list_temp = null;
+
+               }
+
+               return list_merge;
+           },
+           /**
            * 각 통신사 명칭 변경 (SK -> SKT,LG -> LGU+)
            */
            setCombinationNaming:function(data){
@@ -290,19 +376,48 @@ define([
 
                 for (var i=0; i<combinationList.length; ++i){
                     for(var j=0; j<combinationList[i].combination.length; ++j){
-                        combinationList[i].combination[j].labelClass = combinationList[i].combination[j].company;
+
 
                         if(combinationList[i].combination[j].company == 'SK'){
                             company = 'SKT';
+                            combinationList[i].combination[j].labelClass = combinationList[i].combination[j].company;
                         } else if(combinationList[i].combination[j].company == 'LG'){
                             company = 'LGU+';
+                            combinationList[i].combination[j].labelClass = combinationList[i].combination[j].company;
+                        } else if(combinationList[i].combination[j].company == 'KT'){
+                            company = 'KT';
+                            combinationList[i].combination[j].labelClass = combinationList[i].combination[j].company;
                         } else {
-                            company = combinationList[i].combination[j].company;
+                            var str  = combinationList[i].combination[j].company;
+                            var str2 = str.replace('SK', 'SKT');
+                            var str3 = str.replace('LG', 'LGU+');
+                            var str4 = '';
+
+                            if(str3.substr(str3.length-1,str3.length) === ','){
+                                str4 = str3.substr(0,str3.length-1);
+                            } else {
+                                str4 = str3;
+                            }
+
+                            company = str4;
+
+                            combinationList[i].combination[j].labelClass = 'ALL';
                         }
                         combinationList[i].combination[j].company = company;
                     }
                 }
                 return combinationList;
+           },
+           /**
+           * 안에 내용은 다르지만 랭킹과 합계가 같은 것이 있으면
+           * 재입찰 버튼을 활성화 하고, 조합을 초기화 한다.
+           */
+           checkOverlap:function(data){
+               var combinationList = JSON.parse(JSON.stringify(data));
+               var combinationRankingList = _.filter(combinationList,function(item){
+                   return item.ranking == 1;
+               });
+               return (combinationRankingList.length>1) ? true : false;
            }
        }
    }

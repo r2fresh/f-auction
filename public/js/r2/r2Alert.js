@@ -31,11 +31,11 @@ define([
             onConfirm:function(e){
                 e.preventDefault();
 
+                R2.Dialog.destroy(this.className);
+
                 if(this.callback){
                     this.callback();
                 }
-
-                R2.Dialog.destroy(this.className);
             },
             allDestroy:function(){
                 R2.Dialog.destroy();

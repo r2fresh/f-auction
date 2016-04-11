@@ -517,14 +517,12 @@ define([
         onSealBidPrice:function(msg){
 
             var bidder = JSON.parse(msg);
-            console.log(bidder)
+
             _.each(this.sealBidBidderList,function(item){
                 if(item.name == bidder.name){
                     item.priceList = _.extend(item.priceList,bidder.priceList);
                 }
             })
-            console.log(JSON.parse(JSON.stringify(this.sealBidBidderList)))
-
 
             //밀봉입찰조합에 필요한 통신사 지원 대역폭 저장
             SealBidCombination.setSealBandWidthList(bidder);
@@ -759,6 +757,15 @@ define([
             Auction.io.emit('SEAL_BID_FINISH','sealBidFinish')
             var combinationList = SealBidCombination.getCombinationList(this.sealBidBidderList);
             this.setCombinationListUI(combinationList);
+
+            // 조합 1위가 두개이면 재입찰
+            if(SealBidCombination.checkOverlap(combinationList)){
+                R2Alert.render({
+                    'msg':'1위가 2개 이상인 조합입니다.\n재입찰 진행 하시겠습니다.',
+                    'w':350,
+                    'callback':Function.prototype.bind.call(this.againSealBid,this)
+                })
+            }
         },
 
         /**
@@ -777,6 +784,19 @@ define([
 
             var template = Handlebars.compile(this.sealBidCombinationListTpl);
             this.$el.find('._seal_bid_combination tbody').html(template({'combinationList':combinationList}));
+        },
+
+        /**
+        * 1위가 2개 이상이면 재입찰 하는 함수
+        */
+        againSealBid:function(){
+            _.each(this.sealBidCheckList,function(item){
+                item.state === false;
+            })
+            this.setSealBidPrice();
+            this.$el.find('._seal_bid_combination tbody').empty();
+
+            Auction.io.emit('AGAIN_SEAL_BID','againSealBid')
         },
 
         /**
