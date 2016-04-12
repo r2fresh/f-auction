@@ -50,7 +50,7 @@ define([
                    this.setRoundRateIncreaseUI(rateIncreaseList);
                }
            },
-           
+
            /**
            * 증분율 리스트 구하는 함수
            */
@@ -86,7 +86,11 @@ define([
                    if(item.maxPrice == 0){
                        item.rateIncrease = 0;
                    } else {
-                       item.rateIncrease = Math.ceil(((item.maxPrice - parseInt(startPriceList[index].price,10))/item.maxPrice)*100)
+                       var startPrice = parseInt(startPriceList[index].price,10);
+                       var percent = ( (item.maxPrice - startPrice)/item.maxPrice )*100
+
+                       // 소수점 1자리수 반올림
+                       item.rateIncrease = Math.round(percent * 10)/10;
                    }
                });
                return rateIncreaseList;

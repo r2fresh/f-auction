@@ -18,7 +18,7 @@ define([
         //입찰자 통신사
         bidder_company: '',
         //최소입찰증분 (단위는 퍼센트)
-        lowestBidAdd : 4,
+        lowestBidAdd : 0.75,
         //최소입찰가격 배열
         lowestBidPrices : null,
         //시작가 배열
@@ -303,7 +303,7 @@ define([
          * 예상증분률을 표시하는 함수
          */
         onSealPredictPercent:function(e){
-            // 밀봉입찹순위 체크
+            // 밀봉입찰순위 체크
             if(!this.validationSealBidRanking()) return;
             // 입력한 밀봉 입찰 금액 리스트
             var insertPriceList = this.getInsertSealBidPrice();
@@ -352,7 +352,7 @@ define([
             var sealMaxBiddingPrice = this.setSealMaxBiddingPrice(percentList);
             //console.dir(sealMaxBiddingPrice)
             this.setSealMaxBiddingPriceUI(sealMaxBiddingPrice);
-            
+
             // 입찰한 급액의 증분율 표시
             this.setSealBidPercentUI(percentList)
             // 금액 순위별 퍼센트 룰을 잘 준수 했는데 체크 하는 함수
@@ -683,9 +683,6 @@ define([
          * 각 라운드 입찰 완료
          */
         setRoundResult:function(data){
-            console.log('ROUND RESULT : ');
-            console.log(data);
-            console.log('======================');
 
             // 입찰자 마다의 라운드별 증분율
             this.setRoundRateIncrease();
@@ -1017,7 +1014,7 @@ define([
                     'prePrice':priceList[index].price
                 }
             })
-            console.dirxml(insertPriceList);
+
             return insertPriceList;
         },
 
@@ -1033,7 +1030,8 @@ define([
                 //var percent = Math.ceil( ( 1-(lowestPrice/insertPrice) )*100 );
                 var percent = null;
                 if(item.hertzFlag == true){
-                    percent = Math.ceil( ( (insertPrice-lowestPrice)/insertPrice )*100 );
+                    var account = ( (insertPrice-lowestPrice)/insertPrice )*100
+                    percent = Math.round( account*10)/10;
                 } else {
                     percent = 0;
                 }
@@ -1046,7 +1044,6 @@ define([
                 }
 
             })
-            console.dirxml(percentList);
             return percentList;
         },
         /**
@@ -1054,7 +1051,6 @@ define([
          */
         sortSealBidPercent:function(data){
             var sortPriceList =_.sortBy(data,'ranking');
-            console.dirxml(sortPriceList);
             return sortPriceList;
         },
         /**

@@ -60,7 +60,7 @@ define([
                     R2Alert.render({'msg':'관리자는 비밀번호를 입력하셔야 합니다.','w':350})
                     return ;
                 }
-                var rate = parseInt( this.$el.find('._login_increaseRate option:selected').val(), 10);
+                var rate = parseFloat( this.$el.find('._login_increaseRate option:selected').val());
             }
             Model.postLogin({
                  url: '/login',
@@ -87,6 +87,8 @@ define([
             //로그인 유저 타입
             var type = (bidder.val() === 'admin') ? 'admin' : 'bidder';
 
+            console.log(data)
+
             if(textStatus === 'success'){
                 if(data.bidder == 'admin'){
                     if(!data.pwdResult){
@@ -94,7 +96,7 @@ define([
                         return;
                     }
                 } else {
-                    if(data.rate == 0){
+                    if(parseFloat(data.rate) == 0){
                         R2Alert.render({'msg':'관리자가 아직 로그인 되지 않았습니다.\n관리자 로그인 후 입찰자 로그인이 가능합니다.','w':400});
                         return;
                     }

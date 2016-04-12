@@ -53,7 +53,7 @@ app.post('/login', function(req, res) {
     if(bodyData.bidder == 'admin'){
         // 관리자는 비밀
         if(bodyData.pwd == pwd){
-            rate = parseInt(bodyData.rate, 10);
+            rate = parseFloat(bodyData.rate);
             pwdResult = true;
             result = true;
         } else {
@@ -62,8 +62,6 @@ app.post('/login', function(req, res) {
             result = false;
         }
     } else {
-        logger.log('bodyData.bidder : ' + bodyData.bidder)
-        logger.log('rate : ' + rate)
         if(rate > 0){
             resultStr = bodyData.bidder + '로 로그인 되었습니다.'
             result = true;
@@ -95,7 +93,7 @@ app.post('/login', function(req, res) {
             }
         }
     }
-    logger.log(overlap)
+    logger.log({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 
     res.send({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 })
@@ -261,7 +259,7 @@ io.on('connection', function(socket){
      * 입찰자가 라운드의 결과를 확인 했는지 알림 이벤트
      */
     socket.on('RATE',function(msg){
-        rate = parseInt(msg,10);
+        rate = parseFloat(msg,10);
     })
 
     /**

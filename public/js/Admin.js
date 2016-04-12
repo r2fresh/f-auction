@@ -88,7 +88,9 @@ define([
             //오름 차순 결과
             'click ._acending_btn' : 'onBiddingResult',
             //밀봉 입찰 시작
-            'click ._seal_bid_start_btn' : 'onSealBidStart'
+            'click ._seal_bid_start_btn' : 'onSealBidStart',
+
+            'click ._again_seal_bid_btn' : 'onAgainSealBid'
 
             //'click ._auction_end_btn' : 'onAuctionEnd',
             // 갱매시작
@@ -760,11 +762,7 @@ define([
 
             // 조합 1위가 두개이면 재입찰
             if(SealBidCombination.checkOverlap(combinationList)){
-                R2Alert.render({
-                    'msg':'1위가 2개 이상인 조합입니다.\n재입찰 진행 하시겠습니다.',
-                    'w':350,
-                    'callback':Function.prototype.bind.call(this.againSealBid,this)
-                })
+                this.$el.find('._again_seal_bid_btn').removeClass('displayNone');
             }
         },
 
@@ -789,14 +787,16 @@ define([
         /**
         * 1위가 2개 이상이면 재입찰 하는 함수
         */
-        againSealBid:function(){
+        onAgainSealBid:function(){
             _.each(this.sealBidCheckList,function(item){
-                item.state === false;
+                item.state = false;
             })
             this.setSealBidPrice();
             this.$el.find('._seal_bid_combination tbody').empty();
 
-            Auction.io.emit('AGAIN_SEAL_BID','againSealBid')
+            Auction.io.emit('AGAIN_SEAL_BID','againSealBid');
+
+            this.$el.find('._again_seal_bid_btn').addClass('displayNone');
         },
 
         /**
