@@ -36,11 +36,12 @@ requirejs([
 	'js/Login',
 	'js/Admin',
 	'js/Bidder',
+	'js/Chart',
 	'js/Model',
 	'socketio',
 	'js/NotRefresh'
 ],
-function(Login, Admin, Bidder, Model, io, NotRefresh){
+function(Login, Admin, Bidder, Chart, Model, io, NotRefresh){
 
 	var prevView = null;
 
@@ -87,7 +88,12 @@ function(Login, Admin, Bidder, Model, io, NotRefresh){
 	function checkSession(){
 
 		if(!Auction.session.get('user_info')){
-			window.location = '/#login';
+			if(window.location.hash == '#chart')
+			{
+				window.location = '/#chart';
+			} else {
+				window.location = '/#login';
+			}
 		} else {
 			Model.postLogin({
                  url: '/login',
@@ -140,6 +146,11 @@ function(Login, Admin, Bidder, Model, io, NotRefresh){
 				Bidder.render();
 				prevView = Bidder;
 				Bidder.show();
+			break;
+			case 'chart' :
+				Chart.render();
+				prevView = Chart;
+				Chart.show();
 			break;
 			default :
 				if(!Auction.session.get('user_info')) {
