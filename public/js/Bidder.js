@@ -415,7 +415,7 @@ define([
                 this.setAutoBidding();
             } else {
                 R2Alert.allDestroy();
-                R2Alert.render({'msg':this.roundNum + '라운드 입찰 진행 하시기 바랍니다.','w':300})
+                R2Alert.render({'msg':this.roundNum + '라운드 입찰 진행 하시기 바랍니다.','w':400})
             }
         },
         /**
@@ -495,8 +495,11 @@ define([
         },
 
         onAgainSealBid:function(msg){
+
+            var str = (msg == 'againSealBid') ? '다시 입찰' : '1위가동점으로 재입찰';
+
             R2Alert.allDestroy();
-            R2Alert.render({'msg':'재입찰을 진행 하시기 바랍니다.','w':300});
+            R2Alert.render({'msg':str + '을 진행 하시기 바랍니다.','w':500});
 
             //예상증분율 버튼 숨기기
             this.$el.find('._seal_predict_percent_btn').removeClass('displayNone');

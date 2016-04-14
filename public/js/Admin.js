@@ -90,7 +90,9 @@ define([
             //밀봉 입찰 시작
             'click ._seal_bid_start_btn' : 'onSealBidStart',
 
-            'click ._again_seal_bid_btn' : 'onAgainSealBid'
+            'click ._again_seal_bid_btn' : 'onAgainSealBid',
+
+            'click ._tie_seal_bid_btn' : 'onTieSealBid'
 
             //'click ._auction_end_btn' : 'onAuctionEnd',
             // 갱매시작
@@ -224,9 +226,6 @@ define([
                 return;
             }
 
-            console.log('roundResultCheckFlag : ' + this.roundResultCheckFlag);
-            console.log('this.roundNum : ' + this.roundNum);
-
             if(!this.roundResultCheckFlag && this.roundNum > 1){
 
                 for(var i=0;i<this.roundResultCheck.length;++i){
@@ -253,8 +252,6 @@ define([
                 R2Alert.render({'msg':notCheckStr + ' 입찰자가 라운드 결과를 확인하지 않으셨습니다.\n 입찰자에게 확인 요청 드립니다.','w':500})
                 return;
             }
-
-            console.log("121212")
 
             _.each(this.roundResultCheck,function(item){
                 item.state = false;
@@ -484,7 +481,7 @@ define([
                 //alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
                 R2Alert.render({
                     'msg':this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.',
-                    'w':300,
+                    'w':400,
                     'callback':Function.prototype.bind.call(this.emitRoundResult,this)
                 });
 
@@ -771,6 +768,8 @@ define([
 
             // 조합 1위가 두개이면 재입찰
             if(SealBidCombination.checkOverlap(combinationList)){
+                this.$el.find('._tie_seal_bid_btn').removeClass('displayNone');
+            } else {
                 this.$el.find('._again_seal_bid_btn').removeClass('displayNone');
             }
         },
@@ -806,6 +805,18 @@ define([
             Auction.io.emit('AGAIN_SEAL_BID','againSealBid');
 
             this.$el.find('._again_seal_bid_btn').addClass('displayNone');
+        },
+
+        onTieSealBid:function(){
+            _.each(this.sealBidCheckList,function(item){
+                item.state = false;
+            })
+            this.setSealBidPrice();
+            this.$el.find('._seal_bid_combination tbody').empty();
+
+            Auction.io.emit('AGAIN_SEAL_BID','tieSealBid');
+
+            this.$el.find('._tie_seal_bid_btn').addClass('displayNone');
         },
 
         /**

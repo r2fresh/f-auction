@@ -63,7 +63,11 @@ define([
                    });
                });
 
-               return this.deleteOverlap(chartList);
+              var wideBandList = this.deleteOverlap(chartList);
+
+              console.dir(wideBandList)
+
+               return wideBandList;
            },
 
 
@@ -123,12 +127,14 @@ define([
                               temp.round = temp.round + '~' + item.round;
                           }
 
-                          if(chartList.length-1 == index){
-                              priceChartList.push(temp);
-                          }
+
                       } else {
                           priceChartList.push(temp);
                           temp = item;
+                      }
+                      
+                      if(chartList.length-1 == index){
+                          priceChartList.push(temp);
                       }
                    }
                 })
