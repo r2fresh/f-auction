@@ -87,7 +87,7 @@ define([
                        item.rateIncrease = 0;
                    } else {
                        var startPrice = parseInt(startPriceList[index].price,10);
-                       var percent = ( (item.maxPrice - startPrice)/item.maxPrice )*100
+                       var percent = ( (item.maxPrice - startPrice)/startPrice )*100
 
                        // 소수점 1자리수 반올림
                        item.rateIncrease = Math.round(percent * 10)/10;
