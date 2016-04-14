@@ -10,6 +10,21 @@ define([
     var KTWideBandList = null;
     var KTWideBandChartList = null;
 
+    var SKTWideBandList = null;
+    var SKTWideBandChartList = null;
+
+    var LGUWideBandList = null;
+    var LGUWideBandChartList = null;
+
+    var KTNarrowList = null;
+    var KTNarrowChartList = null;
+
+    var SKTNarrowList = null;
+    var SKTNarrowChartList = null;
+
+    var LGUNarrowList = null;
+    var LGUNarrowChartList = null;
+
  	module.exports = new (Backbone.View.extend({
         el:'.chart',
         patternChart:null,
@@ -17,16 +32,110 @@ define([
             this.$el.html(Chart);
 
             this.setBiddingPattern();
-            this.setBiddingIncrease();
+            //this.setBiddingIncrease();
 
-            ChartData.getRoundList(Function.prototype.bind.call(this.setChartDataList,this))
+            this.$el.find('#biddingPattern').hide();
+
+            this.getChartData();
+
+            Auction.io.on('GET_CHART_DATA', Function.prototype.bind.call(this.getChartData,this) );
+
+        },
+        getChartData:function(){
+            this.$el.find('#biddingPattern').hide();
+            ChartData.getRoundList(Function.prototype.bind.call(this.setChartDataList,this));
         },
         setChartDataList:function(data){
 
-            KTWideBandList = ChartData.getKTWideBandList(data);
+            var chartData = JSON.parse(JSON.stringify(data))
+
+            KTWideBandList = ChartData.getWideBandList('KT', chartData);
             KTWideBandChartList = _.pluck(KTWideBandList,'price');
 
-            console.log(this.patternChart);
+            KTNarrowList = ChartData.getNarrowList('KT',chartData);
+            KTNarrowChartList = _.pluck(KTNarrowList,'price');
+
+            SKTWideBandList = ChartData.getWideBandList('SK', chartData);
+            SKTWideBandChartList = _.pluck(SKTWideBandList,'price');
+
+            SKTNarrowList = ChartData.getNarrowList('SK',chartData);
+            SKTNarrowChartList = _.pluck(SKTNarrowList,'price');
+
+            LGUWideBandList = ChartData.getWideBandList('LG', chartData);
+            LGUWideBandChartList = _.pluck(LGUWideBandList,'price');
+
+            LGUNarrowList = ChartData.getNarrowList('LG',chartData);
+            LGUNarrowChartList = _.pluck(LGUNarrowList,'price');
+
+            this.patternChart.series[1].update({
+                data : KTWideBandChartList,
+                dataLabels : {
+                    allowOverlap : true,
+                    formatter: function () {
+                        var round = KTWideBandList[this.point.index].round;
+                        return '<span style="color:rgba(237, 31, 39, 1)">' + round + '</span>/' + this.y;
+                    }
+                }
+            });
+
+            this.patternChart.series[2].update({
+                data : KTNarrowChartList,
+                dataLabels : {
+                    allowOverlap : true,
+                    formatter: function () {
+                        var round = KTNarrowList[this.point.index].round;
+                        return '<span style="color:rgba(237, 31, 39, 1)">' + round + '</span>/' + this.y;
+                    },
+                }
+            });
+
+            this.patternChart.series[3].update({
+                data : SKTWideBandChartList,
+                dataLabels : {
+                    allowOverlap : true,
+                    formatter: function () {
+                        var round = SKTWideBandList[this.point.index].round;
+                        return '<span style="color:rgba(0, 114, 255, 1)">' + round + '</span>/' + this.y;
+                    }
+                }
+            });
+
+            this.patternChart.series[4].update({
+                data : SKTNarrowChartList,
+                dataLabels : {
+                    allowOverlap : true,
+                    formatter: function () {
+                        var round = SKTNarrowList[this.point.index].round;
+                        return '<span style="color:rgba(0, 114, 255, 1)">' + round + '</span>/' + this.y;
+                    },
+                }
+            });
+
+            this.patternChart.series[5].update({
+                data : LGUWideBandChartList,
+                dataLabels : {
+                    allowOverlap : true,
+                    formatter: function () {
+                        var round = LGUWideBandList[this.point.index].round;
+                        return '<span style="color:rgba(46, 181, 2, 1)">' + round + '</span>/' + this.y;
+                    }
+                }
+            });
+
+            this.patternChart.series[6].update({
+                data : LGUNarrowChartList,
+                dataLabels : {
+                    allowOverlap : true,
+                    formatter: function () {
+                        var round = LGUNarrowList[this.point.index].round;
+                        return '<span style="color:rgba(46, 181, 2, 1)">' + round + '</span>/' + this.y;
+                    },
+                }
+            });
+
+            this.$el.find('#biddingPattern').show();
+            this.$el.find('#biddingPattern .highcharts-series-group .highcharts-series-0').remove();
+            this.$el.find('#biddingPattern .highcharts-legend .highcharts-legend-item:eq(0)').remove();
 
         },
         setBiddingPattern:function(){
@@ -35,7 +144,7 @@ define([
                 chart: {
                     renderTo:$('#biddingPattern')[0],
                     type: 'line',
-                    spacingRight: 50,
+                    spacingRight: 0,
                 },
                 exporting:{
                     enabled:false,
@@ -164,7 +273,7 @@ define([
                         formatter: function () {
                             var company = '';
 
-                            console.log(this.value%3)
+                            //console.log(this.value%3)
 
                             var account = this.value%3;
 
@@ -215,8 +324,8 @@ define([
                           style:{'fontSize':'6px'},
                           crop: false,
                           overflow: 'none',
-                          x:25,
-                          y:10
+                          x:35,
+                          y:13
                         },
                         states: {
                             hover: {
@@ -248,82 +357,33 @@ define([
                     },
                     {
                     name: 'KT 광대역',
-                    color:'rgba(237, 31, 39, 0.5)',
+                    color:'rgba(237, 31, 39, 1)',
                     data:[]
                 }
                 ,{
                     name: 'KT 협대역',
-                    color:'rgba(237, 31, 39, 0.5)',
-                    data: [
-                        [2*3-2, 4559],
-                        [2*3-2, 4559]
-                    ]
+                    color:'rgba(237, 31, 39, 1)',
+                    data: []
                 }
                 ,{
                     name: 'SKT 광대역',
-                    color:'rgba(0, 114, 255, 0.5)',
-                    data: [
-                        [3*3-1, 3855],
-                        [3*3-1, 3933],
-                        [3*3-1, 4013],
-                        [3*3-1, 4095],
-                        [3*3-1, 5000],
-                        [4*3-1, 6619],
-                        [4*3-1, 6619],
-                        [4*3-1, 6753],
-                        [4*3-1, 6753],
-                        [4*3-1, 6753]
-                    ]
+                    color:'rgba(0, 114, 255, 1)',
+                    data: []
                 }
                 ,{
                     name: 'SKT 협대역',
-                    color:'rgba(0, 114, 255, 0.5)',
-                    data: [
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [2*3-1, 4513],
-                        [5*3-1, 3277]
-                    ]
+                    color:'rgba(0, 114, 255, 1)',
+                    data: []
                 }
                 ,{
                     name: 'LGU+ 광대역',
-                    color:'rgba(46, 181, 2, 0.5)',
-                    data: [
-                        [3*3, 3816],
-                        [3*3, 3816],
-                        [3*3, 3834],
-                        [3*3, 3834],
-                        [3*3, 3973],
-                        [3*3, 3973],
-                        [3*3, 4054],
-                        [3*3, 4054],
-                        [3*3, 4136],
-                        [3*3, 4136],
-                        [3*3, 6000],
-                        [3*3, 6000],
-                        [3*3, 6000],
-                        [3*3, 6000],
-                        [3*3, 6000],
-                        [3*3, 6000]
-                    ]
+                    color:'rgba(46, 181, 2, 1)',
+                    data: []
                 }
                 ,{
                     name: 'LGU+ 협대역',
-                    color:'rgba(46, 181, 2, 0.5)',
-                    data: [
-                        [5*3, 3277]
-                    ]
+                    color:'rgba(46, 181, 2, 1)',
+                    data: []
                 }
                 ]
             };

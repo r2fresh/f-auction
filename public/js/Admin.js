@@ -224,6 +224,9 @@ define([
                 return;
             }
 
+            console.log('roundResultCheckFlag : ' + this.roundResultCheckFlag);
+            console.log('this.roundNum : ' + this.roundNum);
+
             if(!this.roundResultCheckFlag && this.roundNum > 1){
 
                 for(var i=0;i<this.roundResultCheck.length;++i){
@@ -250,6 +253,8 @@ define([
                 R2Alert.render({'msg':notCheckStr + ' 입찰자가 라운드 결과를 확인하지 않으셨습니다.\n 입찰자에게 확인 요청 드립니다.','w':500})
                 return;
             }
+
+            console.log("121212")
 
             _.each(this.roundResultCheck,function(item){
                 item.state = false;
@@ -338,6 +343,8 @@ define([
             this.insertRoundBid(bidData);
             //라운드에 입찰자가 모드 입찰을 했는지 체크하는 함수
             var flag = this.checkBidCountList(bidData);
+
+            console.log("postRound")
 
             if(flag === true){
                 roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
@@ -479,11 +486,13 @@ define([
                     'msg':this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.',
                     'w':300,
                     'callback':Function.prototype.bind.call(this.emitRoundResult,this)
-                })
+                });
 
                 this.roundNum += 1;
                 this.$el.find('._round_mark').text(this.roundNum + '라운드');
                 this.$el.find('._round_start_btn').removeClass('displayNone');
+
+                Auction.io.emit('GET_CHART_DATA', 'getChartData');
 
             }
         },

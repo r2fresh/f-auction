@@ -35,6 +35,7 @@ define([
 
                 if(this.callback){
                     this.callback();
+                    this.callback = null;
                 }
             },
             allDestroy:function(){
