@@ -11,3 +11,33 @@
 .admin .seal_lowest_bid_price table tbody tr td {
     text-align:center;
 }
+
+
+/**
+* 전체 경매의 진행 상태를 표시
+*/
+.admin ._bidding_state {
+    margin-top:20px;
+    margin-bottom:20px;
+}
+.admin ._bidding_state strong{
+    font-size:14px;
+}
+
+/**
+* 라운드 표시
+*/
+.admin ._round_mark div {
+    text-align: center;
+    padding: 10px 5px 10px 5px;
+}
+.admin ._round_mark div strong {
+    font-size: 50px;
+}
+.admin ._round_mark div span {
+    font-size: 30px;
+}
+
+.admin ._bid_rate {
+    margin-top:20px;
+}

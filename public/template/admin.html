@@ -1,307 +1,523 @@
-<div class="container-fluid">
-
-    <!--로그인 상태 체크-->
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr class="connect_user_list">
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <!-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p>
+                <strong>
+                    관리자
+                </strong>
+            </p> -->
+            <!-- <a class="navbar-brand" href="#">
+                <img class="bidder_logo" src="img/kt_logo.jpg" alt="" style="width:35px;height:26px;">
+            </a> -->
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li>
+                    <ul class="nav navbar-nav">
+                        <li><p style="margin:0px;padding:15px 15px;"><strong>관리자</strong></p></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <ul class="nav navbar-nav connect_user_list">
                         <script class="connect_user_list_tpl" type="text/x-handlebars-template">
-                            <td>
-                                <span>사용자상태 : </span>
-                            </td>
-                            <{{#list}}
-                            <td class="connect_user">
-                                <span class="label label-{{className}}">{{name}}</span>
-                            </td>
+                            {{#list}}
+                            <!-- <li><a href="#about"><span class="label label-{{className}}">{{name}}</span></a></li> -->
+                            <li><p style="margin:0px;padding:15px 15px;"><span class="label label-{{className}}">{{name}}</span></p></li>
                             {{/list}}
                         </script>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
+                    </ul>
+                </li>
+                <li><p style="margin:0px;padding:10px 10px;">
+                    <button class="btn btn-default btn-sm _logout_btn"><i class="fa fa-sign-out" aria-hidden="true"></i><strong> 로그아웃</strong></button>
+                </p></li>
+            </ul>
+        </div><!--/.nav-collapse -->
     </div>
-    <!--/로그인 상태 체크-->
+</nav>
+<div class="container-fluid" style="margin-top:50px;">
 
     <div class="row">
-        <div class="col-md-4 text-left">
+        <div class="col-md-2">
 
-            <span class="_round_mark" style="font-size:30px">1라운드</span>
-            <button class="btn btn-default _round_start_btn" style="margin:0px 0px 10px 10px"><strong>시작</strong></button>
-        </div>
-        <div class="col-md-3 text-right">
-            <h3 class="_bid_rate">증분율 : 0</h3>
-        </div>
-        <div class="col-md-5 text-right">
-            <!-- <input type="text" id="auction_id" placeholder=""> -->
-            <!-- <button class="btn btn-default btn-xs _auction_start_btn">모의경매시작</button>
-            <button class="btn btn-default btn-xs _auction_end_btn">모의경매끝</button> -->
-            <button class="btn btn-default _logout_btn">로그아웃</button>
-            <!-- <button class="btn btn-default btn-xs _clear_interval_btn">인터벌 스탑</button> -->
-            <button class="btn btn-default _acending_btn">오름입찰결과</button>
-            <button class="btn btn-default _seal_bid_start_btn">밀봉입찰시작</button>
-        </div>
-    </div>
-
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
-        <li class="active">
-            <a href="#ascending_bidding" aria-controls="ascending_bidding" role="tab" data-toggle="tab">오름입찰</a>
-        </li>
-        <li>
-            <a href="#profile" class="_seal_bid_tap" aria-controls="profile" role="tab" data-toggle="tab">밀봉입찰</a>
-        </li>
-    </ul>
-
-    <!-- Tab panes -->
-    <div class="tab-content">
-
-        <div role="tabpanel" class="tab-pane active _ascending_bidding" id="ascending_bidding">
-            <!--  /오름입찰-->
-            <div class="row _ascending_bidding_auction">
+            <div class="row _round_mark">
                 <div class="col-md-12">
-
-                    <div class="panel panel-navy">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>구분</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bidder_list">
-                                    <td>사업자</td>
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SKT</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LGU+</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SKT</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LGU+</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SKT</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LGU+</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SKT</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LGU+</span></td>
-
-                                    <td style="text-align:center;"><span class="label label-KT-s">KT</span></td>
-                                    <td style="text-align:center;"><span class="label label-SK-s">SKT</span></td>
-                                    <td style="text-align:center;"><span class="label label-LG-s">LGU+</span></td>
-
-                                </tr>
-
-                                <!-- 시작가 -->
-                                <tr class="start_price_list">
-                                    <td>시작가</td>
-                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
-                                        <{{#priceList}}
-                                        <td style="text-align:center;" colspan=3>
-                                            <span>{{price}}</span>
-                                        </td>
-                                        {{/priceList}}
-                                    </script>
-                                </tr><!--/ 시작가 -->
-
-                            </tbody>
-                        </table>
-                    </div><!--/ panel -->
-                </div><!--/ col-md-12 -->
-            </div><!--/ 오름입찰-->
-
-            <!--  오름 입찰 결과-->
-            <div class="row _ascending_bidding_result displayNone">
-                <div class="col-md-12">
-                    <div class="panel panel-navy">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰 결과 ( 밀봉입찰 최소액 ) </strong></div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>구분</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <script class="bindding_result_tpl" type="text/x-handlebars-template">
-                                    {{#bidderList}}
-                                    <tr>
-                                        <td style="text-align:center;vertical-align: middle;">{{name}}</td>
-                                        {{#priceList}}
-                                            {{#isHertz}}
-                                                <td style="text-align:center;vertical-align: middle;">
-                                                    <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
-                                                </td>
-                                                <td style="text-align:center;vertical-align: middle;">{{price}}</td>
-                                                <td style="text-align:center;vertical-align: middle;">{{percent}}%</td>
-                                            {{else}}
-                                                <td style="text-align:center;vertical-align: middle;" colspan=3>
-                                                    <span class="text-gray"><small>미신청주파수</small></span>
-                                                </td>
-                                            {{/isHertz}}
-                                        {{/priceList}}
-                                    </tr>
-                                    {{/bidderList}}
-                                </script>
-                            </tbody>
-                        </table>
-                    </div>
+                    <strong>1</strong><span> ROUND</span>
                 </div>
-            </div><!--/ 오름 입찰 결과-->
-        </div><!--/ 오름 입찰-->
+            </div>
 
-
-        <!-- 밀봉 입봉입찰-->
-        <div role="tabpanel" class="tab-pane" id="profile">
-            <!--  밀봉 최소입찰액-->
-            <div class="row seal_lowest_bid_price">
+            <div class="row _round_start">
                 <div class="col-md-12">
-                    <div class="panel panel-navy">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉최소입찰액</strong></div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>구분</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <script class="seal_lowest_bid_price_tpl" type="text/x-handlebars-template">
-                                    {{#bidderList}}
-                                    <tr>
-                                        <td>{{name}}</td>
-                                        {{#priceList}}
-                                            {{#isHertz}}
-                                                <td style="text-align:center;vertical-align: middle;">
-                                                    <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
-                                                </td>
-                                                <td style="text-align:center;vertical-align: middle;">{{price}}</td>
-                                            {{else}}
-                                                <td style="text-align:center;vertical-align: middle;" colspan=2>
-                                                    <span class="text-gray"><small>미신청주파수</small></span>
-                                                </td>
-                                            {{/isHertz}}
-                                        {{/priceList}}
-                                    </tr>
-                                    {{/bidderList}}
-                                </script>
-                            </tbody>
-                        </table>
+                    <button class="btn btn-info btn-block _round_start_btn"><strong>시작</strong></button>
+                </div>
+            </div>
+
+            <ul class="list-group _bid_rate">
+              <li class="list-group-item">
+                <span class="badge">0.75%</span>
+                <strong>증분율 :</strong>
+              </li>
+            </ul>
+
+            <div class="row displayNone">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <strong>신청대역폭</strong>
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item" style="font-size:14px;">
+                                <span class="badge" style="font-size:14px">0.75%</span>
+                                <strong>KT신청대역폭 :</strong>
+                            </li>
+                            <li class="list-group-item" style="font-size:14px;">
+                                <span class="badge" style="font-size:14px">0.75%</span>
+                                <strong>SKT신청대역폭 :</strong>
+                            </li>
+                            <li class="list-group-item" style="font-size:14px;">
+                                <span class="badge" style="font-size:14px">0.75%</span>
+                                <strong>LGU+신청대여폭 :</strong>
+                            </li>
+                        </ul>
+
                     </div>
                 </div>
             </div>
-            <!--  /밀봉 최소입찰액-->
 
-            <!--  밀봉입찰액-->
-            <div class="row _seal_bid_price">
+            <div class="row displayNone">
                 <div class="col-md-12">
-                    <div class="panel panel-navy">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰액 </strong></div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">구분</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <script class="_seal_bid_price_list_tpl" type="text/x-handlebars-template">
-                                    {{#bidderList}}
-                                    <tr class="_seal_bid_price_list">
-                                        <td  class="text-center"><strong>{{name}}</strong></td>
-                                        {{#priceList}}
-                                            {{#isHertz}}
-                                                <td class="text-center">{{price}}</td>
-                                            {{else}}
-                                                <td style="text-align:center;vertical-align: middle;">
-                                                    <span class="text-gray"><small>미신청주파수</small></span>
-                                                </td>
-                                            {{/isHertz}}
-                                        {{/priceList}}
-                                    </tr>
-                                    {{/bidderList}}
-                                </script>
-                            </tbody>
-                        </table>
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <strong>입찰자유예상태</strong>
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item" style="font-size:14px;">
+                                <span class="badge" style="font-size:14px">0/2</span>
+                                <strong>KT :</strong>
+                            </li>
+                            <li class="list-group-item" style="font-size:14px;">
+                                <span class="badge" style="font-size:14px">0/2</span>
+                                <strong>SKT :</strong>
+                            </li>
+                            <li class="list-group-item" style="font-size:14px;">
+                                <span class="badge" style="font-size:14px">0/2</span>
+                                <strong>LGU+ :</strong>
+                            </li>
+                        </ul>
+
                     </div>
                 </div>
             </div>
-            <!--  /밀봉입찰액-->
 
 
-            <!-- 밀봉 입찰 조합 결과 -->
-            <div class="row" style="margin-bottom:20px">
-                <div class="col-md-12 text-right">
-                    <button class="btn btn-default _again_seal_bid_btn displayNone">
+
+            <!-- <ul class="list-group">
+              <li class="list-group-item" style="font-size:14px;">
+                <span class="badge _bid_rate" style="font-size:14px">0.75%</span>
+                <strong>KT신청대역폭 :</strong>
+              </li>
+            </ul>
+
+            <ul class="list-group">
+              <li class="list-group-item" style="font-size:14px;">
+                <span class="badge _bid_rate" style="font-size:14px">0.75%</span>
+                <strong>SKT신청대역폭 :</strong>
+              </li>
+            </ul>
+
+            <ul class="list-group">
+              <li class="list-group-item" style="font-size:14px;">
+                <span class="badge _bid_rate" style="font-size:14px">0.75%</span>
+                <strong>LGU+신청대여폭 :</strong>
+              </li>
+            </ul> -->
+
+
+
+            <div class="row">
+                <div class="col-md-12 _ta_c _m20_b">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button class="btn btn-primary _acending_btn"><strong>오름입찰결과</strong></button>
+                        <button class="btn btn-primary _seal_bid_start_btn" disabled="disabled"><strong>밀봉입찰시작</strong></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-primary btn-block _again_seal_bid_btn displayNone">
                         <i class="fa fa-check"></i><strong> 다시입찰</strong>
                     </button>
-                    <button class="btn btn-default _tie_seal_bid_btn displayNone">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-primary btn-block _tie_seal_bid_btn displayNone">
                         <i class="fa fa-check"></i><strong> 동점재입찰</strong>
                     </button>
                 </div>
             </div>
-            <div class="row _seal_bid_combination">
-                <div class="col-md-12">
-                    <div class="panel panel-navy">
-                        <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰 결과 조합</strong></div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">순위</th>
-                                    <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                    <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                    <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                    <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                    <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
-                                    <th class="text-center">합계</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <script class="_seal_bid_combination_list_tpl" type="text/x-handlebars-template">
-                                    {{#combinationList}}
-                                    <tr class="_seal_bid_combination_list">
-                                        <td class="text-center"><strong>{{ranking}}</strong></td>
-                                        {{#combination}}
-                                            <td class="text-center"><span class="label label-{{labelClass}}-s">{{company}}</span></td>
-                                            {{#isHertz}}
-                                                <td class="text-center"><strong>{{price}}</strong></td>
-                                            {{else}}
-                                                <td style="text-align:center;vertical-align: middle;">
-                                                    <span class="text-gray"><small>미신청주파수</small></span>
-                                                </td>
-                                            {{/isHertz}}
-                                        {{/combination}}
-                                        <td class="text-center"><strong>{{priceSum}}</strong></td>
-                                    </tr>
-                                    {{/combinationList}}
-                                </script>
-                            </tbody>
-                        </table>
+
+
+
+            <!-- <div class="row">
+                <div class="col-md-12" style="padding:15px;">
+                    <button class="btn btn-default btn-block _logout_btn"><strong>로그아웃</strong></button>
+                </div>
+            </div> -->
+
+            <!-- <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="btn-group" role="group" aria-label="...">
+                      <button type="button" class="btn btn-default">오름입찰결과</button>
+                      <button type="button" class="btn btn-default">밀봉입찰시작</button>
                     </div>
                 </div>
+            </div> -->
+
+        </div>
+        <div class="col-md-10">
+            <!--로그인 상태 체크-->
+            <!-- <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr class="connect_user_list">
+                                <script class="connect_user_list_tpl" type="text/x-handlebars-template">
+                                    <td>
+                                        <span>사용자상태 : </span>
+                                    </td>
+                                    <{{#list}}
+                                    <td class="connect_user">
+                                        <span class="label label-{{className}}">{{name}}</span>
+                                    </td>
+                                    {{/list}}
+                                </script>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+            <!--/로그인 상태 체크-->
+
+            <!-- <div class="row">
+                <div class="col-md-4 text-left">
+
+                    <span class="_round_mark" style="font-size:30px">1라운드</span>
+                    <button class="btn btn-default _round_start_btn" style="margin:0px 0px 10px 10px"><strong>시작</strong></button>
+                </div>
+                <div class="col-md-3 text-right">
+                    <h3 class="_bid_rate">증분율 : 0</h3>
+                </div>
+                <div class="col-md-5 text-right">
+                    <button class="btn btn-default _logout_btn">로그아웃</button>
+                    <button class="btn btn-default _acending_btn">오름입찰결과</button>
+                    <button class="btn btn-default _seal_bid_start_btn">밀봉입찰시작</button>
+                </div>
+            </div> -->
+
+            <!-- Nav tabs -->
+
+            <ul class="list-group _bidding_state">
+              <li class="list-group-item">
+                <strong>1 라운드 준비중입니다.</strong>
+              </li>
+            </ul>
+
+            <ul class="nav nav-tabs _m20_b" role="tablist">
+                <li class="active">
+                    <a href="#ascending_bidding" aria-controls="ascending_bidding" role="tab" data-toggle="tab"><strong>오름입찰</strong></a>
+                </li>
+                <li>
+                    <a href="#profile" class="_seal_bid_tap" aria-controls="profile" role="tab" data-toggle="tab"><strong>밀봉입찰</strong></a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+
+                <div role="tabpanel" class="tab-pane active _ascending_bidding" id="ascending_bidding">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info _ascending_bidding_result_alert displayNone" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <p style="font-size:14px;">
+                                    <strong>오름입찰</strong>의 모든 라운드과 완료 되었습니다. <strong>오름입찰</strong>의 결과를 확인 후 <strong>밀봉입찰</strong>을 시작하시기 바랍니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--  /오름입찰-->
+                    <div class="row _ascending_bidding_auction">
+                        <div class="col-md-12">
+
+                            <div class="panel panel-navy">
+                                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">구분</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광대역)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협대역)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광대역)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광대역)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협대역)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bidder_list">
+                                            <td class="text-center"><strong>사업자</strong></td>
+                                            <td class="text-center"><span class="label label-KT-s">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-s">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-s">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-s">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-s">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-s">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-s">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-s">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-s">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-s">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-s">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-s">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-s">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-s">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-s">LGU+</span></td>
+
+                                        </tr>
+
+                                        <!-- 시작가 -->
+                                        <tr class="start_price_list">
+                                            <td class="text-center"><strong>시작가</strong></td>
+                                            <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                                <{{#priceList}}
+                                                <td style="text-align:center;" colspan=3>
+                                                    <span>{{price}}</span>
+                                                </td>
+                                                {{/priceList}}
+                                            </script>
+                                        </tr><!--/ 시작가 -->
+
+                                    </tbody>
+                                </table>
+                            </div><!--/ panel -->
+                        </div><!--/ col-md-12 -->
+                    </div><!--/ 오름입찰-->
+
+                    <!--  오름 입찰 결과-->
+                    <div class="row _ascending_bidding_result displayNone">
+                        <div class="col-md-12">
+                            <div class="panel panel-navy">
+                                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰 결과 ( 밀봉입찰 최소액 ) </strong></div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>구분</th>
+                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <script class="bindding_result_tpl" type="text/x-handlebars-template">
+                                            {{#bidderList}}
+                                            <tr>
+                                                <td style="text-align:center;vertical-align: middle;">{{name}}</td>
+                                                {{#priceList}}
+                                                    {{#isHertz}}
+                                                        <td style="text-align:center;vertical-align: middle;">
+                                                            <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
+                                                        </td>
+                                                        <td style="text-align:center;vertical-align: middle;">{{price}}</td>
+                                                        <td style="text-align:center;vertical-align: middle;">{{percent}}%</td>
+                                                    {{else}}
+                                                        <td style="text-align:center;vertical-align: middle;" colspan=3>
+                                                            <span class="text-gray"><small>미신청주파수</small></span>
+                                                        </td>
+                                                    {{/isHertz}}
+                                                {{/priceList}}
+                                            </tr>
+                                            {{/bidderList}}
+                                        </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div><!--/ 오름 입찰 결과-->
+                </div><!--/ 오름 입찰-->
+
+
+                <!-- 밀봉 입봉입찰-->
+                <div role="tabpanel" class="tab-pane" id="profile">
+
+
+
+                    <!--  밀봉 최소입찰액-->
+                    <div class="row seal_lowest_bid_price">
+                        <div class="col-md-12">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-info _seal_bidding_result_alert displayNone" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <p>
+                                            모든 입찰자가 밀봉입찰에 참여 하였습니다.
+                                        </p>
+                                        <p>
+                                            밀봉입찰을 다시 시작하시려면 <span class="label label-primary">다시입찰</span>을 클릭하여 주시기 바랍니다.
+                                        </p>
+                                        <p>
+                                            1위 동점자가 발생 시 <span class="label label-primary">동점자재입찰</span>을 클릭하여 주시기 바랍니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-navy">
+                                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉최소입찰액</strong></div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>구분</th>
+                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <script class="seal_lowest_bid_price_tpl" type="text/x-handlebars-template">
+                                            {{#bidderList}}
+                                            <tr>
+                                                <td>{{name}}</td>
+                                                {{#priceList}}
+                                                    {{#isHertz}}
+                                                        <td style="text-align:center;vertical-align: middle;">
+                                                            <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
+                                                        </td>
+                                                        <td style="text-align:center;vertical-align: middle;">{{price}}</td>
+                                                    {{else}}
+                                                        <td style="text-align:center;vertical-align: middle;" colspan=2>
+                                                            <span class="text-gray"><small>미신청주파수</small></span>
+                                                        </td>
+                                                    {{/isHertz}}
+                                                {{/priceList}}
+                                            </tr>
+                                            {{/bidderList}}
+                                        </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  /밀봉 최소입찰액-->
+
+                    <!--  밀봉입찰액-->
+                    <div class="row _seal_bid_price">
+                        <div class="col-md-12">
+                            <div class="panel panel-navy">
+                                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰액 </strong></div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">구분</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <script class="_seal_bid_price_list_tpl" type="text/x-handlebars-template">
+                                            {{#bidderList}}
+                                            <tr class="_seal_bid_price_list">
+                                                <td  class="text-center"><strong>{{name}}</strong></td>
+                                                {{#priceList}}
+                                                    {{#isHertz}}
+                                                        <td class="text-center">{{price}}</td>
+                                                    {{else}}
+                                                        <td style="text-align:center;vertical-align: middle;">
+                                                            <span class="text-gray"><small>미신청주파수</small></span>
+                                                        </td>
+                                                    {{/isHertz}}
+                                                {{/priceList}}
+                                            </tr>
+                                            {{/bidderList}}
+                                        </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  /밀봉입찰액-->
+
+
+                    <!-- 밀봉 입찰 조합 결과 -->
+
+                    <div class="row _seal_bid_combination">
+                        <div class="col-md-12">
+                            <div class="panel panel-navy">
+                                <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 밀봉입찰 결과 조합</strong></div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">순위</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center">합계</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <script class="_seal_bid_combination_list_tpl" type="text/x-handlebars-template">
+                                            {{#combinationList}}
+                                            <tr class="_seal_bid_combination_list">
+                                                <td class="text-center"><strong>{{ranking}}</strong></td>
+                                                {{#combination}}
+                                                    <td class="text-center"><span class="label label-{{labelClass}}-s">{{company}}</span></td>
+                                                    {{#isHertz}}
+                                                        <td class="text-center"><strong>{{price}}</strong></td>
+                                                    {{else}}
+                                                        <td style="text-align:center;vertical-align: middle;">
+                                                            <span class="text-gray"><small>미신청주파수</small></span>
+                                                        </td>
+                                                    {{/isHertz}}
+                                                {{/combination}}
+                                                <td class="text-center"><strong>{{priceSum}}</strong></td>
+                                            </tr>
+                                            {{/combinationList}}
+                                        </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--/ 밀봉 입찰 조합 결과 -->
+
+                </div><!--/ 밀봉 입봉입찰-->
             </div>
-
-            <!--/ 밀봉 입찰 조합 결과 -->
-
-        </div><!--/ 밀봉 입봉입찰-->
+        </div>
     </div>
+
+
 </div><!-- /container fluid -->

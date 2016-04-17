@@ -14,7 +14,7 @@
     	window.R2 = R2 || {};
 
         R2.Dialog = {
-            zIndex : 1000,
+            zIndex : 3000,
             getZIndex : function(){
                 var dialog = document.querySelectorAll('.r2-dialog');
 

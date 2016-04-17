@@ -110,7 +110,7 @@ define([
             this.setStartPriceList();
 
             // 밀봉입찰버튼 비활성화
-            this.$el.find('._seal_bid_start_btn').addClass('displayNone');
+            this.$el.find('._seal_bid_start_btn').attr('disabled','disabled');
             // 밀봉입찰탭 비활성화
             this.$el.find('._seal_bid_tap').addClass('displayNone');
 
@@ -187,7 +187,7 @@ define([
         setLowestBidAdd : function(){
             var userInfo = Auction.session.get('user_info');
             this.lowestBidAdd = userInfo.rate;
-            this.$el.find('._bid_rate').text('증분율 : ' + this.lowestBidAdd + '%');
+            this.$el.find('._bid_rate span').text(this.lowestBidAdd + '%');
         },
         /**
          * 시작가 설정
@@ -267,9 +267,11 @@ define([
 
             this.setRoundTable();
 
-            this.setRoundMark();
+            this.setBiddingState(this.roundNum + ' 라운드가 진행중입니다.');
 
-            this.$el.find('._round_start_btn').addClass('displayNone')
+            this.$el.find('._round_start_btn').attr('disabled','disabled');
+
+            this.$el.find('._acending_btn').attr('disabled','disabled');
 
             Auction.io.emit('ROUND_START',this.roundNum);
 
@@ -292,12 +294,15 @@ define([
          * 밀봉 입찰 시작
          */
         onSealBidStart:function(e){
-            this.$el.find('._acending_btn').addClass('displayNone');
-            this.$el.find('._seal_bid_start_btn').addClass('displayNone');
+            //this.$el.find('._acending_btn').addClass('displayNone');
+            //this.$el.find('._seal_bid_start_btn').addClass('displayNone');
+
+            this.$el.find('._seal_bid_start_btn').attr('disabled','disabled');
             this.$el.find('._seal_bid_tap').removeClass('displayNone').tab('show');
 
             // 밀봉입찰 시작 표시
-            this.$el.find('._round_mark').text('밀봉입찰 시작');
+            this.setBiddingState('밀봉입찰 진행 중입니다.')
+
 
             Auction.io.emit('SEAL_BID_START','sealBidStart');
         },
@@ -480,14 +485,16 @@ define([
 
                 //alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
                 R2Alert.render({
-                    'msg':this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.',
+                    'msg':this.roundNum + ' 라운드 모든 입찰자가 입찰하였습니다.',
                     'w':400,
                     'callback':Function.prototype.bind.call(this.emitRoundResult,this)
                 });
 
                 this.roundNum += 1;
-                this.$el.find('._round_mark').text(this.roundNum + '라운드');
-                this.$el.find('._round_start_btn').removeClass('displayNone');
+                this.$el.find('._round_mark strong').text(this.roundNum);
+                this.setBiddingState(this.roundNum + ' 라운드가 준비중입니다.');
+                this.$el.find('._round_start_btn').removeAttr('disabled');
+                this.$el.find('._acending_btn').removeAttr('disabled');
 
                 Auction.io.emit('GET_CHART_DATA', 'getChartData');
 
@@ -544,7 +551,9 @@ define([
                     'callback':Function.prototype.bind.call(this.setSealBidCombination,this)
                 })
                 // 오른입찰 완료 표시
-                this.$el.find('._round_mark').text('밀봉입찰 결과');
+                //this.$el.find('._round_mark').text('밀봉입찰 결과');
+                this.setBiddingState('모든 입찰자가 밀봉입찰에 참여 하였습니다.');
+                //this.$el.find('._seal_bidding_result_alert').removeClass('displayNone');
             }
 
             // 밀봉입찰액 UI 렌더링
@@ -600,8 +609,8 @@ define([
         /**
          * 라운드 진행 표시
          */
-        setRoundMark:function(){
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 진행중...');
+        setBiddingState:function(str){
+            this.$el.find('._bidding_state strong').html(str);
         },
         /**
          * 전체 라운드 리스트 호출
@@ -626,6 +635,8 @@ define([
                 this.setAscendingBiddingResultUI(biddingResultList);
                 // 오름입찰 결과에 따른 밀봉입찰 최소입찰액과 밀봉입찰액 테이블 UI 생성
                 this.setSealBidding(biddingResultList);
+
+                this.setBiddingState('오름입찰이 완료 되었습니다. 밀봉입찰을 진행해 주시기 바랍니다.')
             }
         },
 
@@ -634,9 +645,17 @@ define([
         */
         setAscendingBiddingResultUI:function(data){
             // 오른입찰 완료 표시
-            this.$el.find('._round_mark').text('오름입찰 완료');
+            //this.$el.find('._round_mark').text('오름입찰 완료');
+            //this.$el.find('._ascending_bidding_result_alert').removeClass('displayNone');
             // 라운드 시작 버튼 비 활성화
-            this.$el.find('._round_start_btn').addClass('displayNone');
+            this.$el.find('._round_start').addClass('displayNone');
+
+            this.$el.find('._acending_btn').attr('disabled','disabeld');
+
+            this.$el.find('._round_mark').addClass('displayNone')
+
+
+
             // 오름입찰 완료 입찰자에게 알림
             Auction.io.emit('ASCENDING_BIDDING_FINISH','acendingBiddingFinish');
 
@@ -668,7 +687,7 @@ define([
             // 밀봉입찰액 테이블 셋팅
             this.setSealBidPrice();
             // 밀봉입찰 시작 버튼 활성화
-            this.$el.find('._seal_bid_start_btn').removeClass('displayNone');
+            this.$el.find('._seal_bid_start_btn').removeAttr('disabled');
         },
 
         /**
@@ -805,6 +824,9 @@ define([
             Auction.io.emit('AGAIN_SEAL_BID','againSealBid');
 
             this.$el.find('._again_seal_bid_btn').addClass('displayNone');
+
+            this.setBiddingState('밀봉입찰을 다시 진행 중입니다.')
+
         },
 
         onTieSealBid:function(){
@@ -817,6 +839,8 @@ define([
             Auction.io.emit('AGAIN_SEAL_BID','tieSealBid');
 
             this.$el.find('._tie_seal_bid_btn').addClass('displayNone');
+
+            this.setBiddingState('1위 동점자 발생으로 재입찰 진행 중입니다.')
         },
 
         /**
