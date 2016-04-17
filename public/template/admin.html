@@ -1,21 +1,5 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <!-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <p>
-                <strong>
-                    관리자
-                </strong>
-            </p> -->
-            <!-- <a class="navbar-brand" href="#">
-                <img class="bidder_logo" src="img/kt_logo.jpg" alt="" style="width:35px;height:26px;">
-            </a> -->
-        </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-left">
                 <li>
@@ -29,7 +13,6 @@
                     <ul class="nav navbar-nav connect_user_list">
                         <script class="connect_user_list_tpl" type="text/x-handlebars-template">
                             {{#list}}
-                            <!-- <li><a href="#about"><span class="label label-{{className}}">{{name}}</span></a></li> -->
                             <li><p style="margin:0px;padding:15px 15px;"><span class="label label-{{className}}">{{name}}</span></p></li>
                             {{/list}}
                         </script>
@@ -56,7 +39,7 @@
 
             <div class="row _round_start">
                 <div class="col-md-12">
-                    <button class="btn btn-info btn-block _round_start_btn"><strong>시작</strong></button>
+                    <button class="btn btn-success btn-block _round_start_btn"><strong>시작</strong></button>
                 </div>
             </div>
 
@@ -117,31 +100,6 @@
                 </div>
             </div>
 
-
-
-            <!-- <ul class="list-group">
-              <li class="list-group-item" style="font-size:14px;">
-                <span class="badge _bid_rate" style="font-size:14px">0.75%</span>
-                <strong>KT신청대역폭 :</strong>
-              </li>
-            </ul>
-
-            <ul class="list-group">
-              <li class="list-group-item" style="font-size:14px;">
-                <span class="badge _bid_rate" style="font-size:14px">0.75%</span>
-                <strong>SKT신청대역폭 :</strong>
-              </li>
-            </ul>
-
-            <ul class="list-group">
-              <li class="list-group-item" style="font-size:14px;">
-                <span class="badge _bid_rate" style="font-size:14px">0.75%</span>
-                <strong>LGU+신청대여폭 :</strong>
-              </li>
-            </ul> -->
-
-
-
             <div class="row">
                 <div class="col-md-12 _ta_c _m20_b">
                     <div class="btn-group" role="group" aria-label="...">
@@ -167,69 +125,12 @@
                 </div>
             </div>
 
-
-
-            <!-- <div class="row">
-                <div class="col-md-12" style="padding:15px;">
-                    <button class="btn btn-default btn-block _logout_btn"><strong>로그아웃</strong></button>
-                </div>
-            </div> -->
-
-            <!-- <div class="row">
-                <div class="col-md-12 text-center">
-                    <div class="btn-group" role="group" aria-label="...">
-                      <button type="button" class="btn btn-default">오름입찰결과</button>
-                      <button type="button" class="btn btn-default">밀봉입찰시작</button>
-                    </div>
-                </div>
-            </div> -->
-
         </div>
         <div class="col-md-10">
-            <!--로그인 상태 체크-->
-            <!-- <div class="row">
-                <div class="col-md-12">
-                    <table class="table table-bordered">
-                        <tbody>
-                            <tr class="connect_user_list">
-                                <script class="connect_user_list_tpl" type="text/x-handlebars-template">
-                                    <td>
-                                        <span>사용자상태 : </span>
-                                    </td>
-                                    <{{#list}}
-                                    <td class="connect_user">
-                                        <span class="label label-{{className}}">{{name}}</span>
-                                    </td>
-                                    {{/list}}
-                                </script>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div> -->
-            <!--/로그인 상태 체크-->
-
-            <!-- <div class="row">
-                <div class="col-md-4 text-left">
-
-                    <span class="_round_mark" style="font-size:30px">1라운드</span>
-                    <button class="btn btn-default _round_start_btn" style="margin:0px 0px 10px 10px"><strong>시작</strong></button>
-                </div>
-                <div class="col-md-3 text-right">
-                    <h3 class="_bid_rate">증분율 : 0</h3>
-                </div>
-                <div class="col-md-5 text-right">
-                    <button class="btn btn-default _logout_btn">로그아웃</button>
-                    <button class="btn btn-default _acending_btn">오름입찰결과</button>
-                    <button class="btn btn-default _seal_bid_start_btn">밀봉입찰시작</button>
-                </div>
-            </div> -->
-
-            <!-- Nav tabs -->
 
             <ul class="list-group _bidding_state">
               <li class="list-group-item">
-                <strong>1 라운드 준비중입니다.</strong>
+                <i class="fa fa-bullhorn" aria-hidden="true"></i> <strong>1 라운드 준비중입니다.</strong>
               </li>
             </ul>
 

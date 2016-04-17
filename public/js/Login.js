@@ -12,7 +12,7 @@ define([
         socket : null,
  		el: '.login',
  		events :{
-            'keydown' : 'onkeydown',
+            'keydown ._login_btn' : 'onkeydown',
             'click ._login_btn' : 'onLogin',
             'change ._login_bidder input[name=login_bidder]': 'onChangeBidder'
  		},

@@ -19,9 +19,8 @@
 .admin ._bidding_state {
     margin-top:20px;
     margin-bottom:20px;
-}
-.admin ._bidding_state strong{
-    font-size:14px;
+    font-size:20px;
+    color:#337AB7;
 }
 
 /**
@@ -38,6 +37,9 @@
     font-size: 30px;
 }
 
+/**
+* 증분율 표시
+*/
 .admin ._bid_rate {
     margin-top:20px;
 }

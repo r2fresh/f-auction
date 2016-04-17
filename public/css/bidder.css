@@ -1,3 +1,74 @@
 ._seal_bid_ranking, ._seal_bid_price_list ._seal_bid_price, ._bid_price {
     text-align : center;
 }
+
+/**
+* 입찰자 경매의 진행 상태를 표시
+*/
+.bidder ._bidding_state {
+    margin-top:20px;
+    margin-bottom:20px;
+    font-size:20px;
+    color:#337AB7;
+}
+
+/**
+* 라운드 표시
+*/
+
+.bidder ._round_mark div {
+    text-align: center;
+    padding: 10px 5px 10px 5px;
+    margin-bottom: -20px;
+}
+
+.bidder ._round_mark div strong {
+    font-size: 50px;
+}
+.bidder ._round_mark div span {
+    font-size: 30px;
+}
+
+/**
+* 증분율 표시
+*/
+.bidder ._bid_rate {
+    margin-top:20px;
+}
+
+/**
+* 입찰 전략 스타일
+*/
+.bidder ._bid_strategy pre{
+    font-weight:bold;
+    height: auto;
+    max-height: 100px;
+    margin:0px;
+    border: none;
+    background-color: #fff!important;
+    overflow: auto;
+    background-color: #eeeeee;
+    word-break: normal !important;
+    word-wrap: normal !important;
+    white-space: pre !important;
+}
+
+/**
+* 지원가능 대역폭 / 신청 대역폭 스타일
+*/
+.bidder ._bidder_bandWidth div{
+    text-align:center;
+    padding:0px;
+}
+
+.bidder ._bidder_bandWidth div:first-child{
+    border-right:2px dotted #aaaaaa;
+}
+
+.bidder ._bidder_bandWidth div p {
+    margin:0px;
+}
+
+.bidder ._bidder_bandWidth div p:nth-child(2)>strong{
+    font-size:75%;
+}

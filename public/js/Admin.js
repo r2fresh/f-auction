@@ -636,7 +636,7 @@ define([
                 // 오름입찰 결과에 따른 밀봉입찰 최소입찰액과 밀봉입찰액 테이블 UI 생성
                 this.setSealBidding(biddingResultList);
 
-                this.setBiddingState('오름입찰이 완료 되었습니다. 밀봉입찰을 진행해 주시기 바랍니다.')
+                this.setBiddingState('오름입찰이 종료 되었습니다. 밀봉입찰을 진행해 주시기 바랍니다.')
             }
         },
 

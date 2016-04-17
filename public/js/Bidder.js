@@ -81,6 +81,7 @@ define([
             this.setBidderLogo();
             this.setBidStrategy();
             this.setLimitBandWidth();
+            this.setBiddngDelayCount();
             this.setLowestBidAdd();
             this.setHertz();
             this.setSocketReceiveEvent();
@@ -135,15 +136,15 @@ define([
          */
         setBidderLogo:function(){
             var userInfo = Auction.session.get('user_info');
-            this.$el.find('._bidder_info .bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
+            this.$el.find('._bidder_logo').attr('src','img/' + userInfo.user + '_logo.jpg')
         },
         /**
          * 입찰 회사 입찰 전략 설정
          */
         setBidStrategy : function(){
             var userInfo = Auction.session.get('user_info');
-            var strategy = (userInfo.strategy === '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
-            this.$el.find('._bidder_info .bid_strategy').val(strategy)
+            var strategy = (userInfo.strategy == '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
+            this.$el.find('._bid_strategy pre').text(strategy)
         },
         /**
          * 입찰 회사 제한 대역폭 설정
@@ -151,8 +152,8 @@ define([
         setLimitBandWidth : function(){
             var userInfo = Auction.session.get('user_info');
             this.ableBandWidth = userInfo.bandWidth;
-            this.$el.find('._able_bandWidth').text('남은내역폭 : ' + userInfo.bandWidth + 'Hz');
-            this.$el.find('._limit_bandWidth').text(' / 신청대역폭 : ' + userInfo.bandWidth + 'Hz');
+            this.$el.find('#_rest_bandWidth').text(userInfo.bandWidth + 'Mhz');
+            this.$el.find('#_limit_bandWidth').text(userInfo.bandWidth + 'Mhz');
         },
 
         /**
@@ -161,7 +162,14 @@ define([
         setLowestBidAdd : function(){
             var userInfo = Auction.session.get('user_info');
             this.lowestBidAdd = userInfo.rate;
-            this.$el.find('._bid_rate').text('증분율 : ' + this.lowestBidAdd + '%');
+            this.$el.find('._bid_rate span').text(this.lowestBidAdd + '%');
+        },
+
+        /**
+         * 유예횟수 설정
+         */
+        setBiddngDelayCount : function(){
+            this.$el.find('._bid_delay_count span').text(this.biddingDelayCount + ' / 2');
         },
 
         /**
@@ -251,8 +259,8 @@ define([
             //입찰유예일 경우 체크
             if(this.biddingDelayFlag){
                 this.biddingDelayCount += 1;
-                var countStr = '유예입찰가능횟수 : ' + (2-this.biddingDelayCount).toString();
-                this.$el.find('._bid_delay_count').text(countStr);
+                var countStr = (this.biddingDelayCount).toString();
+                this.$el.find('._bid_delay_count span').text(countStr + ' / 2');
                 this.biddingDelayFlag = false;
             }
 
@@ -269,7 +277,7 @@ define([
                 //alert(this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.');
                 R2Alert.render({'msg':this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.','w':350})
             }
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
+            this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
 
         /**
@@ -404,7 +412,8 @@ define([
             console.log('ROUND_NUMBER : ' + num)
             this.roundNum = num;
             //alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
+            this.$el.find('._round_mark strong').text(this.roundNum);
+            this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
             //입찰 관련 버튼 모두 보임
             this.biddingBtnListDisplay(true);
             // 자동입찰 체크
@@ -430,7 +439,9 @@ define([
             this.setRoundResult(data);
             //라운드 승자의 가격만 표시
             this.setRoundWinPrice(data);
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
+
+            this.$el.find('._round_mark strong').text(this.roundNum);
+            this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰이 완료되었습니다. 다음 라운드 준비중입니다.');
 
             //alert(this.roundNum + '라운드 입찰이 완료되었습니다.');
             R2Alert.allDestroy();
@@ -452,8 +463,10 @@ define([
         onAscendingBiddingFinish:function(msg){
             //alert('오름입찰이 종료되었습니다.');
             R2Alert.allDestroy();
-            R2Alert.render({'msg':'오름입찰이 종료되었습니다.','w':300})
-            this.$el.find('._round_mark').text('오름입찰이 종료되었습니다. 밀봉입찰 준비중입니다.');
+            R2Alert.render({'msg':'오름입찰이 종료되었습니다.','w':300});
+
+            this.$el.find('._round_mark').addClass('displayNone');
+            this.$el.find('._bidding_state strong').html('오름입찰이 종료되었습니다. 밀봉입찰 준비중입니다.');
         },
         /**
          * 밀봉입찰 시작 알림
@@ -463,7 +476,7 @@ define([
             //alert('밀봉입찰이 시작');
             R2Alert.allDestroy();
             R2Alert.render({'msg':'밀봉입찰을 시작하시기 바랍니다.','w':300})
-            this.$el.find('._round_mark').text('밀봉입찰이 진행중입니다.');
+            this.$el.find('._bidding_state strong').html('밀봉입찰이 진행중입니다.');
         },
         /**
          * 밀봉 최소 입찰액 설정
@@ -489,9 +502,10 @@ define([
          */
         onSealBidFinish:function(msg){
             console.log(msg)
-            //alert('밀봉입찰이 완료 되었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
+            //alert('었습니다.\n입찰자은 관리자에게 결과를 확인하시기 바랍니다.');
             R2Alert.allDestroy();
-            R2Alert.render({'msg':'밀봉입찰이 완료 되었습니다.\n입찰자는 관리자에게 결과를 확인하시기 바랍니다.','w':400})
+            R2Alert.render({'msg':'밀봉입찰이 종료 되었습니다.\n입찰자는 관리자에게 결과를 확인하시기 바랍니다.','w':400})
+            this.$el.find('._bidding_state strong').html('밀봉입찰이 종료 되었습니다.');
         },
 
         onAgainSealBid:function(msg){
@@ -500,6 +514,7 @@ define([
 
             R2Alert.allDestroy();
             R2Alert.render({'msg':str + '을 진행 하시기 바랍니다.','w':500});
+            this.$el.find('._bidding_state strong').html(str + '을 진행 하시기 바랍니다.');
 
             //예상증분율 버튼 숨기기
             this.$el.find('._seal_predict_percent_btn').removeClass('displayNone');
@@ -897,7 +912,7 @@ define([
             console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
 
             this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
-            this.$el.find('._able_bandWidth').text('지원가능주파수 : ' + (this.ableBandWidth - bandWidthTotal) + 'Hz');
+            this.$el.find('#_rest_bandWidth').text((this.ableBandWidth - bandWidthTotal) + 'Mhz');
         },
 
         /**
@@ -913,8 +928,14 @@ define([
 
             //alert('원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.');
             //R2Alert.render({'msg':'원하는 대역폴이 만족하여 자동입찰이 진행되었습니다.','w':350})
+
+            if(this.autoBiddingFlag){
+                this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
+            } else {
+                this.$el.find('._bidding_state strong').text(this.roundNum + '라운드 입찰이 진행중입니다.');
+            }
+
             this.autoBiddingFlag = false;
-            this.$el.find('._round_mark').text(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
 
         /**
