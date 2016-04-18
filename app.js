@@ -27,9 +27,9 @@ var loginData = [
 var roundList = [];
 
 var hertzList = [
-    {'name':'KT','hertzList':null},
-    {'name':'SK','hertzList':null},
-    {'name':'LG','hertzList':null},
+    {'name':'KT','hertzList':null,'bandWidth':null},
+    {'name':'SK','hertzList':null,'bandWidth':null},
+    {'name':'LG','hertzList':null,'bandWidth':null},
 ]
 
 var pwd = 'wnvktnrudao';
@@ -84,11 +84,9 @@ app.post('/login', function(req, res) {
             if(loginData[i].name == bodyData.bidder){
                 if(!loginData[i].state){
                     loginData[i].state = true;
-                    logger.log("34343344")
                     overlap = true;
                     result = true;
                 } else {
-                    logger.log("121212")
                     overlap = false;
                     result = false;
                 }
@@ -127,6 +125,11 @@ app.get('/hertzList', function(req, res) {
     res.send(hertzList)
 })
 
+app.get('/bandWidth', function(req, res) {
+    var bodyData = req.body;
+    res.send(hertzList);
+})
+
 /**
  * index.html router
  */
@@ -146,7 +149,15 @@ var io = require('socket.io')(server)//,{'pingTimeout':15000, 'pingInterval', 80
 
 io.on('connection', function(socket){
 
-    logger.log('connection')
+    socket.on('BANDWIDTH',function(msg){
+        var data = JSON.parse(msg);
+        _.each(hertzList,function(item){
+            if(item.name == (data.user).toUpperCase()){
+                item.bandWidth = data.bandwidth;
+            }
+        })
+        io.emit('BANDWIDTH',JSON.stringify(hertzList))
+    })
 
     socket.on('disconnect', function(){
 

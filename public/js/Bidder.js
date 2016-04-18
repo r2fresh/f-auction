@@ -89,7 +89,10 @@ define([
             this.setInsertHertzUI();
             this.setCountDown();
 
-            Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
+            var userInfo = Auction.session.get('user_info');
+
+            Auction.io.emit('LOGIN_CHECK',userInfo.user);
+            Auction.io.emit('BANDWIDTH',JSON.stringify({'user':userInfo.user, 'bandwidth':userInfo.bandWidth}));
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
 
             this.$el.find('._seal_bid_tap').addClass('displayNone');

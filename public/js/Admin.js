@@ -2,6 +2,7 @@ define([
    'module',
    'text!tpl/admin.html',
    'text!tpl/adminRound.html',
+   'text!tpl/adminBandWidth.html',
    'js/Model',
    'js/Process',
    'js/AuctionData',
@@ -9,7 +10,7 @@ define([
    'js/BiddingResult',
    'js/r2/r2Alert'
    ],
-   function(module, Admin, AdminRound, Model, Pro, AuctionData, SealBidCombination, BiddingResult, R2Alert){
+   function(module, Admin, AdminRound, AdminBandWidth, Model, Pro, AuctionData, SealBidCombination, BiddingResult, R2Alert){
 
 	'use strict'
 
@@ -78,6 +79,12 @@ define([
             {'name':'SK','hertzList':null},
             {'name':'LG','hertzList':null},
         ],
+        bandWidthList : [
+            {'name':'KT','bandWidth':null},
+            {'name':'SK','bandWidth':null},
+            {'name':'LG','bandWidth':null},
+        ],
+
         TIMER:1800,
 
 
@@ -107,6 +114,7 @@ define([
         render:function(){
             this.$el.html(Admin);
             this.getHertzList();
+            this.getBandWidth();
             this.setTpl();
             this.setSocketReceiveEvent();
             this.setLowestBidAdd();
@@ -127,11 +135,10 @@ define([
                  method : 'GET',
                  contentType:"application/json; charset=UTF-8",
                  success : Function.prototype.bind.call(this.getHertzListSuccess,this),
-                 error : Function.prototype.bind.call(this.getHertzListError,this)
+                 error : function(){}
              })
         },
         getHertzListSuccess:function(data, textStatus, jqXHR){
-            console.log(data)
             if(textStatus == 'success'){
                 this.hertzList = data;
 
@@ -148,9 +155,28 @@ define([
                 )
             }
         },
-        getHertzListError:function(jsXHR, textStatus, errorThrown){
 
+        /**
+        * 각 입찰자 대역폭 리스트 호출
+        */
+        getBandWidth:function(){
+            Model.getBandWidth({
+                 url: '/bandWidth',
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getBandWidthSuccess,this),
+                 error : function(){}
+             })
         },
+        /**
+        * 각 입찰자 대역폭 리스트 호출 성공
+        */
+        getBandWidthSuccess:function(data, textStatus, jqXHR){
+            if(textStatus == 'success'){
+                this.onBandWidth(JSON.stringify(data));
+            }
+        },
+
         //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 시작 ////////////////////////////////////////////////////////////
         /**
          * 템플릿 정의
@@ -160,6 +186,9 @@ define([
             this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
             // 라운드 템플릿
             this.roundPriceListTpl  = AdminRound
+
+            this.adminBandWidthTpl = AdminBandWidth
+
             // 밀봉입찰액 템플릿
             this.sealBidPriceListTpl = this.$el.find("._seal_bid_price_list_tpl").html();
             this.$el.find("._seal_bid_price_list_tpl").remove();
@@ -187,6 +216,8 @@ define([
 
             Auction.io.on('COUNTDOWN_START', Function.prototype.bind.call(this.onCountDownStart,this) );
             Auction.io.on('COUNTDOWN_STOP', Function.prototype.bind.call(this.onCountDownStop,this) );
+
+            Auction.io.on('BANDWIDTH', Function.prototype.bind.call(this.onBandWidth,this) );
         },
         /**
          * 증분율 설정
@@ -243,6 +274,16 @@ define([
         //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 끝 ////////////////////////////////////////////////////////////
 
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 시작 ////////////////////////////////////////////////////////////
+
+        /**
+        * 대역폭 리스트 설정
+        */
+        onBandWidth:function(msg){
+            var bandWidthList = JSON.parse(msg);
+            var template = Handlebars.compile(this.adminBandWidthTpl);
+            this.$el.find('._bid_bandWidth').html(template({'bandWidthList':bandWidthList}));
+        },
+
         /**
          * 로그아웃 핸들러
          */

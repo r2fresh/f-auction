@@ -53,7 +53,10 @@ define([
          */
         onLogin:function(e){
             e.preventDefault();
+
             var bidder = this.$el.find('._login_bidder input[name=login_bidder]:checked').val();
+            var bandWidth = this.$el.find('._login_bandWidth input[name=bandWidth]:checked').val();
+
             if(bidder === 'admin'){
                 var pwd = this.$el.find('._login_password input').val();
                 if(pwd === ''){
@@ -68,7 +71,8 @@ define([
                  data : {
                      'bidder' : bidder,
                      'pwd' : pwd,
-                     'rate' : rate
+                     'rate' : rate,
+                     'bandWidth' : bandWidth
                  },
                  dataType : 'json',
                  contentType:"application/x-www-form-urlencoded; charset=UTF-8",
@@ -86,9 +90,7 @@ define([
             var bid_strategy = this.$el.find('._login_bidder_strategy textarea');
             //로그인 유저 타입
             var type = (bidder.val() === 'admin') ? 'admin' : 'bidder';
-
-            console.log(data)
-
+            
             if(textStatus === 'success'){
                 if(data.bidder == 'admin'){
                     if(!data.pwdResult){
