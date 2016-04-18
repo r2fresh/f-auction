@@ -29,6 +29,7 @@
     "socket.io": "^1.4.5",
     "js-cookie": "^2.1.0",
     "vanilla-masker": "^1.1.0",
-    "highcharts": "^4.2.3"
+    "highcharts": "^4.2.3",
+    "flipclock": "FlipClock#^0.7.7"
   }
 }

@@ -34,6 +34,8 @@ define([
         biddingResultTpl:'',
         // 경매 원본 정보
         originCompanyList : null,
+        // 타이머를 하기위한 변수
+        countDown:null,
 
         loginCheckList : null,
 
@@ -76,6 +78,7 @@ define([
             {'name':'SK','hertzList':null},
             {'name':'LG','hertzList':null},
         ],
+        TIMER:1800,
 
 
  		el: '.admin',
@@ -108,6 +111,7 @@ define([
             this.setSocketReceiveEvent();
             this.setLowestBidAdd();
             this.setStartPriceList();
+            this.setCountDown();
 
             // 밀봉입찰버튼 비활성화
             this.$el.find('._seal_bid_start_btn').attr('disabled','disabled');
@@ -180,6 +184,9 @@ define([
             Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
             Auction.io.on('ROUND_RESULT_CHECK', Function.prototype.bind.call(this.onRoundResultCheck,this) );
             Auction.io.on('HERTZ_LIST', Function.prototype.bind.call(this.onHertzList,this) );
+
+            Auction.io.on('COUNTDOWN_START', Function.prototype.bind.call(this.onCountDownStart,this) );
+            Auction.io.on('COUNTDOWN_STOP', Function.prototype.bind.call(this.onCountDownStop,this) );
         },
         /**
          * 증분율 설정
@@ -196,6 +203,42 @@ define([
             var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
             var template = Handlebars.compile(this.startPriceListTpl);
             this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
+        },
+        setCountDown:function(){
+            this.countDown = this.$el.find('.clock').FlipClock(this.TIMER, {
+                autoStart: false,
+        		countdown: true,
+        		clockFace: 'MinuteCounter',
+                callbacks: {
+                    stop:function(e){
+                        console.log(this)
+                        //alert('stop')
+                    }
+                }
+        	});
+
+            //this.countDown.start();
+
+            // var countDown = this.$el.find('.clock').timeTo({
+            //     seconds : 1800,
+            //     displayHours:false,
+            //     start:false,
+            //     //theme: "black",
+            //     //displayCaptions: true,
+            //     fontSize: 36,
+            //     captionSize: 14
+            // });
+            // this.$el.find('.clock').timeTo({
+            //     seconds : 1800,
+            //     displayHours:false,
+            //     start:true,
+            //     //theme: "black",
+            //     //displayCaptions: true,
+            //     fontSize: 36,
+            //     captionSize: 14
+            // });
+
+            //console.log(countDown);
         },
         //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 끝 ////////////////////////////////////////////////////////////
 
@@ -274,7 +317,6 @@ define([
             this.$el.find('._acending_btn').attr('disabled','disabled');
 
             Auction.io.emit('ROUND_START',this.roundNum);
-
         },
         /**
          * 입찰 결과 핸들러
@@ -306,6 +348,8 @@ define([
 
             Auction.io.emit('SEAL_BID_START','sealBidStart');
         },
+
+
         //////////////////////////////////////////////////////////// 이벤트 핸들러 함수들 끝 ////////////////////////////////////////////////////////////
 
         //////////////////////////////////////////////////////////// socket on Event start////////////////////////////////////////////////////////////
@@ -498,6 +542,8 @@ define([
 
                 Auction.io.emit('GET_CHART_DATA', 'getChartData');
 
+                Auction.io.emit('COUNTDOWN_STOP', 'countdown stop');
+
             }
         },
 
@@ -581,6 +627,30 @@ define([
             this.getHertzList();
         },
 
+        // onRoundStart:function(msg){
+        //     var data = JSON.parse(msg);
+        //     this.setCountDownStart(data.countdown_timer);
+        // },
+
+        onCountDownStart:function(msg){
+
+            var data = JSON.parse(msg);
+            var timer = data.countdown_timer;
+
+            var a = moment(moment.unix(parseInt(timer,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
+            var b = moment(new Date());
+            var time = a.diff(b) // 86400000
+
+            // 타이머 시작
+            this.countDown.setTime(time/1000);
+            this.countDown.start();
+        },
+
+        onCountDownStop:function(msg){
+            this.countDown.stop();
+            this.countDown.setTime(parseInt(msg,10)/1000);
+        },
+
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
 
         /**
@@ -653,8 +723,6 @@ define([
             this.$el.find('._acending_btn').attr('disabled','disabeld');
 
             this.$el.find('._round_mark').addClass('displayNone')
-
-
 
             // 오름입찰 완료 입찰자에게 알림
             Auction.io.emit('ASCENDING_BIDDING_FINISH','acendingBiddingFinish');
@@ -848,7 +916,7 @@ define([
          */
         hide : function(){
             // 모든 인터벌 중지
-            this.onClearInterval();
+            //this.onClearInterval();
             this.$el.addClass('displayNone');
         },
 

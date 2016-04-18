@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var moment = require('moment')
 var cookieParser = require('./src/cookie-parser');
 
 var logger = require('tracer').colorConsole();
@@ -33,6 +34,9 @@ var hertzList = [
 
 var pwd = 'wnvktnrudao';
 var rate = 0;
+
+var countDown = null;
+var TIMER = 1800000;
 
 /**
  * 로그인 함수
@@ -168,6 +172,7 @@ io.on('connection', function(socket){
             roundList = null;
             roundList = [];
             rate = 0;
+            countDown = null;
 
             _.each(hertzList,function(item){
                 item.hertzList = null;
@@ -203,7 +208,44 @@ io.on('connection', function(socket){
     })
 
     socket.on('ROUND_START',function(msg){
-        io.emit('ROUND_START',msg)
+
+        var now = moment(new Date()).valueOf();
+        countDown = now + TIMER;
+
+        var data = {
+            'round_num' : msg,
+            'countdown_timer' : countDown
+        }
+
+        io.emit('ROUND_START', JSON.stringify(data))
+        io.emit('COUNTDOWN_START', JSON.stringify(data))
+    })
+
+    //socket.on('COUNTDOWN_START',function(msg){
+
+        //console.log(new Date())
+
+        //var now = moment(new Date()).valueOf();
+
+        //var aaa = moment(new Date()).millisecond();
+
+        //countDown = now + TIMER;
+
+        //var yyy = moment.unix(sss/1000).format("YYYY-MM-DD HH:mm:ss")
+
+        //console.log(aaa)
+        // console.log(kkk)
+        // console.log(sss)
+        // console.log(yyy)
+        //
+        // logger.log()
+
+        //io.emit('COUNTDOWN_START',(countDown).toString())
+    //})
+
+    socket.on('COUNTDOWN_STOP',function(msg){
+        countDown = null;
+        io.emit('COUNTDOWN_STOP',(TIMER).toString())
     })
 
     socket.on('BID',function(msg){

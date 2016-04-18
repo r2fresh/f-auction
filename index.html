@@ -7,6 +7,9 @@
         <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
         <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
+
+        <link rel="stylesheet" href="/lib/flipclock/compiled/flipclock.css" charset="utf-8">
+
         <link rel="stylesheet" href="/css/common.css" charset="utf-8">
         <link rel="stylesheet" href="/css/login.css" charset="utf-8">
         <link rel="stylesheet" href="/css/admin.css" charset="utf-8">
@@ -20,11 +23,13 @@
         <script src="/lib/handlebars/handlebars.min.js" charset="utf-8"></script>
         <script src="/lib/store-js/store.min.js" charset="utf-8"></script>
         <script src="/lib/moment/moment.js" charset="utf-8"></script>
-        <!-- <script src="/lib/basil.js/src/basil.js" charset="utf-8"></script> -->
+
         <script src="/lib/js-cookie/src/js.cookie.js" charset="utf-8"></script>
         <script src="/lib/vanilla-masker/lib/vanilla-masker.js" charset="utf-8"></script>
         <script src="/lib/highcharts/highcharts.js" charset="utf-8"></script>
         <script src="/lib/highcharts/modules/exporting.js" charset="utf-8"></script>
+
+        <script src="/lib/flipclock/compiled/flipclock.js" charset="utf-8"></script>
 
         <script src="/js/common.js" charset="utf-8"></script>
         <script src="/js/r2/r2Common.js" charset="utf-8"></script>
@@ -38,7 +43,7 @@
 
             if (key == 8 || key == 116 || key == 17 || key == 82) {
                 if (key == 8 || key == 82) {
-                    if (t.tagName != "INPUT") {
+                    if (t.tagName != "INPUT" || t.tagName != "TEXTAREA") {
                         if (e) {
                             e.preventDefault();
                         } else {
@@ -65,8 +70,4 @@
         <div class="bidder displayNone"></div>
         <div class="chart displayNone"></div>
     </body>
-    <!-- <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io();
-    </script> -->
 </html>

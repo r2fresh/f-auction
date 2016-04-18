@@ -44,7 +44,7 @@ define([
         //입찰수 주파수 리스트
         hertzList : null,
 
-
+        TIMER : 1800,
         //라운드 리스트 탬플릿
         //roundListPrices : null,
         //roundListPricesTpl : null,
@@ -87,6 +87,7 @@ define([
             this.setSocketReceiveEvent();
             this.setStartPriceList();
             this.setInsertHertzUI();
+            this.setCountDown();
 
             Auction.io.emit('LOGIN_CHECK',Auction.session.get('user_info').user);
             VMasker(document.querySelectorAll('._seal_bid_ranking')).maskNumber();
@@ -193,6 +194,8 @@ define([
             Auction.io.on('SEAL_BID_START', Function.prototype.bind.call(this.onSealBidStart,this) );
             Auction.io.on('SEAL_BID_FINISH', Function.prototype.bind.call(this.onSealBidFinish,this) );
             Auction.io.on('AGAIN_SEAL_BID', Function.prototype.bind.call(this.onAgainSealBid,this) );
+
+            //Auction.io.on('COUNTDOWN_START', Function.prototype.bind.call(this.onCountDownStart,this) );
         },
 
         /**
@@ -218,6 +221,43 @@ define([
                     $(element).attr({'hertz_flag':false,'placeholder':'미신청주파수'}).prop('disabled',true);
                 }
             },this))
+        },
+
+        setCountDown:function(){
+            this.countDown = this.$el.find('.clock').FlipClock(this.TIMER, {
+                autoStart: false,
+        		countdown: true,
+        		clockFace: 'MinuteCounter',
+                callbacks: {
+                    stop:function(e){
+                        console.log(this)
+                        //alert('stop')
+                    }
+                }
+        	});
+
+            //this.countDown.start();
+
+            // var countDown = this.$el.find('.clock').timeTo({
+            //     seconds : 1800,
+            //     displayHours:false,
+            //     start:false,
+            //     //theme: "black",
+            //     //displayCaptions: true,
+            //     fontSize: 36,
+            //     captionSize: 14
+            // });
+            // this.$el.find('.clock').timeTo({
+            //     seconds : 1800,
+            //     displayHours:false,
+            //     start:true,
+            //     //theme: "black",
+            //     //displayCaptions: true,
+            //     fontSize: 36,
+            //     captionSize: 14
+            // });
+
+            //console.log(countDown);
         },
         //////////////////////////////////////////////////////////// 랜더링시 시작하는 함수 끝 ////////////////////////////////////////////////////////////
 
@@ -277,6 +317,8 @@ define([
                 //alert(this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.');
                 R2Alert.render({'msg':this.roundNum + '라운드 입찰' + this.ascendingBiddingType + '신청이 되었습니다.','w':350})
             }
+
+            this.onCountDownStop();
             this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
         },
 
@@ -408,23 +450,27 @@ define([
         /**
          * 라우드 시작을 알려주는 핸들러
          */
-        onRoundStart:function(num){
-            console.log('ROUND_NUMBER : ' + num)
-            this.roundNum = num;
+        onRoundStart:function(data){
+
+            var data = JSON.parse(data);
+
+            this.roundNum = data.round_num;
             //alert(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
             this.$el.find('._round_mark strong').text(this.roundNum);
             this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰 진행 하시기 바랍니다.');
             //입찰 관련 버튼 모두 보임
             this.biddingBtnListDisplay(true);
             // 자동입찰 체크
-            console.log('this.autoBiddingFlag : ' + this.autoBiddingFlag);
+
             if(this.autoBiddingFlag){
                 R2Alert.allDestroy();
-                R2Alert.render({'msg':this.roundNum + '라운드는 지원가능한 대역폭 없습니다. \n 자동입찰이 진행되었습니다.','w':400})
+                R2Alert.render({'msg':this.roundNum + '라운드는 지원가능한 대역폭 없습니다. \n 자동입찰이 진행되었습니다.','w':400});
+                this.onCountDownStop();
                 this.setAutoBidding();
             } else {
                 R2Alert.allDestroy();
-                R2Alert.render({'msg':this.roundNum + '라운드 입찰 진행 하시기 바랍니다.','w':400})
+                R2Alert.render({'msg':this.roundNum + '라운드 입찰 진행 하시기 바랍니다.','w':400});
+                this.setCountDownStart(data.countdown_timer);
             }
         },
         /**
@@ -520,6 +566,21 @@ define([
             this.$el.find('._seal_predict_percent_btn').removeClass('displayNone');
             //밀봉입찰 버튼 숨기기
             this.$el.find('._seal_bid_price_btn').removeClass('displayNone');
+        },
+
+        setCountDownStart:function(msg){
+            var a = moment(moment.unix(parseInt(msg,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
+            var b = moment(new Date());
+            var time = a.diff(b) // 86400000
+
+            // 타이머 시작
+            this.countDown.setTime(time/1000);
+            this.countDown.start();
+        },
+
+        onCountDownStop:function(msg){
+            this.countDown.stop();
+            this.countDown.setTime(this.TIMER);
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
 
@@ -695,6 +756,7 @@ define([
 
                 return item;
             })
+
             Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
         },
         /**

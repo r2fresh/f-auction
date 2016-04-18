@@ -43,3 +43,30 @@
 .admin ._bid_rate {
     margin-top:20px;
 }
+
+.clock {
+    zoom:0.4;
+    -moz-transform: scale(0.4)
+}
+
+.flip-clock-wrapper {
+  /* text-align: center; */
+  /* position: relative; */
+  /* width: 100%; */
+  margin: 0 auto;
+  max-width: 300px;
+  margin-top: 2em;
+}
+
+.clock {
+    margin-top:0px;
+}
+
+.flip-clock-label {
+    display:none;
+}
+
+/*.admin ._countdown>li {
+    text-align: center;
+    padding-bottom: 20px;
+}*/
