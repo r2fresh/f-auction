@@ -35,15 +35,23 @@
         <script src="/js/r2/r2Common.js" charset="utf-8"></script>
         <script src="/lib/requirejs/require.js" data-main="/js/app.js" charset="utf-8"></script>
 
-        <!-- <script type="text/javascript">
+        <script type="text/javascript">
         $(document).keydown(function(e) {
-            key = (e) ? e.keyCode : event.keyCode;
+                key = (e) ? e.keyCode : event.keyCode;
 
-            var t = document.activeElement;
+                var t = document.activeElement;
 
-            if (key == 8 || key == 116 || key == 17 || key == 82) {
-                if (key == 8 || key == 82) {
-                    if (t.tagName != "INPUT" || t.tagName != "TEXTAREA") {
+                if (key == 8 || key == 116 || key == 17 || key == 82) {
+                    if (key == 8 || key == 82) {
+                        if (t.tagName != "INPUT" && t.tagName != "TEXTAREA") {
+                            if (e) {
+                                e.preventDefault();
+                            } else {
+                                event.keyCode = 0;
+                                event.returnValue = false;
+                            }
+                        } 
+                    } else {
                         if (e) {
                             e.preventDefault();
                         } else {
@@ -51,18 +59,11 @@
                             event.returnValue = false;
                         }
                     }
-                } else {
-                    if (e) {
-                        e.preventDefault();
-                    } else {
-                        event.keyCode = 0;
-                        event.returnValue = false;
-                    }
                 }
             }
-            });
+        );
 
-        </script> -->
+        </script>
     </head>
     <body>
         <div class="login displayNone"></div>
