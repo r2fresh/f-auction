@@ -31,22 +31,42 @@ define([
                    }
                });
            },
+           /**
+           * 입찰자들의 대역폭 호출
+           */
            getSealBandWidthList:function(){
                return this.sealBandWidthList;
            },
+           /**
+           * 입차자들의 대역폭 모두 리셋
+           */
            resetSealBandWidthList:function(){
                _.each(this.sealBandWidthList,function(item){
                    item.ableBandWidth = 0;
                });
            },
-
+           /**
+           * 밀봉 조합 호출
+           */
            getCombinationList:function(data){
-
-               var frequencyList = this.setSealBidCombinationFrequency(data);
-
-               var combinationList = this.setCombinationList(frequencyList);
-
+               var applyStartDataList   = this.setSealBidCombinationZeroToStart(data);
+               var frequencyList        = this.setSealBidCombinationFrequency(applyStartDataList);
+               var combinationList      = this.setCombinationList(frequencyList);
                return combinationList
+           },
+           /**
+           * 통신사로 구분된 배열에서 미신청 주파수의 price를 기본값으로 변경한다.
+           */
+           setSealBidCombinationZeroToStart(data){
+               var sealBidPriceList = JSON.parse(JSON.stringify(data));
+               _.each(sealBidPriceList,function(item){
+                   _.each(item.priceList,function(priceList,index){
+                       if(priceList.hertzFlag == false && priceList.price == 0){
+                           priceList.price = parseInt(AuctionData.startPriceList[index].price,10);
+                       }
+                   })
+               })
+               return sealBidPriceList;
            },
            /**
             * 통신사로 구분된 배열을 주파수로 구분된 배열로 변경

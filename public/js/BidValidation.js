@@ -1,7 +1,8 @@
 define([
     'module',
-    'js/AuctionData'
-],function(module, AuctionData){
+    'js/AuctionData',
+    'js/r2/r2Alert'
+],function(module, AuctionData, R2Alert){
     module.exports = {
         ableBandWidth:null,
         lowestBidPrices:null,
@@ -44,7 +45,7 @@ define([
             if(!this.checkBidWideBand(bidPriceElementList)){
                 return false;
             }
-            
+
             // 입찰금액이 최소입찰금액 이상인지 체크 하는 함수
             if(!this.checkBidPrice(bidPriceElementList)){
                 return false;
@@ -69,7 +70,7 @@ define([
 
             if(emptyCheck) {
                 if(!winCheck){
-                    alert('한 주파수 이상의 입찰금액을 입력해 주시기 바랍니다.');
+                    R2Alert.render({'msg':'한 주파수 이상의 입찰금액을 입력해 주시기 바랍니다.','w':400});
                     flag = false;
                 }
             }
@@ -97,13 +98,11 @@ define([
                 function(memo, num){ return memo + num; },0
             );
 
-            console.log('입찰한 최대 대역폭 : ' + maxBandWidth);
-            console.log(this.ableBandWidth)
             if(maxBandWidth > this.ableBandWidth){
-                alert('정해진 대역폭을 초과 하셨습니다.');
+                R2Alert.render({'msg':'정해진 대역폭을 초과 하셨습니다.','w':400});
                 flag = false;
             } else if(maxBandWidth < (this.ableBandWidth/2)){
-                alert('대역폭은 지정된 대역폭의 절반 이상을 입찰하셔야 합니다.');
+                R2Alert.render({'msg':'대역폭은 지정된 대역폭의 절반 이상을 입찰하셔야 합니다.','w':400});
                 flag = false;
             }
 
@@ -127,10 +126,8 @@ define([
                 return ( (bidPriceValue != '' || winFlag === true) && defaultPriceList[index].type == 'wideBand' )
             })
 
-            console.log('신청한 광대역 갯수 : ' + wideBandList.length)
-
             if(wideBandList.length > 1) {
-                alert('광대역은 하나만 신청 가능합니다.');
+                R2Alert.render({'msg':'광대역은 하나만 신청 가능합니다.','w':350});
                 flag = false;
             }
             return flag;
@@ -151,7 +148,7 @@ define([
                 return (bidPriceValue != '' && winFlag === false && parseInt(bidPriceValue,10) < this.lowestBidPrices[index].price)
             },this));
             if(priceList.length > 0){
-                alert('입찰금액은 최소입찰액 이상으로 입력하셔야 합니다.')
+                R2Alert.render({'msg':'입찰금액은 최소입찰액 이상으로 입력하셔야 합니다.','w':400});
                 flag = false;
             }
             return flag;
