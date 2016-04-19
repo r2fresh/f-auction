@@ -36,7 +36,7 @@ var pwd = 'wnvktnrudao';
 var rate = 0;
 
 var countDown = null;
-var TIMER = 1800000;
+var TIMER = 2400000;
 
 /**
  * 로그인 함수

@@ -44,7 +44,7 @@ define([
         //입찰수 주파수 리스트
         hertzList : null,
 
-        TIMER : 1800,
+        TIMER : 2400,
         //라운드 리스트 탬플릿
         //roundListPrices : null,
         //roundListPricesTpl : null,

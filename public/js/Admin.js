@@ -85,7 +85,7 @@ define([
             {'name':'LG','bandWidth':null},
         ],
 
-        TIMER:1800,
+        TIMER:2400,
 
 
  		el: '.admin',
