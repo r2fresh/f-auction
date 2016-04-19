@@ -1,4 +1,19 @@
-<td class="text-center" style="vertical-align: middle;"><strong>{{name}}</strong></td>
+<td class="text-center" style="vertical-align: middle;">
+    <div><strong>{{name}} round</strong></div>
+    <div class="row">
+        <!-- <div class="col-md-12 text-center _p5">
+            <span>( </span><strong style="color:#ED1F27">B</strong><span>/</span>
+            <strong style="color:#0072FF">C</strong><span>/</span>
+            <strong style="color:#2EB502">A</strong><span> )</span>
+        </div> -->
+
+        <div class="col-md-12">
+            {{#company}}
+            <span class="label label-{{name}}-s _m5">{{biddingType}}</span>
+            {{/company}}
+        </div>
+    </div>
+</td>
 {{#frequency}}
     {{#bidders}}
         {{#isHertz}}

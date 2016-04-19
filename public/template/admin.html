@@ -50,36 +50,39 @@
               </li>
             </ul>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <strong>입찰유형</strong>
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6" style="border-right:1px dashed #aaaaaa">
+                                        <strong class=" _m2_r" style="font-size:12px;"> B : 입찰</strong><br>
+                                        <strong class=" _m2_r" style="font-size:12px;"> N : 입찰안함</strong><br>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong class=" _m2_r" style="font-size:12px;"> A : 자동입찰</strong><br>
+                                        <strong class=" _m2_r" style="font-size:12px;"> D : 유예</strong>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 _bid_bandWidth"></div>
+            </div>
+
             <ul class="list-group _countdown">
               <li class="list-group-item">
                 <div class="clock"></div>
               </li>
             </ul>
-
-            <div class="row">
-                <div class="col-md-12 _bid_bandWidth">
-                    <!-- <div class="panel panel-default">
-                        <div class="panel-heading text-center">
-                            <strong>신청대역폭</strong>
-                        </div>
-                        <ul class="list-group">
-                            <li class="list-group-item" style="font-size:14px;">
-                                <span class="badge" style="font-size:14px">0.75%</span>
-                                <strong>KT신청대역폭 :</strong>
-                            </li>
-                            <li class="list-group-item" style="font-size:14px;">
-                                <span class="badge" style="font-size:14px">0.75%</span>
-                                <strong>SKT신청대역폭 :</strong>
-                            </li>
-                            <li class="list-group-item" style="font-size:14px;">
-                                <span class="badge" style="font-size:14px">0.75%</span>
-                                <strong>LGU+신청대여폭 :</strong>
-                            </li>
-                        </ul>
-
-                    </div> -->
-                </div>
-            </div>
 
             <div class="row displayNone">
                 <div class="col-md-12">
@@ -182,18 +185,17 @@
                     <!--  /오름입찰-->
                     <div class="row _ascending_bidding_auction">
                         <div class="col-md-12">
-
                             <div class="panel panel-navy">
                                 <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th class="text-center">구분</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광대역)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협대역)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광대역)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광대역)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협대역)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -226,7 +228,7 @@
                                             <td class="text-center"><strong>시작가</strong></td>
                                             <script class="start_price_list_tpl" type="text/x-handlebars-template">
                                                 <{{#priceList}}
-                                                <td style="text-align:center;" colspan=3>
+                                                <td class="text-center" colspan=3>
                                                     <span>{{price}}</span>
                                                 </td>
                                                 {{/priceList}}
@@ -248,11 +250,11 @@
                                     <thead>
                                         <tr>
                                             <th>구분</th>
-                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th style="text-align:center;" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -316,11 +318,11 @@
                                     <thead>
                                         <tr>
                                             <th>구분</th>
-                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th style="text-align:center;" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>

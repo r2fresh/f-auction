@@ -79,12 +79,12 @@ define([
             {'name':'SK','hertzList':null},
             {'name':'LG','hertzList':null},
         ],
-        bandWidthList : [
-            {'name':'KT','bandWidth':null},
-            {'name':'SK','bandWidth':null},
-            {'name':'LG','bandWidth':null},
-        ],
-
+        // bandWidthList : [
+        //     {'name':'KT','companyName':'KT','bandWidth':null},
+        //     {'name':'SK','companyName':'SKT','bandWidth':null},
+        //     {'name':'LG','companyName':'LGU+','bandWidth':null},
+        // ],
+        //
         TIMER:2400,
 
 
@@ -186,7 +186,7 @@ define([
             this.startPriceListTpl  = this.$el.find(".start_price_list_tpl").html();
             // 라운드 템플릿
             this.roundPriceListTpl  = AdminRound
-
+            // 대역폭 리스트 템플릿
             this.adminBandWidthTpl = AdminBandWidth
 
             // 밀봉입찰액 템플릿
@@ -280,6 +280,17 @@ define([
         */
         onBandWidth:function(msg){
             var bandWidthList = JSON.parse(msg);
+
+            _.each(bandWidthList,function(item){
+                if(item.name == 'SK'){
+                    item.companyName = 'SKT'
+                } else if(item.name == 'LG'){
+                    item.companyName = 'LGU+'
+                } else {
+                    item.companyName = item.name;
+                }
+            })
+
             var template = Handlebars.compile(this.adminBandWidthTpl);
             this.$el.find('._bid_bandWidth').html(template({'bandWidthList':bandWidthList}));
         },
@@ -424,11 +435,12 @@ define([
          * 입찰을 하고
          */
         onBid:function(msg){
+            console.log(msg)
             var roundData = null;
             var bidData = JSON.parse(msg);
             //라운드의 데이터에 입찰자가 입찰한 데이터를 저장하는 함수
             this.insertRoundBid(bidData);
-            //라운드에 입찰자가 모드 입찰을 했는지 체크하는 함수
+            //라운드에 입찰자가 모두 입찰을 했는지 체크하는 함수
             var flag = this.checkBidCountList(bidData);
 
             console.log("postRound")
@@ -454,6 +466,16 @@ define([
                     }
                 }
             }
+            console.table(bidData)
+            console.table(this.roundData)
+
+            _.each(this.roundData.company, function(item){
+                if(item.name == bidData.name){
+                    item.biddingType = bidData.biddingType;
+                }
+            })
+
+            //console.table(this.roundData);
         },
         /**
          * 라운드에 입찰자가 모드 입찰을 했는지 체크하는 함수
@@ -461,7 +483,7 @@ define([
         checkBidCountList:function(data){
             var bidData = data;
             _.each(this.bidCountList,function(item){
-                if(item.name === bidData.name){
+                if(item.name == bidData.name){
                     item.state = true;
                 }
             })

@@ -43,8 +43,10 @@ define([
         autoBiddingFlag : false,
         //입찰수 주파수 리스트
         hertzList : null,
-
+        // 카운트다운 시간
         TIMER : 2400,
+        // 입찰유형
+        biddingType : '',
         //라운드 리스트 탬플릿
         //roundListPrices : null,
         //roundListPricesTpl : null,
@@ -282,9 +284,17 @@ define([
         },
 
         /**
-         * 입찰버튼 클릭이벤트 핸들러
+        * 입찰버튼 클릭이벤트 핸들러
+        */
+        onBid : function(){
+            this.biddingType = 'B';
+            this.setBiding();
+        },
+
+        /**
+         * 입찰, 입찰안함, 유예 등의 셋팅하는 함수
          */
-        onBid:function(){
+        setBiding:function(){
 
             //this.ascendingBiddingType = '';
 
@@ -330,8 +340,9 @@ define([
          */
         onSkipBid:function(){
             this.ascendingBiddingType = '안함';
+            this.biddingType = 'N';
             this.resetBidPrice();
-            this.onBid();
+            this.setBiding();
         },
         /**
          * 입찰않음 클릭이벤트 핸들러
@@ -343,9 +354,10 @@ define([
          */
         onDelayBid:function(){
             this.ascendingBiddingType = '유예';
+            this.biddingType = 'D';
             this.biddingDelayFlag = true;
             this.resetBidPrice();
-            this.onBid();
+            this.setBiding();
         },
         /**
          * 포기 클릭이벤트 핸들러
@@ -760,7 +772,13 @@ define([
                 return item;
             })
 
-            Auction.io.emit('BID',JSON.stringify( {'name':this.bidder_company, 'priceList':priceList} ))
+            Auction.io.emit('BID',JSON.stringify({
+                'name':this.bidder_company,
+                'biddingType':this.biddingType,
+                'priceList':priceList
+            }));
+
+            this.biddingType = '';
         },
         /**
          * 각 라운드 입찰 완료
@@ -985,6 +1003,7 @@ define([
          */
         setAutoBidding:function(){
             this.ascendingBiddingType = '';
+            this.biddingType = 'A';
             var bidPriceElementList = this.$el.find('._bid_price');
             //입찰금액을 관리자 화면에 보내는 함수
             this.sendBid(bidPriceElementList);
