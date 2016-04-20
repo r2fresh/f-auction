@@ -875,7 +875,7 @@ define([
                 if(item.price === ''){
                     item.price = this.lowestBidPrices[index].price;
                 } else {
-                    item.price = parseInt(item.price,10) + Math.ceil(item.price*this.lowestBidAdd/100);
+                    item.price = parseInt(item.price,10) + Math.round(item.price*this.lowestBidAdd/100);
                 }
 
                 return item

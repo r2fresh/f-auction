@@ -26,15 +26,12 @@ var loginData = [
 
 var roundList = [];
 
-var hertzList = [
-    {'name':'KT','hertzList':null,'bandWidth':null},
-    {'name':'SK','hertzList':null,'bandWidth':null},
-    {'name':'LG','hertzList':null,'bandWidth':null},
-];
-
+// 입찰자 정보
 var companyInfoList = [
-    
-]
+    {'name':'KT','hertzList':null,'bandWidth':null,'biddingDelayCount':0},
+    {'name':'SK','hertzList':null,'bandWidth':null,'biddingDelayCount':0},
+    {'name':'LG','hertzList':null,'bandWidth':null,'biddingDelayCount':0},
+];
 
 var pwd = 'wnvktnrudao';
 var rate = 0;
@@ -126,12 +123,12 @@ app.get('/round', function(req, res) {
 
 app.get('/hertzList', function(req, res) {
     var bodyData = req.body;
-    res.send(hertzList)
+    res.send(companyInfoList)
 })
 
 app.get('/bandWidth', function(req, res) {
     var bodyData = req.body;
-    res.send(hertzList);
+    res.send(companyInfoList);
 })
 
 /**
@@ -155,12 +152,12 @@ io.on('connection', function(socket){
 
     socket.on('BANDWIDTH',function(msg){
         var data = JSON.parse(msg);
-        _.each(hertzList,function(item){
+        _.each(companyInfoList,function(item){
             if(item.name == (data.user).toUpperCase()){
                 item.bandWidth = data.bandwidth;
             }
         })
-        io.emit('BANDWIDTH',JSON.stringify(hertzList))
+        io.emit('BANDWIDTH',JSON.stringify(companyInfoList))
     })
 
     socket.on('disconnect', function(){
@@ -189,7 +186,7 @@ io.on('connection', function(socket){
             rate = 0;
             countDown = null;
 
-            _.each(hertzList,function(item){
+            _.each(companyInfoList,function(item){
                 item.hertzList = null;
             })
         }
@@ -324,13 +321,13 @@ io.on('connection', function(socket){
 
         var list = JSON.parse(msg);
 
-        _.each(hertzList,function(item){
+        _.each(companyInfoList,function(item){
             if(item.name == list.name){
                 item.hertzList = list.hertzList;
             }
         })
 
-        io.emit('HERTZ_LIST',JSON.stringify(hertzList));
+        io.emit('HERTZ_LIST',JSON.stringify(companyInfoList));
     });
 
     socket.on('AGAIN_SEAL_BID',function(msg){
