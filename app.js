@@ -30,6 +30,10 @@ var hertzList = [
     {'name':'KT','hertzList':null,'bandWidth':null},
     {'name':'SK','hertzList':null,'bandWidth':null},
     {'name':'LG','hertzList':null,'bandWidth':null},
+];
+
+var companyInfoList = [
+    
 ]
 
 var pwd = 'wnvktnrudao';

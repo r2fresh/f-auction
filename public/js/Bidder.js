@@ -302,10 +302,12 @@ define([
 
             //입찰 값 유효성 체크
             if(!this.autoBiddingFlag){
-                if(!this.bidValidation(bidPriceElementList)) {
-                    //유효성 체크 시 false이면 입차 유예 카운트는 증가 하지 않음
-                    this.biddingDelayFlag = false;
-                    return;
+                if(!this.biddingDelayFlag){
+                    if(!this.bidValidation(bidPriceElementList)) {
+                        //유효성 체크 시 false이면 입차 유예 카운트는 증가 하지 않음
+                        //this.biddingDelayFlag = false;
+                        return;
+                    }
                 }
             }
 
@@ -314,7 +316,6 @@ define([
                 this.biddingDelayCount += 1;
                 var countStr = (this.biddingDelayCount).toString();
                 this.$el.find('._bid_delay_count span').text(countStr + ' / 2');
-                this.biddingDelayFlag = false;
             }
 
             //입찰금액을 관리자 화면에 보내는 함수
@@ -759,18 +760,37 @@ define([
          */
         sendBid:function(elements){
             var defaultPriceList = JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
-            var priceList = _.map(defaultPriceList, function(item, index){
+            var priceList = null;
+            if(this.biddingDelayFlag){
+                priceList = _.map(defaultPriceList, function(item, index){
 
-                //승자인 주파수 포함
-                var winPrice = $(elements[index]).attr('price');
-                var winFlag = (typeof winPrice !== typeof undefined && winPrice !== false)
+                    //승자인 주파수 포함
+                    var price = $(elements[index]).attr('price');
+                    var flag = (typeof price !== typeof undefined && price !== false)
 
-                item.price = (winFlag) ? winPrice : $(elements[index]).val();
+                    item.price = (flag) ? price : $(elements[index]).val();
 
-                item.hertzFlag = $(elements[index]).attr('hertz_flag');
+                    item.hertzFlag = $(elements[index]).attr('hertz_flag');
 
-                return item;
-            })
+                    return item;
+                })
+            } else {
+                priceList = _.map(defaultPriceList, function(item, index){
+
+                    //승자인 주파수 포함
+                    var winPrice = $(elements[index]).attr('price');
+                    var vs = $(elements[index]).attr('vs');
+                    var winFlag = (typeof winPrice !== typeof undefined && winPrice !== false)
+
+                    item.price = (winFlag && vs == 'win') ? winPrice : $(elements[index]).val();
+
+                    item.hertzFlag = $(elements[index]).attr('hertz_flag');
+
+                    return item;
+                })
+            }
+
+            console.log(priceList)
 
             Auction.io.emit('BID',JSON.stringify({
                 'name':this.bidder_company,
@@ -779,6 +799,7 @@ define([
             }));
 
             this.biddingType = '';
+            this.biddingDelayFlag = false;
         },
         /**
          * 각 라운드 입찰 완료
@@ -791,10 +812,20 @@ define([
             var roundData = JSON.parse(JSON.stringify(data));
 
             var frequencyList = JSON.parse(JSON.stringify(roundData.frequency));
-            // winPriceList 설정 (winPrice에는 ''도 있다.)
-            var winPriceList = _.map(frequencyList,function(frequency){
-                return {'name':frequency.name, 'bidder':frequency.winBidder, 'price':frequency.winPrice} ;
-            })
+
+            // win과 lose PriceList 설정 (winPrice에는 ''도 있다.)
+            //
+            var winPriceList = _.map(frequencyList,Function.prototype.bind.call(function(frequency){
+
+                var loseBidderlist = _.filter(frequency.bidders, Function.prototype.bind.call(function(item){
+                    return (item.name == this.bidder_company && item.vs == 'lose')
+                },this));
+
+                var loseBidder = (loseBidderlist.length == 0) ? '' : loseBidderlist[0].name
+
+                return {'name':frequency.name, 'winBidder':frequency.winBidder, 'loseBidder':loseBidder,'price':frequency.winPrice} ;
+            },this))
+
             //최소 입찰액 리스트 설정
             this.lowestBidPrices = JSON.parse(JSON.stringify( this.setLowestBidPrice(winPriceList) ));
             // 최소입찰가격UI설정
@@ -858,12 +889,17 @@ define([
 
             _.each(data,Function.prototype.bind.call(function(item,index){
 
-                if(item.bidder == this.bidder_company && item.price != ''){
+                if(item.winBidder == this.bidder_company && item.price != ''){
                     $(this.$el.find('._bid_price')[index]).prop('disabled',true);
                     $(this.$el.find('._bid_price')[index]).attr('vs','win');
                     $(this.$el.find('._bid_price')[index]).attr('price',item.price);
                     $(this.$el.find('._bid_price')[index]).attr('placeholder','입찰불가');
-                } else {
+                } else if(item.loseBidder == this.bidder_company && item.price != ''){
+                    $(this.$el.find('._bid_price')[index]).prop('disabled',false);
+                    $(this.$el.find('._bid_price')[index]).attr('vs','lose');
+                    $(this.$el.find('._bid_price')[index]).attr('price',item.price);
+                    $(this.$el.find('._bid_price')[index]).attr('placeholder','');
+                }  else {
                     if(this.hertzList[index].hertzFlag == true){
                         $(this.$el.find('._bid_price')[index]).prop('disabled',this.autoBiddingFlag);
                         $(this.$el.find('._bid_price')[index]).removeAttr('vs');

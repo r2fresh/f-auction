@@ -466,8 +466,6 @@ define([
                     }
                 }
             }
-            console.table(bidData)
-            console.table(this.roundData)
 
             _.each(this.roundData.company, function(item){
                 if(item.name == bidData.name){
@@ -498,6 +496,16 @@ define([
 
             var frequencyList = data.frequency;
 
+            var companyList = data.company;
+
+            // var biddingDelayFlag = false;
+            //
+            // _.each(data.company, Function.prototype.bind.call(function(item){
+            //     if(item.name == this.bidder_company && item.biddingType == 'D'){
+            //         biddingDelayFlag = true;
+            //     }
+            // },this))
+
             _.each(frequencyList,Function.prototype.bind.call(function(frequency,index){
 
                 var emptyArr = _.filter(frequency.bidders,function(item){
@@ -523,10 +531,29 @@ define([
 
                     // 최대값인 통신사 리스트
                     var maxBidderArr = _.filter(frequency.bidders,function(bidder){
+
+                        var flag = false;
+
+                        if(bidder.price === maxPrice){
+                            _.each(data.company,function(item){
+                                if(item.name == bidder.name){
+                                    if(item.biddingType == 'D'){
+                                        flag = false;
+                                    } else {
+                                        flag = true;
+                                    }
+                                }
+                            })
+                        }
+
+                        return flag//bidder.price === maxPrice;
+                    })
+
+                    // 유예 통신사는 승자에서 제외함
+                    var filterMaxBidderArr = _.filter(frequency.bidders,function(bidder){
                         return bidder.price === maxPrice;
                     })
 
-                    // 랜덤으로 최대값 통신사
                     var randomIndex = parseInt(Math.random()*(maxBidderArr.length),10);
                     var maxBidder   = maxBidderArr[randomIndex].name;
 
@@ -626,6 +653,27 @@ define([
         * 각 입찰자가 입찰을 하면 입찰가격에 따라 라운드 UI렌더링
         */
         setRoundUI:function(data){
+
+            var roundPriceList = JSON.parse(JSON.stringify(data));
+
+            _.each(roundPriceList.company,function(item){
+
+                switch(item.biddingType){
+                    case 'B':
+                        item.biddingTypeName = '입찰'
+                    break;
+                    case 'N':
+                        item.biddingTypeName = '입찰안함'
+                    break;
+                    case 'A':
+                        item.biddingTypeName = '자동입찰'
+                    break;
+                    case 'D':
+                        item.biddingTypeName = '입찰유예'
+                    break;
+                }
+            })
+
             Handlebars.registerHelper('isHertz', function(options) {
               if(this.hertzFlag == true || this.hertzFlag == undefined){
                   return options.fn(this);
@@ -635,7 +683,7 @@ define([
             });
 
             var template = Handlebars.compile(this.roundPriceListTpl);
-            this.$el.find('.round_price_list').last().html(template( data ));
+            this.$el.find('.round_price_list').last().html(template( roundPriceList ));
         },
 
         /**
