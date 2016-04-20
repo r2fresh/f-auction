@@ -134,9 +134,13 @@ define([
             });
 
             this.$el.find('#biddingPattern').show();
+
+            // 차트에서 가이드 관련 정보 삭제
             this.$el.find('#biddingPattern .highcharts-series-group .highcharts-series-0').remove();
             this.$el.find('#biddingPattern .highcharts-legend .highcharts-legend-item:eq(0)').remove();
 
+            // 차트에서 광대역과 협대역을 하나로 표시 하기 위해 협대역 삭제
+            this.$el.find('#biddingPattern .highcharts-legend .highcharts-legend-item:odd').remove();
         },
         setBiddingPattern:function(){
 
@@ -227,7 +231,7 @@ define([
                         to: 6.5,
                         label: {
                             verticalAlign:'bottom',
-                            text: 'C 1.8MHz(협)',
+                            text: 'B 1.8MHz(협)',
                             rotation: 0,
                             textAlign: 'center',
                             y:40
@@ -251,7 +255,7 @@ define([
                         to: 12.5,
                         label: {
                             verticalAlign:'bottom',
-                            text: 'E 2.6MHz(광)',
+                            text: 'D 2.6MHz(광)',
                             rotation: 0,
                             textAlign: 'center',
                             y:40
@@ -336,52 +340,72 @@ define([
                 },
 
                 legend: {
-
                     itemMarginTop: 15
-
                 },
 
                 series: [
                     {
                         name: '가이드',
                         marker:{
-                            enabled:false,
-                            lineWidth:0
+                            enabled:true,
+                            lineWidth:1
                         },
                         dataLabels:{
-                            enabled:false
+                            enabled:true
                         },
                         data: [
                             [0.5, 3200],[15.5, 3200]
                         ]
                     },
                     {
-                    name: 'KT 광대역',
-                    color:'rgba(237, 31, 39, 1)',
-                    data:[]
-                }
+                        name: 'KT',
+                        marker:{
+                            symbol:'circle'
+                        },
+                        color:'rgba(237, 31, 39, 1)',
+                        data:[]
+                    }
                 ,{
                     name: 'KT 협대역',
+                    marker:{
+                        symbol:'circle'
+                    },
                     color:'rgba(237, 31, 39, 1)',
                     data: []
                 }
                 ,{
-                    name: 'SKT 광대역',
+                    name: 'SKT',
+                    marker:{
+                        symbol:'circle'
+                    },
                     color:'rgba(0, 114, 255, 1)',
                     data: []
                 }
                 ,{
                     name: 'SKT 협대역',
+                    marker:{
+                        symbol:'circle'
+                    },
                     color:'rgba(0, 114, 255, 1)',
                     data: []
                 }
                 ,{
-                    name: 'LGU+ 광대역',
+                    name: 'LGU+',
+                    marker:{
+                        symbol:'circle'
+                    },
                     color:'rgba(46, 181, 2, 1)',
                     data: []
                 }
                 ,{
                     name: 'LGU+ 협대역',
+                    marker:{
+                        symbol:'circle',
+                        lineWidth:0
+                    },
+                    dataLabels:{
+                        enabled:false
+                    },
                     color:'rgba(46, 181, 2, 1)',
                     data: []
                 }
