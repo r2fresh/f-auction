@@ -1,0 +1,36 @@
+<div class="panel panel-default">
+    <div class="panel-heading text-center">
+        <strong>신청대역폭</strong>
+    </div>
+    <ul class="list-group">
+        {{#bandWidthList}}
+        <li class="list-group-item">
+            <span class="badge">{{bandWidth}} Mhz</span>
+            <strong>{{companyName}}신청대역폭 :</strong>
+        </li>
+        {{/bandWidthList}}
+    </ul>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading text-center">
+        <strong>입찰자유예상태</strong>
+    </div>
+    <ul class="list-group">
+        {{#}}
+        <li class="list-group-item" style="font-size:14px;">
+            <span class="badge" style="font-size:14px">0/2</span>
+            <strong>KT :</strong>
+        </li>
+        <li class="list-group-item" style="font-size:14px;">
+            <span class="badge" style="font-size:14px">0/2</span>
+            <strong>SKT :</strong>
+        </li>
+        <li class="list-group-item" style="font-size:14px;">
+            <span class="badge" style="font-size:14px">0/2</span>
+            <strong>LGU+ :</strong>
+        </li>
+    </ul>
+
+</div>

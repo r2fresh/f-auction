@@ -316,6 +316,7 @@ define([
                 this.biddingDelayCount += 1;
                 var countStr = (this.biddingDelayCount).toString();
                 this.$el.find('._bid_delay_count span').text(countStr + ' / 2');
+                this.sendBiddingDelayCount();
             }
 
             //입찰금액을 관리자 화면에 보내는 함수
@@ -334,6 +335,10 @@ define([
 
             this.onCountDownStop();
             this.$el.find('._bidding_state strong').html(this.roundNum + '라운드 입찰이 진행중입니다. 잠시만 기다려 주시기 바랍니다.');
+        },
+
+        sendBiddingDelayCount:function(){
+            Auction.io.emit('BIDDING_DELAY_COUNT', JSON.stringify({'name':this.bidder_company,'biddingDelayCount':this.biddingDelayCount));
         },
 
         /**

@@ -160,6 +160,16 @@ io.on('connection', function(socket){
         io.emit('BANDWIDTH',JSON.stringify(companyInfoList))
     })
 
+    socket.on('BIDDING_DELAY_COUNT', function(msg){
+        var data = JSON.parse(msg);
+        _.each(companyInfoList,function(item){
+            if(item.name == data.name){
+                item.biddingDelayCount = data.biddingDelayCount;
+            }
+        })
+        io.emit('BIDDING_DELAY_COUNT',JSON.stringify(companyInfoList))
+    })
+
     socket.on('disconnect', function(){
 
         logger.log('disconnection');
@@ -336,5 +346,5 @@ io.on('connection', function(socket){
 
     socket.on('GET_CHART_DATA',function(msg){
         io.emit('GET_CHART_DATA',msg);
-    })
+    });
 });

@@ -46,13 +46,13 @@ define([
             {'name':'LG','state':false}
         ],
 
-        winCompanyList:[
-            {'name':'','price':0},
-            {'name':'','price':0},
-            {'name':'','price':0},
-            {'name':'','price':0},
-            {'name':'','price':0}
-        ],
+        // winCompanyList:[
+        //     {'name':'','price':0},
+        //     {'name':'','price':0},
+        //     {'name':'','price':0},
+        //     {'name':'','price':0},
+        //     {'name':'','price':0}
+        // ],
 
         // 밀봉입찰액 객체
         sealBidBidderList:null,
@@ -218,6 +218,8 @@ define([
             Auction.io.on('COUNTDOWN_STOP', Function.prototype.bind.call(this.onCountDownStop,this) );
 
             Auction.io.on('BANDWIDTH', Function.prototype.bind.call(this.onBandWidth,this) );
+            Auction.io.on('BIDDING_DELAY_COUNT', Function.prototype.bind.call(this.onBiddingDelayCount,this) );
+
         },
         /**
          * 증분율 설정
@@ -435,15 +437,13 @@ define([
          * 입찰을 하고
          */
         onBid:function(msg){
-            console.log(msg)
+
             var roundData = null;
             var bidData = JSON.parse(msg);
             //라운드의 데이터에 입찰자가 입찰한 데이터를 저장하는 함수
             this.insertRoundBid(bidData);
             //라운드에 입찰자가 모두 입찰을 했는지 체크하는 함수
             var flag = this.checkBidCountList(bidData);
-
-            console.log("postRound")
 
             if(flag === true){
                 roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
