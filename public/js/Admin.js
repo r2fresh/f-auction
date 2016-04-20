@@ -541,9 +541,12 @@ define([
                         // 최대값은 같지만, 통신사는 다르면 패자
                         } else if(bidder.name != maxBidder && bidder.price == maxPrice){
                             bidder.vs = 'lose';
+                        // 최대값도 같지 않고, 통신사도 다를때
                         } else if(bidder.name != maxBidder && bidder.price != maxPrice){
+                            // 가격이 없으면 vs ''
                             if(bidder.price === ''){
                                 bidder.vs = '';
+                            // 가격이 없으면 lose로 표시
                             } else {
                                 bidder.vs = 'lose';
                             }

@@ -400,11 +400,7 @@ define([
                 ,{
                     name: 'LGU+ 협대역',
                     marker:{
-                        symbol:'circle',
-                        lineWidth:0
-                    },
-                    dataLabels:{
-                        enabled:false
+                        symbol:'circle'
                     },
                     color:'rgba(46, 181, 2, 1)',
                     data: []
