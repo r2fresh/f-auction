@@ -11,9 +11,7 @@ define([
     'js/BiddingResult',
     'js/r2/r2Alert'
     ],
-    function(module,
-        Admin, AdminRound, AdminBandWidth, AdminBiddingDelayCount,
-        Model, Pro, AuctionData, SealBidCombination, BiddingResult, R2Alert){
+    function(module,Admin, AdminRound, AdminBandWidth, AdminBiddingDelayCount, Model, Pro, AuctionData, SealBidCombination, BiddingResult, R2Alert){
 
         'use strict'
 

@@ -116,12 +116,15 @@ define([
 
                                    var combination = [A[i],B[ii],C[iii],D[iiii],E[iiiii]];
 
+
+
                                    if(this.setCombinationWideBandOverlapCheck(combination)){
-                                       if(this.setCombinationBandWidthCheck(combination)){
+                                      if(this.setCombinationBandWidthCheck(combination)){
                                            //if(this.setCombinationWideBandCheck(combination)){
+                                           //console.log(combination)
                                                combinationList.push(combination);
                                            //}
-                                       }
+                                      }
                                    }
                                }
                            }
@@ -129,16 +132,15 @@ define([
                    }
                }
 
+               //console.log(combinationList)
+
+               //return combinationList;
+
                var combinationSumList       = this.setCombinationPriceSum(combinationList);
-               console.log(combinationSumList)
                var combinationMergeList     = this.setCombinationMerge(combinationSumList);
-                console.log(combinationMergeList)
                var combinationSumSortList   = this.setCombinationSumSort(combinationMergeList);
-                console.log(combinationSumSortList)
                var combinationReverseList   = this.setCombinationReverse(combinationSumSortList);
-                console.log(combinationReverseList)
                var combinationRankingList   = this.setCombinationRanking(combinationReverseList);
-                console.log(combinationRankingList)
                var combinationNamingList    = this.setCombinationNaming(combinationRankingList);
 
                console.log(combinationNamingList)
@@ -157,7 +159,7 @@ define([
                for(var i=0; i<companyList.length; ++i){
                    // 조합에서 해당 입찰자가 포함된 객체 배열 생성
                    var companyDissolve = _.filter(combination,function(item){
-                       return item.company === companyList[i];
+                       return item.company == companyList[i];
                    })
 
                    // 입찰자 배열이 두개 이상이면 실행
@@ -175,7 +177,7 @@ define([
                        if(wideBandList.length>1){ flag = false}
                    }
 
-                   if(flag === false){break;}
+                   if(flag == false){break;}
                }
 
                return flag
@@ -192,7 +194,7 @@ define([
 
                for(var i=0; i<companyList.length; ++i){
                    var companyDissolve = _.filter(combination,function(item){
-                       return item.company === companyList[i];
+                       return item.company == companyList[i];
                    })
 
                    // 지원하지 않은 주파수에 해당하는 입찰자 객체를 제외하고 배열 생성
@@ -207,10 +209,14 @@ define([
                    var ableBandWidth = null;
 
                    _.each(this.sealBandWidthList,function(item){
-                       if(item.name === companyList[i]){
+                       if(item.name == companyList[i]){
                            ableBandWidth = item.ableBandWidth;
                        }
                    })
+
+                   //console.log('bandWidthSum : ' + bandWidthSum)
+                   //console.log('ableBandWidth : ' + ableBandWidth)
+                   //console.log('===================================')
 
                    if(bandWidthSum > ableBandWidth){
                        flag = false;
@@ -219,7 +225,11 @@ define([
                    if(bandWidthSum < ableBandWidth/2){
                        flag = false;
                    }
+
+                   //console.log(flag)
                }
+
+               //console.log('~~~~~~~~~~~~~~~~~~~~~~~~~')
 
                return flag
            },
