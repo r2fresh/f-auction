@@ -351,11 +351,6 @@ define([
             this.setBiding();
         },
         /**
-         * 입찰않음 클릭이벤트 핸들러
-         */
-        onNotBid:function(e){
-        },
-        /**
          * 유예신청 클릭이벤트 핸들러
          */
         onDelayBid:function(){
@@ -365,11 +360,7 @@ define([
             this.resetBidPrice();
             this.setBiding();
         },
-        /**
-         * 포기 클릭이벤트 핸들러
-         */
-        onGiveupBid:function(){
-        },
+
         /**
          * 예상증분률을 표시하는 함수
          */
@@ -483,9 +474,9 @@ define([
             this.biddingBtnListDisplay(true);
             // 자동입찰 체크
 
-            console.log('AUTOBIDDINGFLAG : ' + this.autoBiddingFlag)
+            console.log('this.autoBiddingFlag : ' + this.autoBiddingFlag)
 
-            if(this.autoBiddingFlag){
+            if(this.autoBiddingFlag == true){
                 R2Alert.allDestroy();
                 R2Alert.render({'msg':this.roundNum + '라운드는 지원가능한 대역폭 없습니다. \n 자동입찰이 진행되었습니다.','w':400});
                 this.onCountDownStop();
@@ -524,6 +515,7 @@ define([
         * 결과 확인을 알려줌
         */
         emitRoundResultCheck:function(){
+            console.log('ROUND_RESULT_CHECK')
             Auction.io.emit('ROUND_RESULT_CHECK',this.bidder_company);
         },
         /**
@@ -773,14 +765,11 @@ define([
 
                     //승자인 주파수 포함
                     var price = $(elements[index]).attr('price');
-                    var vs = $(elements[index]).attr('vs');
                     var flag = (typeof price !== typeof undefined && price !== false)
 
                     item.price = (flag) ? price : $(elements[index]).val();
 
                     item.hertzFlag = $(elements[index]).attr('hertz_flag');
-
-                    item.vs = vs;
 
                     return item;
                 })
@@ -796,19 +785,17 @@ define([
 
                     item.hertzFlag = $(elements[index]).attr('hertz_flag');
 
-                    item.vs = vs;
-
                     return item;
                 })
             }
 
-            console.log(priceList)
-
-            Auction.io.emit('BID',JSON.stringify({
+            console.log("121212121")
+            Auction.io.emit('BIDDING',JSON.stringify({
                 'name':this.bidder_company,
                 'biddingType':this.biddingType,
                 'priceList':priceList
             }));
+            console.log("jkkkk")
 
             this.biddingType = '';
             this.biddingDelayFlag = false;
@@ -1050,9 +1037,9 @@ define([
          * 자동입찰을 실행하는 함수
          */
         setAutoBidding:function(){
-            console.log('자동입찰 실행')
+            console.log('자동입찰')
             this.ascendingBiddingType = '';
-            this.biddingType = 'A';
+            this.biddingType = 'N';
             var bidPriceElementList = this.$el.find('._bid_price');
             //입찰금액을 관리자 화면에 보내는 함수
             this.sendBid(bidPriceElementList);
@@ -1070,7 +1057,28 @@ define([
 
             this.autoBiddingFlag = false;
         },
-        
+
+        /**
+         * 지원 가능한 주파수를 계산하는 함수
+         */
+        // checkAutoBidding:function(data){
+        //     var bandWidthTotal = 0;
+        //     for(var i=0;i<data.length;++i){
+        //         for(var j=0;j<data[i].bidders.length;++j){
+        //             if(data[i].bidders[j].name === this.bidder_company){
+        //                 if(data[i].bidders[j].vs === 'win'){
+        //                     bandWidthTotal = bandWidthTotal + data[i].bandWidth;
+        //                 }
+        //             }
+        //
+        //         }
+        //     }
+        //     console.log('BAND_WITH_TOTAL : ' + bandWidthTotal);
+        //     console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
+        //
+        //     this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
+        // },
+
         /**
          * 밀봉입찹순위 체크 하는 함수
          */

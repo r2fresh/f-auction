@@ -24,6 +24,8 @@ var loginData = [
     {'name':'lg','state':false}
 ];
 
+var testNum = 0;
+
 var roundList = [];
 
 // 입찰자 정보
@@ -50,8 +52,6 @@ app.post('/login', function(req, res) {
 
     var resultStr = '';
 
-    //console.log(loginData)
-
     // 관리자가 로그인을 할 경우
     if(bodyData.bidder == 'admin'){
         // 관리자는 비밀
@@ -74,9 +74,6 @@ app.post('/login', function(req, res) {
         }
     }
 
-    //console.log(loginData)
-    //console.log('result : ' + result)
-
     if(result == true){
 
         // 중복된 로그인 체크
@@ -94,8 +91,6 @@ app.post('/login', function(req, res) {
             }
         }
     }
-    //logger.log({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
-
     res.send({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 })
 
@@ -153,35 +148,16 @@ var server = app.listen(app.get('port'), function () {
 });
 
 
-var io = require('socket.io')(server)//,{'pingTimeout':15000, 'pingInterval', 8000});
+var io = require('socket.io')(server)
 
 io.on('connection', function(socket){
 
-    socket.on('BANDWIDTH',function(msg){
-        var data = JSON.parse(msg);
-        _.each(companyInfoList,function(item){
-            if(item.name == (data.user).toUpperCase()){
-                item.bandWidth = data.bandwidth;
-            }
-        })
-        io.emit('BANDWIDTH',JSON.stringify(companyInfoList))
-    })
 
-    socket.on('BIDDING_DELAY_COUNT', function(msg){
-        var data = JSON.parse(msg);
-        _.each(companyInfoList,function(item){
-            if(item.name == data.name){
-                item.biddingDelayCount = data.biddingDelayCount;
-            }
-        })
-        io.emit('BIDDING_DELAY_COUNT',JSON.stringify(companyInfoList))
-    })
 
     socket.on('disconnect', function(){
 
-        //logger.log('disconnection');
+        testNum = 0;
 
-        //var str = this.handshake.headers.cookie
         var cookieData = cookieParser.get( this.handshake.headers.cookie );
 
         // cookieData 없을 경우 리턴
@@ -214,12 +190,27 @@ io.on('connection', function(socket){
             })
         }
 
-        //logger.log(roundList)
-
-        //logger.log("======== loginData ======")
-        //logger.log(loginData)
-
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
+    })
+
+    socket.on('BANDWIDTH',function(msg){
+        var data = JSON.parse(msg);
+        _.each(companyInfoList,function(item){
+            if(item.name == (data.user).toUpperCase()){
+                item.bandWidth = data.bandwidth;
+            }
+        })
+        io.emit('BANDWIDTH',JSON.stringify(companyInfoList))
+    })
+
+    socket.on('BIDDING_DELAY_COUNT', function(msg){
+        var data = JSON.parse(msg);
+        _.each(companyInfoList,function(item){
+            if(item.name == data.name){
+                item.biddingDelayCount = data.biddingDelayCount;
+            }
+        })
+        io.emit('BIDDING_DELAY_COUNT',JSON.stringify(companyInfoList))
     })
 
     socket.on('LOGIN_CHECK',function(msg){
@@ -232,8 +223,6 @@ io.on('connection', function(socket){
                 }
             }
         }
-
-        //logger.log(loginData)
 
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
@@ -253,38 +242,21 @@ io.on('connection', function(socket){
         }
 
         io.emit('ROUND_START', JSON.stringify(data))
-        io.emit('COUNTDOWN_START', JSON.stringify(data))
+        //io.emit('COUNTDOWN_START', JSON.stringify(data))
     })
-
-    //socket.on('COUNTDOWN_START',function(msg){
-
-        //console.log(new Date())
-
-        //var now = moment(new Date()).valueOf();
-
-        //var aaa = moment(new Date()).millisecond();
-
-        //countDown = now + TIMER;
-
-        //var yyy = moment.unix(sss/1000).format("YYYY-MM-DD HH:mm:ss")
-
-        //console.log(aaa)
-        // console.log(kkk)
-        // console.log(sss)
-        // console.log(yyy)
-        //
-        // logger.log()
-
-        //io.emit('COUNTDOWN_START',(countDown).toString())
-    //})
 
     socket.on('COUNTDOWN_STOP',function(msg){
         countDown = null;
         io.emit('COUNTDOWN_STOP',(TIMER).toString())
     })
 
-    socket.on('BID',function(msg){
-        io.emit('BID',msg)
+    socket.on('BIDDING',function(msg){
+        var ksy = JSON.parse(msg)
+        console.log(testNum++);
+        console.log(ksy.name);
+        console.log(ksy.biddingType);
+
+        io.emit('ADMIN_BID',msg)
     })
 
     socket.on('ROUND_RESULT',function(msg){

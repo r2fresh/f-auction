@@ -65,15 +65,21 @@ define([
                 }
                 var rate = parseFloat( this.$el.find('._login_increaseRate option:selected').val());
             }
+
+            var postData = {
+                'bidder' : bidder,
+                'pwd' : pwd,
+                'rate' : rate
+            }
+
+            if(bidder != 'admin'){
+                postData.bandWidth = bandWidth
+            }
+
             Model.postLogin({
                  url: '/login',
                  method : 'POST',
-                 data : {
-                     'bidder' : bidder,
-                     'pwd' : pwd,
-                     'rate' : rate,
-                     'bandWidth' : bandWidth
-                 },
+                 data : postData,
                  dataType : 'json',
                  contentType:"application/x-www-form-urlencoded; charset=UTF-8",
                  success : Function.prototype.bind.call(this.postLoginSuccess,this),
@@ -89,8 +95,8 @@ define([
             //입찰전략
             var bid_strategy = this.$el.find('._login_bidder_strategy textarea');
             //로그인 유저 타입
-            var type = (bidder.val() === 'admin') ? 'admin' : 'bidder';
-            
+            var type = (data.bidder === 'admin') ? 'admin' : 'bidder';
+
             if(textStatus === 'success'){
                 if(data.bidder == 'admin'){
                     if(!data.pwdResult){
@@ -123,15 +129,20 @@ define([
                 }
             }
             var hertzList = (data.bidder === 'admin') ? '' : this.getCheckedHertz();
-            Auction.session.set('user_info',{
+
+            var sessionData = {
                     'type' : type,
                     'user' : bidder.val(),
                     'strategy' : bid_strategy.val(),
-                    'bandWidth' : bandWidth.val(),
                     'rate' : data.rate,
-                    'hertzList' : hertzList
                 }
-            )
+
+            if(type == 'bidder'){
+                sessionData.bandWidth = bandWidth.val()
+                sessionData.hertzList = hertzList
+            }
+
+            Auction.session.set('user_info',sessionData)
             Cookies.set('user', bidder.val());
             window.location.reload();
         },

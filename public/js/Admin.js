@@ -146,17 +146,17 @@ define([
                 if(textStatus == 'success'){
                     this.hertzList = data;
 
-                    var userInfo = Auction.session.get('user_info')
-
-                    Auction.session.set('user_info',{
-                            'type' : userInfo.type,
-                            'user' : userInfo.user,
-                            'strategy' : userInfo.strategy,
-                            'bandWidth' : userInfo.bandWidth,
-                            'rate' : userInfo.rate,
-                            'hertzList' : this.hertzList
-                        }
-                    )
+                    // var userInfo = Auction.session.get('user_info')
+                    //
+                    // Auction.session.set('user_info',{
+                    //         'type' : userInfo.type,
+                    //         'user' : userInfo.user,
+                    //         'strategy' : userInfo.strategy,
+                    //         'bandWidth' : userInfo.bandWidth,
+                    //         'rate' : userInfo.rate,
+                    //         'hertzList' : this.hertzList
+                    //     }
+                    // )
                 }
             },
 
@@ -236,7 +236,7 @@ define([
              */
             setSocketReceiveEvent:function(){
                 Auction.io.on('LOGIN_CHECK', Function.prototype.bind.call(this.onLoginCheck,this) );
-                Auction.io.on('BID', Function.prototype.bind.call(this.onBid,this) );
+                Auction.io.on('ADMIN_BID', Function.prototype.bind.call(this.onAdminBid,this) );
                 Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
                 Auction.io.on('ROUND_RESULT_CHECK', Function.prototype.bind.call(this.onRoundResultCheck,this) );
                 Auction.io.on('HERTZ_LIST', Function.prototype.bind.call(this.onHertzList,this) );
@@ -445,7 +445,7 @@ define([
             /**
              * 입찰을 하고
              */
-            onBid:function(msg){
+            onAdminBid:function(msg){
 
                 var roundData = null;
                 var bidData = JSON.parse(msg);
@@ -645,6 +645,8 @@ define([
                         'w':400,
                         'callback':Function.prototype.bind.call(this.emitRoundResult,this)
                     });
+
+                    this.roundData = null;
 
                     this.roundNum += 1;
                     this.$el.find('._round_mark strong').text(this.roundNum);
