@@ -9,9 +9,11 @@ define([
     'js/AuctionData',
     'js/SealBidCombination',
     'js/BiddingResult',
+    'js/RoundRateIncrease2',
     'js/r2/r2Alert'
     ],
-    function(module,Admin, AdminRound, AdminBandWidth, AdminBiddingDelayCount, Model, Pro, AuctionData, SealBidCombination, BiddingResult, R2Alert){
+    function(module,Admin, AdminRound, AdminBandWidth, AdminBiddingDelayCount,
+        Model, Pro, AuctionData, SealBidCombination, BiddingResult, RoundRateIncrease2, R2Alert){
 
         'use strict'
 
@@ -448,8 +450,6 @@ define([
                 var roundData = null;
                 var bidData = JSON.parse(msg);
 
-                console.table(bidData)
-
                 //라운드의 데이터에 입찰자가 입찰한 데이터를 저장하는 함수
                 this.insertRoundBid(bidData);
                 //라운드에 입찰자가 모두 입찰을 했는지 체크하는 함수
@@ -457,7 +457,11 @@ define([
 
                 if(flag === true){
                     roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
-                    this.postRound(roundData);
+
+                    RoundRateIncrease2.setNowRoundData(roundData);
+                    RoundRateIncrease2.setRoundRateIncreaseList(Function.prototype.bind.call(this.postRound,this))
+
+                    //this.postRound(roundData);
                 } else {
                     roundData = _.extend(this.roundData,{'name':this.roundNum});
                     this.setRoundUI(roundData);
@@ -742,7 +746,6 @@ define([
              * 입찰자가 라운드 결과를 확인했는지 체크 하는 함수
              */
             onRoundResultCheck:function(msg){
-                console.log(msg)
                 _.each(this.roundResultCheck,function(item){
                     if(item.name == msg){
                         item.state = true;
@@ -964,7 +967,7 @@ define([
             * 밀봉입찰액 기본 테이블 생성
             */
             setSealBidPrice:function(){
-                var bidderList = JSON.parse( JSON.stringify(AuctionData.binderList) );
+                var bidderList = JSON.parse( JSON.stringify(AuctionData.bidderList) );
                 this.sealBidBidderList = _.map(bidderList,function(item){
                     var defaultPriceList = JSON.parse( JSON.stringify(AuctionData.defaultPriceList) );
                     var priceList = _.map(defaultPriceList,function(item){

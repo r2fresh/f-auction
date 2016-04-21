@@ -1,5 +1,5 @@
 define({
-    'binderList':[
+    'bidderList':[
         {'name':'KT','state':false},
         {'name':'SK','state':false},
         {'name':'LG','state':false}

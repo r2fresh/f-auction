@@ -222,6 +222,10 @@ io.on('connection', function(socket){
                     loginData[i].state = true;
                 }
             }
+            //관리자 로그인시 리셋
+            if(msg == 'admin'){
+                roundList = []
+            }
         }
 
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))

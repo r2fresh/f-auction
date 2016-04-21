@@ -6,10 +6,10 @@ define([
    'js/Validation',
    'js/Model',
    'js/BidValidation',
-   'js/RoundRateIncrease',
+   'js/RoundRateIncrease2',
    'js/r2/r2Alert'
    ],
-   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation, RoundRateIncrease, R2Alert){
+   function(module, Bidder, RoundResult, AuctionData, Validation, Model, BidValidation, RoundRateIncrease2, R2Alert){
 
 	'use strict'
 
@@ -794,13 +794,11 @@ define([
                 })
             }
 
-            console.log("121212121")
             Auction.io.emit('BIDDING',JSON.stringify({
                 'name':this.bidder_company,
                 'biddingType':this.biddingType,
                 'priceList':priceList
             }));
-            console.log("jkkkk")
 
             this.biddingType = '';
             this.biddingDelayFlag = false;
@@ -811,11 +809,13 @@ define([
         setRoundResult:function(data){
 
             // 입찰자 마다의 라운드별 증분율
-            this.setRoundRateIncrease();
+
 
             var roundData = JSON.parse(JSON.stringify(data));
 
             var frequencyList = JSON.parse(JSON.stringify(roundData.frequency));
+
+            this.setRoundRateIncrease(roundData);
 
             // win과 lose PriceList 설정 (winPrice에는 ''도 있다.)
             //
@@ -848,9 +848,9 @@ define([
         * 각 주파수에 대한 각 입찰자의 시작가 대비 최종 가격 증분율
         * 주파수의 승자가 가격이 아닌 입찰자가 입찰한 가장 마지막 가격
         */
-        setRoundRateIncrease:function(){
-            RoundRateIncrease.setBidderCompany(this.bidder_company);
-            RoundRateIncrease.setRoundRateIncrease(Function.prototype.bind.call(this.setRoundRateIncreaseUI,this));
+        setRoundRateIncrease:function(roundData){
+            RoundRateIncrease2.setBidderCompany(this.bidder_company);
+            this.setRoundRateIncreaseUI( RoundRateIncrease2.getRoundRateIncrease(roundData) );
         },
 
         /**
