@@ -130,10 +130,15 @@ define([
                }
 
                var combinationSumList       = this.setCombinationPriceSum(combinationList);
+               console.log(combinationSumList)
                var combinationMergeList     = this.setCombinationMerge(combinationSumList);
+                console.log(combinationMergeList)
                var combinationSumSortList   = this.setCombinationSumSort(combinationMergeList);
+                console.log(combinationSumSortList)
                var combinationReverseList   = this.setCombinationReverse(combinationSumSortList);
+                console.log(combinationReverseList)
                var combinationRankingList   = this.setCombinationRanking(combinationReverseList);
+                console.log(combinationRankingList)
                var combinationNamingList    = this.setCombinationNaming(combinationRankingList);
 
                console.log(combinationNamingList)
@@ -206,9 +211,6 @@ define([
                            ableBandWidth = item.ableBandWidth;
                        }
                    })
-
-                   console.log('bandWidthSum : ' + bandWidthSum)
-                   console.log('ableBandWidth : ' + ableBandWidth)
 
                    if(bandWidthSum > ableBandWidth){
                        flag = false;

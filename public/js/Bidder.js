@@ -772,7 +772,7 @@ define([
 
                     item.hertzFlag = $(elements[index]).attr('hertz_flag');
 
-                    item.hertzFlag = vs;
+                    item.vs = vs;
 
                     return item;
                 })
@@ -788,7 +788,7 @@ define([
 
                     item.hertzFlag = $(elements[index]).attr('hertz_flag');
 
-                    item.hertzFlag = vs;
+                    item.vs = vs;
 
                     return item;
                 })
