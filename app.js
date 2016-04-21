@@ -94,7 +94,7 @@ app.post('/login', function(req, res) {
             }
         }
     }
-    logger.log({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
+    //logger.log({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 
     res.send({'result':result, 'bidder':bodyData.bidder, 'overlap':overlap,'pwdResult':pwdResult,'rate' : rate})
 })
@@ -103,7 +103,7 @@ app.post('/round', function(req, res) {
     var result = false;
     var bodyData = req.body;
 
-    console.log(bodyData.round);
+    //console.log(bodyData.round);
 
     if(bodyData.round.name == 1){
         roundList = [];
@@ -130,6 +130,13 @@ app.get('/bandWidth', function(req, res) {
     var bodyData = req.body;
     res.send(companyInfoList);
 })
+
+app.get('/biddingDelayCount', function(req, res) {
+    var bodyData = req.body;
+    res.send(companyInfoList);
+})
+
+
 
 /**
  * index.html router
@@ -172,7 +179,7 @@ io.on('connection', function(socket){
 
     socket.on('disconnect', function(){
 
-        logger.log('disconnection');
+        //logger.log('disconnection');
 
         //var str = this.handshake.headers.cookie
         var cookieData = cookieParser.get( this.handshake.headers.cookie );
@@ -190,6 +197,12 @@ io.on('connection', function(socket){
             return item.state == false;
         })
 
+        _.each(companyInfoList,function(item){
+            if(item.name == (cookieData.user).toUpperCase()){
+                item.biddingDelayCount = 0;
+            }
+        })
+
         if(logFlag){
             roundList = null;
             roundList = [];
@@ -201,16 +214,16 @@ io.on('connection', function(socket){
             })
         }
 
-        logger.log(roundList)
+        //logger.log(roundList)
 
-        logger.log("======== loginData ======")
-        logger.log(loginData)
+        //logger.log("======== loginData ======")
+        //logger.log(loginData)
 
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
 
     socket.on('LOGIN_CHECK',function(msg){
-        logger.log(msg)
+        //logger.log(msg)
 
         for(var i=0; i<loginData.length ;++i){
             if(loginData[i].name == msg){
@@ -220,7 +233,7 @@ io.on('connection', function(socket){
             }
         }
 
-        logger.log(loginData)
+        //logger.log(loginData)
 
         io.emit('LOGIN_CHECK',JSON.stringify(loginData))
     })
