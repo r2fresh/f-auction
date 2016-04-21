@@ -765,11 +765,14 @@ define([
 
                     //승자인 주파수 포함
                     var price = $(elements[index]).attr('price');
+                    var vs = $(elements[index]).attr('vs');
                     var flag = (typeof price !== typeof undefined && price !== false)
 
                     item.price = (flag) ? price : $(elements[index]).val();
 
                     item.hertzFlag = $(elements[index]).attr('hertz_flag');
+
+                    item.hertzFlag = vs;
 
                     return item;
                 })
@@ -784,6 +787,8 @@ define([
                     item.price = (winFlag && vs == 'win') ? winPrice : $(elements[index]).val();
 
                     item.hertzFlag = $(elements[index]).attr('hertz_flag');
+
+                    item.hertzFlag = vs;
 
                     return item;
                 })
