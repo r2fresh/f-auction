@@ -172,11 +172,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">구분</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -206,11 +206,11 @@
 
                                         <!-- 시작가 -->
                                         <tr class="start_price_list">
-                                            <td class="text-center"><strong>시작가</strong></td>
+                                            <td class="text-center"><strong class="">시작가</strong></td>
                                             <script class="start_price_list_tpl" type="text/x-handlebars-template">
                                                 <{{#priceList}}
                                                 <td class="text-center" colspan=3>
-                                                    <span>{{price}}</span>
+                                                    <strong class="_start_price">{{wonPrice}}</strong>
                                                 </td>
                                                 {{/priceList}}
                                             </script>
@@ -231,27 +231,27 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">구분</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <script class="bindding_result_tpl" type="text/x-handlebars-template">
                                             {{#bidderList}}
                                             <tr>
-                                                <td  class="text-center"><span class="label label-{{name}}-l">{{companyName}}</span></td>
+                                                <td class="text-center"><span class="label label-{{name}}-l">{{companyName}}</span></td>
                                                 {{#priceList}}
                                                     {{#isHertz}}
-                                                        <td style="text-align:center;vertical-align: middle;">
-                                                            <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
+                                                        <td class="text-center" style="vertical-align: middle;">
+                                                            <span class="label label-{{labelClass}}-l">{{ranking}} 순위</span>
                                                         </td>
-                                                        <td style="text-align:center;vertical-align: middle;">{{price}}</td>
-                                                        <td style="text-align:center;vertical-align: middle;">{{percent}}%</td>
+                                                        <td class="text-center" style="vertical-align: middle;">{{wonPrice}}</td>
+                                                        <td class="text-center" style="vertical-align: middle;">{{percent}}%</td>
                                                     {{else}}
-                                                        <td style="text-align:center;vertical-align: middle;" colspan=3>
+                                                        <td class="text-center" style="vertical-align: middle;" colspan=3>
                                                             <span class="text-gray"><small>미신청주파수</small></span>
                                                         </td>
                                                     {{/isHertz}}
@@ -298,12 +298,12 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>구분</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center">구분</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -314,9 +314,9 @@
                                                 {{#priceList}}
                                                     {{#isHertz}}
                                                         <td style="text-align:center;vertical-align: middle;">
-                                                            <span class="label label-{{labelClass}}">{{ranking}} 순위</span>
+                                                            <span class="label label-{{labelClass}}-l">{{ranking}} 순위</span>
                                                         </td>
-                                                        <td style="text-align:center;vertical-align: middle;">{{price}}</td>
+                                                        <td style="text-align:center;vertical-align: middle;">{{wonPrice}}</td>
                                                     {{else}}
                                                         <td style="text-align:center;vertical-align: middle;" colspan=2>
                                                             <span class="text-gray"><small>미신청주파수</small></span>
@@ -342,11 +342,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">구분</th>
-                                            <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                            <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -356,7 +356,7 @@
                                                 <td  class="text-center"><span class="label label-{{name}}-l">{{companyName}}</span></td>
                                                 {{#priceList}}
                                                     {{#isHertz}}
-                                                        <td class="text-center">{{price}}</td>
+                                                        <td class="text-center">{{wonPrice}}</td>
                                                     {{else}}
                                                         <td style="text-align:center;vertical-align: middle;">
                                                             <span class="text-gray"><small>미신청주파수</small></span>
@@ -384,11 +384,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">순위</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
                                             <th class="text-center">합계</th>
                                         </tr>
                                     </thead>
@@ -398,16 +398,16 @@
                                             <tr class="_seal_bid_combination_list">
                                                 <td class="text-center"><strong>{{ranking}}</strong></td>
                                                 {{#combination}}
-                                                    <td class="text-center"><span class="label label-{{labelClass}}-s">{{company}}</span></td>
+                                                    <td class="text-center"><span class="label label-{{labelClass}}-l">{{company}}</span></td>
                                                     {{#isHertz}}
-                                                        <td class="text-center"><strong>{{price}}</strong></td>
+                                                        <td class="text-center"><strong>{{wonPrice}}</strong></td>
                                                     {{else}}
                                                         <td style="text-align:center;vertical-align: middle;">
                                                             <span class="text-gray"><small>미신청주파수</small></span>
                                                         </td>
                                                     {{/isHertz}}
                                                 {{/combination}}
-                                                <td class="text-center"><strong>{{priceSum}}</strong></td>
+                                                <td class="text-center"><strong>{{wonPriceSum}}</strong></td>
                                             </tr>
                                             {{/combinationList}}
                                         </script>

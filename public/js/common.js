@@ -78,3 +78,13 @@
 	};
 
 })(Auction);
+
+(function(Auction){
+
+	Auction.numberic = {
+		get:function(str){
+			return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+	};
+
+})(Auction);

@@ -83,8 +83,6 @@ define([
                        frequencyList[j][i] = frequency[j]
                    }
                }
-               console.log(sealBidPriceList);
-               console.log(frequencyList);
 
                return frequencyList;
            },
@@ -142,6 +140,7 @@ define([
                var combinationReverseList   = this.setCombinationReverse(combinationSumSortList);
                var combinationRankingList   = this.setCombinationRanking(combinationReverseList);
                var combinationNamingList    = this.setCombinationNaming(combinationRankingList);
+               //var combinationWonPrice      = this.setCombinationWonPrice(combinationNamingList);
 
                console.log(combinationNamingList)
 
@@ -222,9 +221,9 @@ define([
                        flag = false;
                    }
 
-                   if(bandWidthSum < ableBandWidth/2){
-                       flag = false;
-                   }
+                //    if(bandWidthSum < ableBandWidth/2){
+                //        flag = false;
+                //    }
 
                    //console.log(flag)
                }
@@ -272,7 +271,9 @@ define([
 
                    var sum = _.reduce(priceList, function(memo, num){ return parseInt(memo,10) + parseInt(num,10); }, 0);
 
-                   return {'priceSum':sum,'combination':item}
+                   var wonSum = Auction.numberic.get(sum)
+
+                   return {'priceSum':sum,'wonPriceSum': wonSum, 'combination':item}
 
                })
 
@@ -378,12 +379,11 @@ define([
                                    companyArr[index] = combination.company;
                                } else {
                                    if(companyArr[index] != combination.company){
-                                       companyArr[index]  = companyArr[index] + ',' + combination.company;
+                                       companyArr[index]  = companyArr[index] + ' ,' + combination.company;
                                    }
                                }
                            })
                        })
-                       console.log(companyArr)
 
                        _.each(list_temp[0].combination,function(item, index){
                            item.company = companyArr[index];
@@ -422,7 +422,7 @@ define([
                         } else {
                             var str  = combinationList[i].combination[j].company;
                             var str2 = str.replace('SK', 'SKT');
-                            var str3 = str.replace('LG', 'LGU+');
+                            var str3 = str2.replace('LG', 'LGU+');
                             var str4 = '';
 
                             if(str3.substr(str3.length-1,str3.length) === ','){
@@ -439,6 +439,23 @@ define([
                     }
                 }
                 return combinationList;
+           },
+
+           /**
+           * 금액 원 표시
+           */
+           setCombinationWonPrice:function(){
+               var combinationList = JSON.parse(JSON.stringify(data));
+               var company = '';
+
+               for (var i=0; i<combinationList.length; ++i){
+                   for(var j=0; j<combinationList[i].combination.length; ++j){
+
+
+
+                   }
+               }
+               return combinationList;
            },
            /**
            * 안에 내용은 다르지만 랭킹과 합계가 같은 것이 있으면

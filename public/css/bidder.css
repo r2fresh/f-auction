@@ -72,3 +72,10 @@
 .bidder ._bidder_bandWidth div p:nth-child(2)>strong{
     font-size:75%;
 }
+
+.bidder .table-bordered>thead>tr>th,
+.bidder .table-bordered>thead>tr>td,
+.bidder .table-bordered>tbody>tr>td,
+.bidder .table-bordered>tbody>tr>th{
+    border: 1px solid #7A919C;
+}

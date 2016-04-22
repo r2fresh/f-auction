@@ -347,14 +347,14 @@ define([
                     {
                         name: '가이드',
                         marker:{
-                            enabled:true,
+                            enabled:false,
                             lineWidth:1
                         },
                         dataLabels:{
-                            enabled:true
+                            enabled:false
                         },
                         data: [
-                            [0.5, 3200],[15.5, 3200]
+                            [0.5, 3277],[15.5, 3277]
                         ]
                     },
                     {

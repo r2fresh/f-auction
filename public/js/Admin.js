@@ -261,8 +261,11 @@ define([
              */
             setStartPriceList:function(){
                 var priceList = JSON.parse( JSON.stringify( AuctionData.startPriceList ) );
+                _.each(priceList, function(item){
+                    item.wonPrice = Auction.numberic.get(item.price)
+                })
                 var template = Handlebars.compile(this.startPriceListTpl);
-                this.$el.find('.start_price_list').append(template({'priceList':AuctionData.startPriceList}));
+                this.$el.find('.start_price_list').append(template({'priceList':priceList}));
             },
             setCountDown:function(){
                 this.countDown = this.$el.find('.clock').FlipClock(this.TIMER, {
@@ -456,7 +459,7 @@ define([
                 var flag = this.checkBidCountList(bidData);
 
                 if(flag === true){
-                    console.log(this.roundData)
+
                     roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
 
                     RoundRateIncrease2.setNowRoundData(roundData);
@@ -709,7 +712,6 @@ define([
                 var roundPriceList = JSON.parse(JSON.stringify(data));
 
                 _.each(roundPriceList.company,function(item){
-
                     switch(item.biddingType){
                         case 'B':
                             item.biddingTypeName = '입찰'
@@ -724,6 +726,17 @@ define([
                             item.biddingTypeName = '입찰유예'
                         break;
                     }
+                });
+
+                _.each(roundPriceList.frequency,function(frequency){
+                    _.each(frequency.bidders,function(bidder){
+                        if(bidder.price != undefined){
+                            bidder.wonPrice = (bidder.price =='') ? '' : Auction.numberic.get(bidder.price)
+                        } else {
+                            bidder.wonPrice = '';
+                        }
+
+                    })
                 })
 
                 Handlebars.registerHelper('isHertz', function(options) {
@@ -928,6 +941,13 @@ define([
 
                 _.each(bidderList, function(bidder){
                     bidder.companyName = (bidder.name == 'SK') ? 'SKT' : (bidder.name == 'LG') ? 'LGU+' : bidder.name;
+                    _.each(bidder.priceList,function(item){
+                        if(item.price != undefined){
+                            item.wonPrice = (item.price =='') ? '' : Auction.numberic.get(item.price)
+                        } else {
+                            item.wonPrice = '';
+                        }
+                    })
                 })
 
                 Handlebars.registerHelper('isHertz', function(options) {
@@ -969,6 +989,13 @@ define([
 
                 _.each(bidderList, function(bidder){
                     bidder.companyName = (bidder.name == 'SK') ? 'SKT' : (bidder.name == 'LG') ? 'LGU+' : bidder.name;
+                    _.each(bidder.priceList,function(item){
+                        if(item.price != undefined){
+                            item.wonPrice = (item.price =='') ? '' : Auction.numberic.get(item.price)
+                        } else {
+                            item.wonPrice = '';
+                        }
+                    })
                 })
 
                 Handlebars.registerHelper('isHertz', function(options) {
@@ -1024,6 +1051,13 @@ define([
 
                 _.each(bidderList, function(bidder){
                     bidder.companyName = (bidder.name == 'SK') ? 'SKT' : (bidder.name == 'LG') ? 'LGU+' : bidder.name;
+                    _.each(bidder.priceList,function(item){
+                        if(item.price != undefined){
+                            item.wonPrice = (item.price =='') ? '' : Auction.numberic.get(item.price)
+                        } else {
+                            item.wonPrice = '';
+                        }
+                    })
                 })
 
                 Handlebars.registerHelper('isHertz', function(options) {

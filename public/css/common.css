@@ -86,9 +86,20 @@
     background-color: #2EB502;
 }
 
+.label-danger-l{
+    background-color: #d9534f;
+}
+
+.label-default-l{
+    background-color : #777
+}
+
 .label-KT-l,
 .label-SK-l,
-.label-LG-l {
+.label-LG-l,
+.label-ALL-l,
+.label-danger-l,
+.label-default-l {
     font-size : 100%
 }
 
@@ -155,4 +166,27 @@
     text-align:center;
     color : #fff;
     font-size : 14px;
+}
+
+
+.clock {
+    zoom:0.4;
+    -moz-transform: scale(0.4)
+}
+
+.flip-clock-wrapper {
+  /* text-align: center; */
+  /* position: relative; */
+  /* width: 100%; */
+  margin: 0 auto;
+  max-width: 300px;
+  margin-top: 2em;
+}
+
+.clock {
+    margin-top:0px;
+}
+
+.flip-clock-label {
+    display:none;
 }

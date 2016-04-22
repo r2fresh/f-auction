@@ -158,8 +158,8 @@ define([
         setLimitBandWidth : function(){
             var userInfo = Auction.session.get('user_info');
             this.ableBandWidth = userInfo.bandWidth;
-            this.$el.find('#_rest_bandWidth').text(userInfo.bandWidth + 'Mhz');
-            this.$el.find('#_limit_bandWidth').text(userInfo.bandWidth + 'Mhz');
+            this.$el.find('#_rest_bandWidth').text(userInfo.bandWidth + 'MHz');
+            this.$el.find('#_limit_bandWidth').text(userInfo.bandWidth + 'MHz');
         },
 
         /**
@@ -1063,7 +1063,7 @@ define([
             console.log('ABLE_BAND_WIDTH : ' + this.ableBandWidth);
 
             this.autoBiddingFlag = (bandWidthTotal == this.ableBandWidth);
-            this.$el.find('#_rest_bandWidth').text((this.ableBandWidth - bandWidthTotal) + 'Mhz');
+            this.$el.find('#_rest_bandWidth').text((this.ableBandWidth - bandWidthTotal) + 'MHz');
         },
 
         /**
