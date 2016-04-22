@@ -24,6 +24,7 @@ define([
            },
 
            getRoundListSuccess:function(data, textStatus, jqXHR){
+               console.log(data)
                if(textStatus == 'success'){
                    var chartData = data;
                    this.setChartDataList(chartData);
@@ -50,7 +51,7 @@ define([
 
                        if(frequency.type == 'wideBand'){
                            _.each(frequency.bidders,function(bidder){
-                               if(bidder.name == company && bidder.price != ''){
+                               if(bidder.price != '' && bidder.vs == 'win'){
 
                                    var minusNum = (company == 'KT') ? 2 : (company == 'SK') ? 1 : 0
 
@@ -91,7 +92,7 @@ define([
 
                        if(frequency.type == 'narrow'){
                            _.each(frequency.bidders,function(bidder){
-                               if(bidder.name == company && bidder.price != ''){
+                               if(bidder.price != '' && bidder.vs == 'win'){
 
                                    var minusNum = (company == 'KT') ? 2 : (company == 'SK') ? 1 : 0
 

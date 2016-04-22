@@ -1207,7 +1207,8 @@ define([
                 //var percent = Math.ceil( ( 1-(lowestPrice/insertPrice) )*100 );
                 var percent = null;
                 if(item.hertzFlag == true){
-                    var account = ( (insertPrice-lowestPrice)/insertPrice )*100
+                    //((밀봉입찰액 - 밀봉최소입찰액)/밀봉최소입찰액) * 100
+                    var account = ( (insertPrice-lowestPrice)/lowestPrice )*100
                     percent = Math.round( account*10)/10;
                 } else {
                     percent = 0;
