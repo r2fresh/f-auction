@@ -809,25 +809,51 @@ define([
         setRoundResult:function(data){
 
             // 입찰자 마다의 라운드별 증분율
-
+            console.log(JSON.stringify(data))
 
             var roundData = JSON.parse(JSON.stringify(data));
 
+            this.setRoundRateIncrease(data);
+
             var frequencyList = JSON.parse(JSON.stringify(roundData.frequency));
 
-            this.setRoundRateIncrease(roundData);
+
 
             // win과 lose PriceList 설정 (winPrice에는 ''도 있다.)
             //
             var winPriceList = _.map(frequencyList,Function.prototype.bind.call(function(frequency){
 
-                var loseBidderlist = _.filter(frequency.bidders, Function.prototype.bind.call(function(item){
-                    return (item.name == this.bidder_company && item.vs == 'lose')
+                var priceList = {};
+                priceList.winPrice = frequency.winPrice;
+
+                _.each(frequency.bidders, Function.prototype.bind.call(function(bidder){
+                    if(bidder.name == this.bidder_company){
+                        priceList.vs = bidder.vs;
+                        priceList.price = bidder.price;
+                    }
                 },this));
+                //
+                //
+                //
+                //
+                // var winBidderList = _.filter(frequency.bidders, Function.prototype.bind.call(function(item){
+                //     return (item.name == this.bidder_company && item.vs == 'win')
+                // },this));
+                //
+                // var winBidderPrice = (winBidderList.length == 0) ? '' : winBidderList[0].price;
+                //
+                // var loseBidderlist = _.filter(frequency.bidders, Function.prototype.bind.call(function(item){
+                //     return (item.name == this.bidder_company && item.vs == 'lose')
+                // },this));
+                //
+                // var loseBidder = (loseBidderlist.length == 0) ? '' : loseBidderlist[0].name;
+                // var loseBidderPrice = (loseBidderlist.length == 0) ? '' : loseBidderList[0].price;
 
-                var loseBidder = (loseBidderlist.length == 0) ? '' : loseBidderlist[0].name
 
-                return {'name':frequency.name, 'winBidder':frequency.winBidder, 'loseBidder':loseBidder,'price':frequency.winPrice} ;
+                return priceList;
+                // return {
+                //     'name':frequency.name, 'vs':, 'price' : , 'winPrice' :
+                // } ;
             },this))
 
             //최소 입찰액 리스트 설정
@@ -876,10 +902,10 @@ define([
             var winPriceList = JSON.parse(JSON.stringify(data));
             var priceList = _.map(winPriceList, Function.prototype.bind.call(function(item,index){
 
-                if(item.price === ''){
+                if(item.winPrice === ''){
                     item.price = this.lowestBidPrices[index].price;
                 } else {
-                    item.price = parseInt(item.price,10) + Math.round(item.price*this.lowestBidAdd/100);
+                    item.price = parseInt(item.winPrice,10) + Math.round(item.winPrice*this.lowestBidAdd/100);
                 }
 
                 return item
@@ -893,15 +919,17 @@ define([
 
             _.each(data,Function.prototype.bind.call(function(item,index){
 
-                if(item.winBidder == this.bidder_company && item.price != ''){
+                if(item.vs == 'win' && item.price != ''){
                     $(this.$el.find('._bid_price')[index]).prop('disabled',true);
                     $(this.$el.find('._bid_price')[index]).attr('vs','win');
                     $(this.$el.find('._bid_price')[index]).attr('price',item.price);
+                    //$(this.$el.find('._bid_price')[index]).attr('win_price',item.winPrice);
                     $(this.$el.find('._bid_price')[index]).attr('placeholder','입찰불가');
-                } else if(item.loseBidder == this.bidder_company && item.price != ''){
+                } else if(item.vs == 'lose' && item.price != ''){
                     $(this.$el.find('._bid_price')[index]).prop('disabled',false);
                     $(this.$el.find('._bid_price')[index]).attr('vs','lose');
                     $(this.$el.find('._bid_price')[index]).attr('price',item.price);
+                    //$(this.$el.find('._bid_price')[index]).attr('win_price',item.winPrice);
                     $(this.$el.find('._bid_price')[index]).attr('placeholder','');
                 }  else {
                     if(this.hertzList[index].hertzFlag == true){
