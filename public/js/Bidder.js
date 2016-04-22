@@ -1072,7 +1072,7 @@ define([
         setAutoBidding:function(){
             console.log('자동입찰')
             this.ascendingBiddingType = '';
-            this.biddingType = 'N';
+            this.biddingType = 'A';
             var bidPriceElementList = this.$el.find('._bid_price');
             //입찰금액을 관리자 화면에 보내는 함수
             this.sendBid(bidPriceElementList);

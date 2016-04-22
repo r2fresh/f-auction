@@ -172,11 +172,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">구분</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -230,19 +230,19 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>구분</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-ceter" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center">구분</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <script class="bindding_result_tpl" type="text/x-handlebars-template">
                                             {{#bidderList}}
                                             <tr>
-                                                <td style="text-align:center;vertical-align: middle;">{{name}}</td>
+                                                <td  class="text-center"><span class="label label-{{name}}-l">{{companyName}}</span></td>
                                                 {{#priceList}}
                                                     {{#isHertz}}
                                                         <td style="text-align:center;vertical-align: middle;">
@@ -299,18 +299,18 @@
                                     <thead>
                                         <tr>
                                             <th>구분</th>
-                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
-                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
-                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
-                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
-                                            <th class="text-ceter" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">A</span> - 700Mhz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">B</span> - 1.8Ghz (협)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">C</span> - 2.1Ghz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">D</span> - 2.6Ghz (광)</th>
+                                            <th class="text-center" colspan=2><span class="label label-default" style="font-size:100%">E</span> - 2.6Ghz (협)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <script class="seal_lowest_bid_price_tpl" type="text/x-handlebars-template">
                                             {{#bidderList}}
                                             <tr>
-                                                <td>{{name}}</td>
+                                                <td  class="text-center"><span class="label label-{{name}}-l">{{companyName}}</span></td>
                                                 {{#priceList}}
                                                     {{#isHertz}}
                                                         <td style="text-align:center;vertical-align: middle;">
@@ -353,7 +353,7 @@
                                         <script class="_seal_bid_price_list_tpl" type="text/x-handlebars-template">
                                             {{#bidderList}}
                                             <tr class="_seal_bid_price_list">
-                                                <td  class="text-center"><strong>{{name}}</strong></td>
+                                                <td  class="text-center"><span class="label label-{{name}}-l">{{companyName}}</span></td>
                                                 {{#priceList}}
                                                     {{#isHertz}}
                                                         <td class="text-center">{{price}}</td>

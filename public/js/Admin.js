@@ -456,6 +456,7 @@ define([
                 var flag = this.checkBidCountList(bidData);
 
                 if(flag === true){
+                    console.log(this.roundData)
                     roundData = _.extend( this.getWinBidder(this.roundData) ,{'name':this.roundNum});
 
                     RoundRateIncrease2.setNowRoundData(roundData);
@@ -513,6 +514,8 @@ define([
 
                 var companyList = data.company;
 
+
+
                 // var biddingDelayFlag = false;
                 //
                 // _.each(data.company, Function.prototype.bind.call(function(item){
@@ -523,8 +526,15 @@ define([
 
                 _.each(frequencyList,Function.prototype.bind.call(function(frequency,index){
 
+                    var tempMaxBidder = null, maxPrice = null, maxBidderArr = null, randomIndex = null, maxBidder = null, winBidderArr = null;
+
                     var emptyArr = _.filter(frequency.bidders,function(item){
                         return item.price === '';
+                    })
+
+                    var biddingList = _.filter(frequency.bidders,function(item, index){
+                        var flag = (data.company[index].biddingType == 'B' && item.price != '')
+                        return flag
                     })
 
                     // 주파수에 지원한 통신사가 없을 경우 (모든 값은 ''이다.)
@@ -534,72 +544,89 @@ define([
                         _.each(frequency.bidders,function(item){
                             item.vs = '';
                         })
-
                     // 주파수에 지원한 통신사가 있을 경우
                     } else {
-                        // 최대 입찰 금액을 구함
-                        var tempMaxBidder   = _.max(frequency.bidders, function(item){ return item.price; })
-                        var maxPrice        = tempMaxBidder.price;
 
-                        // 주파수 최대 입찰금액 확인
-                        frequency.winPrice  = maxPrice;
+                        if(biddingList.length > 0){
+                            // 최대 입찰 금액을 구함
+                            tempMaxBidder   = _.max(biddingList, function(item){ return item.price; })
+                            maxPrice        = tempMaxBidder.price;
 
-                        // 최대값인 통신사 리스트
-                        var maxBidderArr = _.filter(frequency.bidders,function(bidder){
+                            // 주파수 최대 입찰금액 확인
+                            frequency.winPrice  = maxPrice;
 
-                            var flag = false;
+                            // 최대값인 통신사 리스트
+                            maxBidderArr = _.filter(biddingList,function(bidder){
+                                return bidder.price == maxPrice;
+                            })
 
-                            if(bidder.price === maxPrice){
-                                _.each(data.company,function(item){
-                                    if(item.name == bidder.name){
-                                        if(item.biddingType == 'D'){
-                                            flag = (bidder.vs == 'win') ? true : false;
-                                        } else {
-                                            flag = true;
-                                        }
-                                    }
-                                })
-                            }
+                            //console.table(frequency)
 
-                            return flag//bidder.price === maxPrice;
-                        })
+                            //console.table(frequency.bidders)
 
-                        // 유예 통신사는 승자에서 제외함
-                        // var filterMaxBidderArr = _.filter(frequency.bidders,function(bidder){
-                        //     return bidder.price === maxPrice;
-                        // })
+                            //console.table(maxBidderArr)
 
-                        console.table(frequency)
+                            randomIndex = parseInt(Math.random()*(maxBidderArr.length),10);
+                            maxBidder   = maxBidderArr[randomIndex].name;
 
-                        console.table(frequency.bidders)
+                            // 계산한 최대값 통신사 입력
+                            frequency.winBidder  = maxBidder;
 
-                        console.table(maxBidderArr)
-
-                        var randomIndex = parseInt(Math.random()*(maxBidderArr.length),10);
-                        var maxBidder   = maxBidderArr[randomIndex].name;
-
-                        // 계산한 최대값 통신사 입력
-                        frequency.winBidder  = maxBidder;
-
-                        // 계산된 최대값과 최대값 통신사를 비교하면 승자와 패자, 지원 안한자 구분하는 함수
-                        _.each(frequency.bidders,function(bidder){
-                            // 최대값과 통신사도 같으면 승자
-                            if(bidder.name == maxBidder && bidder.price == maxPrice){
-                                bidder.vs = 'win';
-                            // 최대값은 같지만, 통신사는 다르면 패자
-                            } else if(bidder.name != maxBidder && bidder.price == maxPrice){
-                                bidder.vs = 'lose';
-                            // 최대값도 같지 않고, 통신사도 다를때
-                            } else if(bidder.name != maxBidder && bidder.price != maxPrice){
-                                // 가격이 없으면 vs ''
-                                if(bidder.price === ''){
-                                    bidder.vs = '';
-                                // 가격이 없으면 lose로 표시
-                                } else {
+                            // 계산된 최대값과 최대값 통신사를 비교하면 승자와 패자, 지원 안한자 구분하는 함수
+                            _.each(frequency.bidders,function(bidder){
+                                // 최대값과 통신사도 같으면 승자
+                                if(bidder.name == maxBidder && bidder.price == maxPrice){
+                                    bidder.vs = 'win';
+                                // 최대값은 같지만, 통신사는 다르면 패자
+                                } else if(bidder.name != maxBidder && bidder.price == maxPrice){
                                     bidder.vs = 'lose';
+                                // 최대값도 같지 않고, 통신사도 다를때
+                                } else if(bidder.name != maxBidder && bidder.price != maxPrice){
+                                    // 가격이 없으면 vs ''
+                                    if(bidder.price === ''){
+                                        bidder.vs = '';
+                                    // 가격이 없으면 lose로 표시
+                                    } else {
+                                        bidder.vs = 'lose';
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        } else {
+                            // 최대 입찰 금액을 구함
+                            tempMaxBidder   = _.max(frequency.bidders, function(item){ return item.price; })
+                            maxPrice        = tempMaxBidder.price;
+
+                            // 주파수 최대 입찰금액 확인
+                            frequency.winPrice  = maxPrice;
+
+                            winBidderArr = _.filter(frequency.bidders, function(bidder){
+                                return bidder.vs =='win';
+                            })
+
+                            maxBidder = winBidderArr[0].name;
+
+                            frequency.winBidder = maxBidder;
+
+                            // 계산된 최대값과 최대값 통신사를 비교하면 승자와 패자, 지원 안한자 구분하는 함수
+                            _.each(frequency.bidders,function(bidder){
+                                // 최대값과 통신사도 같으면 승자
+                                if(bidder.name == maxBidder && bidder.price == maxPrice){
+                                    bidder.vs = 'win';
+                                // 최대값은 같지만, 통신사는 다르면 패자
+                                } else if(bidder.name != maxBidder && bidder.price == 'maxPrice'){
+                                    bidder.vs = 'lose';
+                                // 최대값도 같지 않고, 통신사도 다를때
+                                } else if(bidder.name != maxBidder && bidder.price != maxPrice){
+                                    // 가격이 없으면 vs ''
+                                    if(bidder.price === ''){
+                                        bidder.vs = '';
+                                    // 가격이 없으면 lose로 표시
+                                    } else {
+                                        bidder.vs = 'lose';
+                                    }
+                                }
+                            })
+                        }
                     }
 
                     // 승자 주파수에 표시를 하기 위한 함수
@@ -614,6 +641,8 @@ define([
                     })
 
                 },this));
+
+                console.table(data)
                 return data;
             },
             /**
@@ -839,10 +868,8 @@ define([
                 var $roundPriceList = $('<tr class="round_price_list"></tr>');
 
                 var roundData = JSON.parse( JSON.stringify(AuctionData.roundData));
-                console.table(roundData);
                 this.roundData = null;
                 this.roundData = _.extend(JSON.parse( JSON.stringify(roundData)),{'name':this.roundNum});
-                console.table(this.roundData);
                 this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList);
                 this.setRoundUI(this.roundData);
             },
@@ -899,6 +926,10 @@ define([
 
                 var bidderList = JSON.parse(JSON.stringify(data));
 
+                _.each(bidderList, function(bidder){
+                    bidder.companyName = (bidder.name == 'SK') ? 'SKT' : (bidder.name == 'LG') ? 'LGU+' : bidder.name;
+                })
+
                 Handlebars.registerHelper('isHertz', function(options) {
                     if(this.hertzFlag == true){
                       return options.fn(this);
@@ -935,6 +966,10 @@ define([
                 var bidderList = this.secondCompanyMaxPrice(data)
 
                 Auction.io.emit('SEAL_LOWEST_BID_PRICE',JSON.stringify(bidderList))
+
+                _.each(bidderList, function(bidder){
+                    bidder.companyName = (bidder.name == 'SK') ? 'SKT' : (bidder.name == 'LG') ? 'LGU+' : bidder.name;
+                })
 
                 Handlebars.registerHelper('isHertz', function(options) {
                     if(this.hertzFlag == true){
@@ -986,6 +1021,10 @@ define([
             setSealBidPriceUI:function(data){
 
                 var bidderList = data;
+
+                _.each(bidderList, function(bidder){
+                    bidder.companyName = (bidder.name == 'SK') ? 'SKT' : (bidder.name == 'LG') ? 'LGU+' : bidder.name;
+                })
 
                 Handlebars.registerHelper('isHertz', function(options) {
                   if(this.hertzFlag == true || this.hertzFlag == undefined){
