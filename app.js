@@ -136,6 +136,13 @@ app.get('/biddingDelayCount', function(req, res) {
 /**
  * index.html router
  */
+app.get('/increase',function(req, res){
+    res.sendFile(__dirname + '/increase.html')
+})
+
+/**
+ * index.html router
+ */
 app.get('/',function(req, res){
     res.sendFile(__dirname + '/index.html')
 })
