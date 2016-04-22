@@ -143,6 +143,13 @@ app.get('/increase',function(req, res){
 /**
  * index.html router
  */
+app.get('/chart',function(req, res){
+    res.sendFile(__dirname + '/chart.html')
+})
+
+/**
+ * index.html router
+ */
 app.get('/',function(req, res){
     res.sendFile(__dirname + '/index.html')
 })
