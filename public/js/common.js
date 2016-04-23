@@ -88,3 +88,28 @@
 	};
 
 })(Auction);
+
+(function(Auction){
+
+	Auction.chart = {
+		formatter:function(list,target){
+			var round = list[target.point.index].round;
+            var name = list[target.point.index].name;
+            var companyName = '';
+
+            if(name == 'KT'){
+                companyName = 'KT';
+            } else if(name == 'SK'){
+                companyName = 'SKT';
+            } else if(name == 'LG'){
+                companyName = 'LGU+'
+            }
+
+            //var label = '<span class="label label-' + name + '-s">' + companyName + '</span>';
+            var label = '<span class="text-' + name + '">' + companyName + '</span> / ';
+
+            return label + '<span style="color:rgba(237, 31, 39, 1)">' + round + '</span> / ' + target.y;
+		}
+	};
+
+})(Auction);

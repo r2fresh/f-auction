@@ -107,6 +107,16 @@
      color: #C1C1C1;
 }
 
+.text-KT {
+    color:#ED1F27;
+}
+.text-SK {
+    color:#0072FF;
+}
+.text-LG {
+    color:#2EB502;
+}
+
 ._accordion_btn {
     float: right;
     margin-top: -4px;

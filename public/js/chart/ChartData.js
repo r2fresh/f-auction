@@ -49,15 +49,19 @@ define([
 
                        frequencyName = frequency.name;
 
-                       if(frequency.type == 'wideBand'){
+                       if(frequencyName == company){
                            _.each(frequency.bidders,function(bidder){
                                if(bidder.price != '' && bidder.vs == 'win'){
 
-                                   var minusNum = (company == 'KT') ? 2 : (company == 'SK') ? 1 : 0
+                                  // var minusNum = (company == 'KT') ? 2 : (company == 'SK') ? 1 : 0
 
-                                   var x = (parseInt(priceArr.indexOf(frequencyName),10) + 1)*3-minusNum;
+                                   var x = (parseInt(priceArr.indexOf(company),10) + 1)-0.3//*3-minusNum;
 
-                                   chartList.push({'round':(roundNum).toString(), 'price':[x,parseInt(bidder.price,10)]})
+                                   chartList.push({
+                                       'round':(roundNum).toString(),
+                                       'name':(bidder.name).toString(),
+                                       'price':[x,parseInt(bidder.price,10)]
+                                   })
                                };
                            });
                        };
