@@ -1,0 +1,29 @@
+._round_number span {
+    font-size:500%;
+}
+
+._round_number strong {
+    font-size:300%;
+}
+
+._frequency th{
+    font-size : 200%;
+}
+
+._start_price_list th{
+    font-size : 200%;
+}
+
+._bidder td:first-child {
+    font-size:700%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+._bidder td ._won_price {
+    font-size:500%;
+}
+
+._bidder td ._rate_increase {
+    font-size:400%;
+}

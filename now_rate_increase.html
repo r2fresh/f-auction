@@ -8,9 +8,8 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
         <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
 
-
-
         <link rel="stylesheet" href="/css/common.css" charset="utf-8">
+        <link rel="stylesheet" href="/css/now_rate_increase.css" charset="utf-8">
 
         <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
@@ -26,35 +25,32 @@
     <body>
         <div class="container-fluid _now_rate_increase displayNone">
             <div class="row">
-                <div class="col-md-12 text-center">
-                    <span class="_round_number" style="font-size:500%">1</span><strong> round</strong>
+                <div class="col-md-12 text-center _round_number">
+                    <span>1</span>
+                    <strong> round</strong>
                 </div>
 
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-default">
-                        <!-- Default panel contents -->
-                        <!-- <div class="panel-heading">Panel heading</div> -->
-
-                        <!-- Table -->
                         <table class="table table-bordered">
                             <thead>
-                                <tr>
-                                    <th style="font-size:200%" class="text-center">구분</th>
-                                    <th style="font-size:200%" class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
-                                    <th style="font-size:200%" class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
-                                    <th style="font-size:200%" class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
-                                    <th style="font-size:200%" class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
-                                    <th style="font-size:200%" class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
+                                <tr class="_frequency">
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center"><span class="label label-default-l">A</span> - 700MHz (광)</th>
+                                    <th class="text-center"><span class="label label-default-l">B</span> - 1.8GHz (협)</th>
+                                    <th class="text-center"><span class="label label-default-l">C</span> - 2.1GHz (광)</th>
+                                    <th class="text-center"><span class="label label-default-l">D</span> - 2.6GHz (광)</th>
+                                    <th class="text-center"><span class="label label-default-l">E</span> - 2.6GHz (협)</th>
                                 </tr>
                                 <!-- 시작가 -->
                                 <tr class="_start_price_list">
                                     <script class="_start_price_list_tpl" type="text/x-handlebars-template">
-                                        <th style="font-size:200%" class="text-center"><strong class="">시작가</strong></th>
+                                        <th class="text-center"><strong class="">시작가</strong></th>
                                         <{{#startPriceList}}
-                                        <th style="font-size:200%" class="text-center">
-                                            <strong class="_start_price">{{price}}</strong>
+                                        <th class="text-center">
+                                            <strong class="_start_price">{{wonPrice}}</strong>
                                         </th>
                                         {{/startPriceList}}
                                     </script>
@@ -64,9 +60,12 @@
                                 <script class="_bidder_list_tpl" type="text/x-handlebars-template">
                                     {{#bidderList}}
                                     <tr class="_bidder">
-                                        <td style="font-size:700%">{{companyName}}</td>
+                                        <td class="text-{{name}}">{{companyName}}</td>
                                         {{#rateIncreaseList}}
-                                            <td style="font-size:500%" class="text-center">{{ratePrice}}<br>({{rateIncrease}}%)</td>
+                                            <td class="text-center">
+                                                <span class="_won_price">{{wonPrice}}</span><br>
+                                                <span class="_rate_increase">({{rateIncrease}}%)</span>
+                                            </td>
                                         {{/rateIncreaseList}}
                                     </tr>
                                     {{/bidderList}}

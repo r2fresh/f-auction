@@ -28,10 +28,13 @@ define([
 
         },
         setRoundNum:function(num){
-            this.$el.find('._round_number').text(num)
+            this.$el.find('._round_number span').text(num)
         },
         setStartPriceList:function(){
             var startPriceList   = JSON.parse(JSON.stringify(AuctionData.startPriceList));
+            _.each(startPriceList, function(item){
+                item.wonPrice = Auction.numberic.get(item.price)
+            })
             var template = Handlebars.compile(this.startPriceListTpl);
             this.$el.find('._start_price_list').html(template({'startPriceList':startPriceList}));
         },
@@ -56,6 +59,9 @@ define([
 
                 _.each(bidderList,function(bidder){
                     bidder.companyName = (bidder.name == 'SK')?'SKT':(bidder.name == 'LG')?'LGU+':bidder.name;
+                    _.each(bidder.rateIncreaseList,function(rateIncrease){
+                        rateIncrease.wonPrice = Auction.numberic.get(rateIncrease.ratePrice)
+                    })
                 })
 
                 var template = Handlebars.compile(this.bidderListTpl);

@@ -41,12 +41,21 @@ define([
         },
         setStartPriceList:function(){
             var startPriceList   = JSON.parse(JSON.stringify(AuctionData.startPriceList));
+            _.each(startPriceList, function(item){
+                item.wonPrice = Auction.numberic.get(item.price)
+            })
             var template = Handlebars.compile(this.startPriceListTpl);
             this.$el.find('._start_price_list').html(template({'startPriceList':startPriceList}));
         },
         setRoundList:function(data){
-            console.log(data)
             var roundList = JSON.parse(JSON.stringify(data));
+            _.each(roundList,function(roundData){
+                _.each(roundData.frequency, function(frequency){
+                    _.each(frequency.bidders, function(bidder){
+                        bidder.wonPrice = Auction.numberic.get(bidder.price);
+                    })
+                })
+            })
             var template = Handlebars.compile(this.roundListTpl);
             this.$el.find('._round_list').html(template({'roundList':roundList}));
 
