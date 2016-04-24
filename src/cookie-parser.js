@@ -1,7 +1,9 @@
 function get(data){
     var str = data;
     var obj = {}
+    console.log(str);
     var pairs = str.split(/[;,] */);
+    console.log(pairs);
     var encode = encodeURIComponent;
     var decode = decodeURIComponent;
 

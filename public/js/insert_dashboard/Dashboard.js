@@ -114,6 +114,7 @@ define([
         onSave:function(){
 
             var roundFormDataList = this.getRoundFormDataList();
+            console.log(roundFormDataList)
             var rateIncreaseList = this.getRoundRateIncreaseList(roundFormDataList);
 
             this.postRoundList(rateIncreaseList);
@@ -148,14 +149,15 @@ define([
                     _.each(defaultRoundData.frequency[j].bidders,function(bidder, index){
 
                         bidder.price = $($inputList[index]).val();
-
                         if(bidder.price != ''){
                             if(radioValue == index){
                                 defaultRoundData.frequency[j].winPrice = bidder.price;
                                 defaultRoundData.frequency[j].winBidder = bidder.name;
                                 bidder.vs = 'win';
+                                bidder.className = 'label label-' + bidder.name + '-l';
                             } else {
                                 bidder.lose = 'lose';
+                                bidder.className = 'text-gray';
                             }
                         }
 
