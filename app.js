@@ -116,6 +116,19 @@ app.get('/round', function(req, res) {
     res.send(roundList)
 })
 
+app.post('/roundList', function(req, res) {
+    var bodyData = req.body;
+    roundList = null;
+    roundList = bodyData.roundList;
+    res.send(roundList)
+})
+
+app.get('/roundList', function(req, res) {
+    res.send(roundList)
+})
+
+
+
 app.get('/hertzList', function(req, res) {
     var bodyData = req.body;
     res.send(companyInfoList)
@@ -132,6 +145,19 @@ app.get('/biddingDelayCount', function(req, res) {
 })
 
 
+/**
+* 현황판 입력 화면
+*/
+app.get('/insert_dashboard',function(req, res){
+    res.sendFile(__dirname + '/insert_dashboard.html')
+})
+
+/**
+ * 총 현황판
+ */
+app.get('/dashboard',function(req, res){
+    res.sendFile(__dirname + '/dashboard.html')
+})
 
 /**
  * 현 증분율 표시
@@ -165,8 +191,6 @@ var server = app.listen(app.get('port'), function () {
 var io = require('socket.io')(server)
 
 io.on('connection', function(socket){
-
-
 
     socket.on('disconnect', function(){
 

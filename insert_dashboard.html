@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>주파수 모의 경매</title>
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
+        <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
+
+        <link rel="stylesheet" href="/css/common.css" charset="utf-8">
+
+        <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
+        <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+
+        <script src="/lib/underscore/underscore.js" charset="utf-8"></script>
+        <script src="/lib/backbone/backbone.js" charset="utf-8"></script>
+        <script src="/lib/handlebars/handlebars.min.js" charset="utf-8"></script>
+
+        <script src="/js/common.js" charset="utf-8"></script>
+        <script src="/js/r2/r2Common.js" charset="utf-8"></script>
+        <script src="/lib/requirejs/require.js" data-main="/js/insert_dashboard/App.js" charset="utf-8"></script>
+    </head>
+    <body style="overflow:hidden;">
+        <div class="container-fluid _dashboard _p0 displayNone">
+
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="row _m10_b">
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-default _save_btn">적용하기</button>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-12" style="padding:0px 15px 0px 0px;">
+                            <div class="panel panel-navy _m0">
+                                <!-- <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div> -->
+                                <table class="table table-bordered">
+                                    <thead style="padding-right:10px;">
+                                        <tr>
+                                            <th class="text-center">구분</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
+                                        </tr>
+                                        <tr class="bidder_list">
+                                            <td class="text-center"><strong>사업자</strong></td>
+                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                        </tr>
+
+                                        <!-- 시작가 -->
+                                        <tr class="_start_price_list">
+                                            <script class="_start_price_list_tpl" type="text/x-handlebars-template">
+                                                <td class="text-center" style="width:100px;"><strong class="">시작가</strong></td>
+                                                {{#startPriceList}}
+                                                <td class="text-center" colspan=3>
+                                                    <strong class="_start_price">{{price}}</strong>
+                                                </td>
+                                                {{/startPriceList}}
+                                            </script>
+                                        </tr><!--/ 시작가 -->
+                                    </thead>
+
+                                </table>
+                            </div><!--/ panel -->
+                        </div><!--/ col-md-12 -->
+
+                    </div>
+                </div>
+            </nav>
+
+            <div class="row" style="margin-top:159px;">
+                <div class="col-md-12">
+                    <div class="panel panel-navy _m0">
+                        <div style="overflow-y:scroll;overflow-x:hidden;height:620px;">
+
+                            <table class="table table-bordered">
+                                <tbody class="_round_list">
+                                    <script class="_round_list_tpl" type="text/x-handlebars-template">
+                                    {{#roundList}}
+                                    <tr class="_round_{{name}}">
+                                        <td class="text-center" style="width:100px;vertical-align:middle;padding:0;">
+                                            <strong>{{name}}</strong><br>
+                                            <button class="btn btn-warning btn-xs _round_reset"><strong>리셋</strong></button>
+                                        </td>
+                                        {{#frequency}}
+                                            {{#bidders}}
+                                            <td class="text-center">
+                                                <input type="radio" name="_radio_{{round}}_{{frequency}}" value="{{value}}"><br>
+                                                <input class="_bidder_price _input_{{round}}_{{frequency}}" type="text" style="margin-top:5px;margin-top:5px;width:50px;" placeholder="">
+                                            </td>
+                                            {{/bidders}}
+                                        {{/frequency}}
+                                    </tr>
+                                    {{/roundList}}
+                                    </script>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div><!--/ panel -->
+                </div><!--/ col-md-12 -->
+
+            </div>
+        </div>
+    </body>
+</html>

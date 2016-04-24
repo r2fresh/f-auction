@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>주파수 모의 경매</title>
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
+        <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
+
+        <link rel="stylesheet" href="/css/common.css" charset="utf-8">
+
+        <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
+        <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+
+        <script src="/lib/underscore/underscore.js" charset="utf-8"></script>
+        <script src="/lib/backbone/backbone.js" charset="utf-8"></script>
+        <script src="/lib/handlebars/handlebars.min.js" charset="utf-8"></script>
+
+        <script src="/js/common.js" charset="utf-8"></script>
+        <script src="/js/r2/r2Common.js" charset="utf-8"></script>
+        <script src="/lib/requirejs/require.js" data-main="/js/dashboard/App.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <div class="container-fluid _dashboard _p0">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="panel panel-navy">
+                        <!-- <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div> -->
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
+                                </tr>
+                                <tr class="bidder_list">
+                                    <td class="text-center"><strong>사업자</strong></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                </tr>
+
+                                <!-- 시작가 -->
+                                <tr class="start_price_list">
+                                    <td class="text-center"><strong class="">시작가</strong></td>
+                                    <script class="start_price_list_tpl" type="text/x-handlebars-template">
+                                        <{{#priceList}}
+                                        <td class="text-center" colspan=3>
+                                            <strong class="_start_price">{{wonPrice}}</strong>
+                                        </td>
+                                        {{/priceList}}
+                                    </script>
+                                </tr><!--/ 시작가 -->
+                            </thead>
+                            <tbody>
+
+                                <tr>
+
+                                    <td class="text-center"><strong>사업자</strong></td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+                                    <td class="text-center" contenteditable=true style="font-size:200%">11,000</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!--/ panel -->
+                </div><!--/ col-md-12 -->
+
+            </div>
+        </div>
+    </body>
+</html>

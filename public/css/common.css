@@ -200,3 +200,26 @@
 .flip-clock-label {
     display:none;
 }
+
+
+/**
+* panel navy color set
+*/
+.panel-navy {
+  border-color: #455C68;
+}
+.panel-navy > .panel-heading {
+  color: #fff;
+  background-color: #455C68;
+  border-color: #455C68;
+}
+.panel-navy > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #455C68;
+}
+.panel-navy > .panel-heading .badge {
+  color: #2C3E50;
+  background-color: #000;
+}
+.panel-navy > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #455C68;
+}
