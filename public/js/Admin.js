@@ -688,9 +688,7 @@ define([
                     this.$el.find('._round_start_btn').removeAttr('disabled');
                     this.$el.find('._acending_btn').removeAttr('disabled');
 
-                    Auction.io.emit('GET_CHART_DATA', 'getChartData');
 
-                    Auction.io.emit('COUNTDOWN_STOP', 'countdown stop');
 
                 }
             },
@@ -699,8 +697,10 @@ define([
              * 모든 입찰자가 입찰 완료 되었다는 것을 알림
              */
             emitRoundResult : function(){
-                console.log(this.postRoundData)
                 Auction.io.emit('ROUND_RESULT',JSON.stringify(this.postRoundData));
+                Auction.io.emit('GET_CHART_DATA', 'getChartData');
+                Auction.io.emit('NOW_RATE_INCREASE', 'now_rate_increase');
+                Auction.io.emit('COUNTDOWN_STOP', 'countdown stop');
                 this.postRoundData = null;
             },
 

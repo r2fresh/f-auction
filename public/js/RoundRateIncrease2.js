@@ -110,8 +110,8 @@ define([
                            var startPrice = parseInt(startPriceList[index].price,10);
                            var percent = ( (item.maxPrice - startPrice)/startPrice )*100
 
-                           // 소수점 1자리수 반올림
-                           item.rateIncrease = Math.round(percent * 10)/10;
+                           // 소수점 2자리수 반올림
+                           item.rateIncrease = Math.round(percent * 100)/100;
                        }
                    });
                })

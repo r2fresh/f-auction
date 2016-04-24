@@ -134,10 +134,10 @@ app.get('/biddingDelayCount', function(req, res) {
 
 
 /**
- * index.html router
+ * 현 증분율 표시
  */
-app.get('/increase',function(req, res){
-    res.sendFile(__dirname + '/increase.html')
+app.get('/now_rate_increase',function(req, res){
+    res.sendFile(__dirname + '/now_rate_increase.html')
 })
 
 /**
@@ -349,5 +349,9 @@ io.on('connection', function(socket){
 
     socket.on('GET_CHART_DATA',function(msg){
         io.emit('GET_CHART_DATA',msg);
+    });
+
+    socket.on('NOW_RATE_INCREASE',function(msg){
+        io.emit('NOW_RATE_INCREASE',msg);
     });
 });

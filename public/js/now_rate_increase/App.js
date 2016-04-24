@@ -14,15 +14,15 @@ requirejs.config({
 
 requirejs([
 	'socketio',
-	'js/chart/Chart'
+	'js/now_rate_increase/RateIncrease'
 ],
-function(io, Chart){
+function(io, RateIncrease){
 	/**
 	 * 초기 실행 함수
 	 */
 	function init(){
 		Auction.io = io();
-		Chart.render();
+		RateIncrease.render();
 	}
 	init();
 })
