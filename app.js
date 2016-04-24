@@ -24,8 +24,6 @@ var loginData = [
     {'name':'lg','state':false}
 ];
 
-var testNum = 0;
-
 var roundList = [];
 
 // 입찰자 정보
@@ -194,7 +192,11 @@ io.on('connection', function(socket){
 
     socket.on('disconnect', function(){
 
-        testNum = 0;
+        var url = this.handshake.headers.referer;
+        var urlArr = url.split('/');
+        var pathName = urlArr[urlArr.length-1];
+
+        if(pathName != '') return;
 
         var cookieData = cookieParser.get( this.handshake.headers.cookie );
 
@@ -294,7 +296,6 @@ io.on('connection', function(socket){
 
     socket.on('BIDDING',function(msg){
         var ksy = JSON.parse(msg)
-        console.log(testNum++);
         console.log(ksy.name);
         console.log(ksy.biddingType);
 
