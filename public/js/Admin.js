@@ -49,6 +49,8 @@ define([
                 {'name':'LG','state':false}
             ],
 
+            biddingTypeCount : 0,
+
             // winCompanyList:[
             //     {'name':'','price':0},
             //     {'name':'','price':0},
@@ -673,12 +675,21 @@ define([
 
                     this.setRoundUI(this.postRoundData);
 
-                    //alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
-                    R2Alert.render({
-                        'msg':this.roundNum + ' 라운드 모든 입찰자가 입찰하였습니다.',
-                        'w':400,
-                        'callback':Function.prototype.bind.call(this.emitRoundResult,this)
-                    });
+                    if(this.checkBiddingTypeCount(this.postRoundData)){
+                        R2Alert.render({
+                            'msg': this.roundNum + ' 라운드 모든 입찰자가 입찰하였습니다.' + '\n모든 입찰자가 "입찰안함, 자동입찰, 유예"로 \n연속 두번의 라운드에 입찰하였습니다.',
+                            'w':500,
+                            'callback':Function.prototype.bind.call(this.emitRoundResult,this)
+                        });
+                        this.biddingTypeCount = 0;
+                    } else {
+                        //alert(this.roundNum + '라운드 모든 입찰자가 입찰하였습니다.');
+                        R2Alert.render({
+                            'msg':this.roundNum + ' 라운드 모든 입찰자가 입찰하였습니다.',
+                            'w':400,
+                            'callback':Function.prototype.bind.call(this.emitRoundResult,this)
+                        });
+                    }
 
                     this.roundData = null;
 
@@ -687,8 +698,6 @@ define([
                     this.setBiddingState(this.roundNum + ' 라운드가 준비중입니다.');
                     this.$el.find('._round_start_btn').removeAttr('disabled');
                     this.$el.find('._acending_btn').removeAttr('disabled');
-
-
 
                 }
             },
@@ -701,7 +710,27 @@ define([
                 Auction.io.emit('GET_CHART_DATA', 'getChartData');
                 Auction.io.emit('NOW_RATE_INCREASE', 'now_rate_increase');
                 Auction.io.emit('COUNTDOWN_STOP', 'countdown stop');
+
                 this.postRoundData = null;
+            },
+
+            /**
+            * 입찰안함, 자동입찰, 유예가 2번이상 일 경우 알림창으로 알려줌
+            */
+            checkBiddingTypeCount:function(data){
+
+                var roundData       = JSON.parse(JSON.stringify(data))
+                var companyList     = roundData.company;
+
+                var biddingTypeList = _.filter(companyList,function(item, index){
+                    return item.biddingType == 'B';
+                });
+
+                if(biddingTypeList.length == 0){
+                    this.biddingTypeCount+=1;
+                }
+
+                return this.biddingTypeCount == 2;
             },
 
             /**
