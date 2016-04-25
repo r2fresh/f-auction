@@ -163,14 +163,24 @@ app.get('/dashboard',function(req, res){
 app.get('/now_rate_increase',function(req, res){
     res.sendFile(__dirname + '/now_rate_increase.html')
 })
-
 /**
- * index.html router
+ * 통신사 구분없이 승자만을 보여주는 차트
+ */
+app.get('/line_chart',function(req, res){
+    res.sendFile(__dirname + '/src/html/line_chart.html')
+})
+/**
+ * 통신사 구분없이 승자만을 보여주는 차트
+ */
+app.get('/win_chart',function(req, res){
+    res.sendFile(__dirname + '/src/html/win_chart.html')
+})
+/**
+ * 통신사 구분없이 승자만을 보여주는 차트
  */
 app.get('/chart',function(req, res){
     res.sendFile(__dirname + '/chart.html')
 })
-
 /**
  * index.html router
  */

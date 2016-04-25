@@ -1,6 +1,6 @@
 define([
    'module',
-   'js/chart/ChartData'
+   'js/win_chart/ChartData'
    ],
    function(module, ChartData){
 
