@@ -379,4 +379,8 @@ io.on('connection', function(socket){
     socket.on('NOW_RATE_INCREASE',function(msg){
         io.emit('NOW_RATE_INCREASE',msg);
     });
+
+    socket.on('DASHBOARD',function(msg){
+        io.emit('DASHBOARD',msg);
+    });
 });

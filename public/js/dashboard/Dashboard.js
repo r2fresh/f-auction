@@ -17,6 +17,8 @@ define([
         render:function(){
             this.setStartPriceList();
             this.getRoundList();
+
+            Auction.io.on('DASHBOARD', Function.prototype.bind.call(this.getRoundList,this) );
         },
         getRoundList:function(){
             Model.getRoundList({

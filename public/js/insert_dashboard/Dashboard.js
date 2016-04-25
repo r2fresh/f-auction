@@ -114,9 +114,8 @@ define([
         onSave:function(){
 
             var roundFormDataList = this.getRoundFormDataList();
-            console.log(roundFormDataList)
             var rateIncreaseList = this.getRoundRateIncreaseList(roundFormDataList);
-
+            console.log(rateIncreaseList)
             this.postRoundList(rateIncreaseList);
         },
         getRoundFormDataList:function(){
@@ -232,34 +231,7 @@ define([
         emitRoundResult : function(){
             Auction.io.emit('GET_CHART_DATA', 'getChartData');
             Auction.io.emit('NOW_RATE_INCREASE', 'now_rate_increase');
-        },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            Auction.io.emit('DASHBOARD', 'dashboard');
+        }
  	}))
 })
