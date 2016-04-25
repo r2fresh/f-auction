@@ -153,8 +153,15 @@ app.get('/insert_dashboard',function(req, res){
 /**
  * 총 현황판
  */
+app.get('/dashboard_price',function(req, res){
+    res.sendFile(__dirname + '/src/html/dashboard_price.html')
+})
+
+/**
+ * 총 현황판
+ */
 app.get('/dashboard',function(req, res){
-    res.sendFile(__dirname + '/dashboard.html')
+    res.sendFile(__dirname + '/src/html/dashboard.html')
 })
 
 /**

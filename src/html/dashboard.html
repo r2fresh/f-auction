@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>주파수 모의 경매</title>
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
+        <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
+
+        <link rel="stylesheet" href="/css/common.css" charset="utf-8">
+
+        <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
+        <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+
+        <script src="/lib/underscore/underscore.js" charset="utf-8"></script>
+        <script src="/lib/backbone/backbone.js" charset="utf-8"></script>
+        <script src="/lib/handlebars/handlebars.min.js" charset="utf-8"></script>
+
+        <script src="/js/common.js" charset="utf-8"></script>
+        <script src="/js/r2/r2Common.js" charset="utf-8"></script>
+        <script src="/lib/requirejs/require.js" data-main="/js/dashboard/App.js" charset="utf-8"></script>
+    </head>
+    <body style="overflow:hidden">
+        <div class="container-fluid _dashboard _p0">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-navy">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">블록</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                    <th class="text-center"><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bidder_list">
+                                    <td class="text-center"><strong>현재가</strong></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                </tr>
+                                <tr class="bidder_list">
+                                    <td class="text-center"><strong>승자</strong></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                </tr>
+                                <tr class="bidder_list">
+                                    <td class="text-center"><strong>최소입찰액</strong></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+
+                <div class="col-md-12">
+                    <div class="panel panel-navy _m0">
+                        <table class="table table-bordered">
+                            <thead style="padding-right:10px;">
+                                <tr>
+                                    <th class="text-center" rowspan="2">라운드</th>
+                                    <th class="text-center" rowspan="2">입찰액</th>
+                                    <th class="text-center" rowspan="2">승자</th>
+                                    <th class="text-center" colspan="2">증분</th>
+
+                                    <th class="text-center" rowspan="2">입찰액</th>
+                                    <th class="text-center" rowspan="2">승자</th>
+                                    <th class="text-center" colspan="2">증분</th>
+
+                                    <th class="text-center" rowspan="2">입찰액</th>
+                                    <th class="text-center" rowspan="2">승자</th>
+                                    <th class="text-center" colspan="2">증분</th>
+
+                                    <th class="text-center" rowspan="2">입찰액</th>
+                                    <th class="text-center" rowspan="2">승자</th>
+                                    <th class="text-center" colspan="2">증분</th>
+
+                                    <th class="text-center" rowspan="2">입찰액</th>
+                                    <th class="text-center" rowspan="2">승자</th>
+                                    <th class="text-center" colspan="2">증분</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center"> 누적</th>
+                                    <th class="text-center"> 해당라운드</th>
+
+                                    <th class="text-center"> 누적</th>
+                                    <th class="text-center"> 해당라운드</th>
+
+                                    <th class="text-center"> 누적</th>
+                                    <th class="text-center"> 해당라운드</th>
+
+                                    <th class="text-center"> 누적</th>
+                                    <th class="text-center"> 해당라운드</th>
+
+                                    <th class="text-center"> 누적</th>
+                                    <th class="text-center"> 해당라운드</th>
+                                </tr>
+                                <tr class="_start_price_list">
+                                    <script class="_start_price_list_tpl" type="text/x-handlebars-template">
+                                        <td class="text-center"><strong class="">시작가</strong></td>
+                                        {{#startPriceList}}
+                                        <td class="text-center" colspan=4>
+                                            <strong class="_start_price">{{wonPrice}}</strong>
+                                        </td>
+                                        {{/startPriceList}}
+                                    </script>
+                                </tr>
+                            </thead>
+                            <tbody class="_round_list">
+
+                                <tr>
+                                    <td>1라운드</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td>4</td>
+                                    <td>4</td>
+                                    <td>4</td>
+                                    <td>5</td>
+                                    <td>5</td>
+                                    <td>5</td>
+                                    <td>5</td>
+                                </tr>
+
+                                <!-- <script class="_round_list_tpl" type="text/x-handlebars-template">
+                                {{#roundList}}
+                                <tr class="_round_{{name}}">
+                                    <td class="text-center" style="width:100px;vertical-align:middle;padding:0;">
+                                        <strong>{{name}}</strong>
+                                    </td>
+                                    {{#frequency}}
+                                        {{#bidders}}
+                                        <td class="text-center" style="font-size:160%;padding:0px:vertical-align:middle;width:6.3%;">
+                                            <span class="{{className}}">{{wonPrice}}</span>
+                                        </td>
+                                        {{/bidders}}
+                                    {{/frequency}}
+                                </tr>
+                                {{/roundList}}
+                                </script> -->
+
+                            </tbody>
+                        </table>
+                    </div><!--/ panel -->
+                </div><!--/ col-md-12 -->
+
+            </div>
+        </div>
+    </body>
+</html>
