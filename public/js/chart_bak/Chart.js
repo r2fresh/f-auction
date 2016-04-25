@@ -1,13 +1,28 @@
 define([
    'module',
-   'js/chart/ChartData'
+   'js/chart_bak/ChartData'
    ],
    function(module, ChartData){
 
        'use strict'
 
-       var A_list = null, B_list = null, C_list = null, D_list = null, E_list = null;
-       var A_ChartList = null, B_ChartList = null, C_ChartList = null, D_ChartList = null, E_ChartList = null;
+       var KTWideBandList = null;
+       var KTWideBandChartList = null;
+
+       var SKTWideBandList = null;
+       var SKTWideBandChartList = null;
+
+       var LGUWideBandList = null;
+       var LGUWideBandChartList = null;
+
+       var KTNarrowList = null;
+       var KTNarrowChartList = null;
+
+       var SKTNarrowList = null;
+       var SKTNarrowChartList = null;
+
+       var LGUNarrowList = null;
+       var LGUNarrowChartList = null;
 
     	module.exports = new (Backbone.View.extend({
            el:'._chart',
@@ -27,113 +42,95 @@ define([
                this.$el.find('#biddingPattern').hide();
                ChartData.getRoundList(Function.prototype.bind.call(this.setChartDataList,this));
            },
-           formatter: function (list) {
-               var round = list[this.point.index].round;
-               var name = list[this.point.index].name;
-               var companyName = '';
-
-               if(name == 'KT'){
-                   companyName = 'KT';
-               } else if(name == 'SK'){
-                   companyName = 'SKT';
-               } else if(name == 'LG'){
-                   companyName = 'LGU+'
-               }
-
-               //var label = '<span class="label label-' + name + '-s">' + companyName + '</span>';
-               var companyNameElement = '<span class="text-' + name + '">' + companyName + '</span>';
-               var roundElement = '<span class="text-' + name + '">' + round + '</span>';
-               var priceElement = '<span class="text-' + name + '">' + Auction.numberic.get(this.y) + '</span>';
-
-               return roundElement + '/' + priceElement
-           },
            setChartDataList:function(data){
 
                var chartData = JSON.parse(JSON.stringify(data))
 
-               var self = this;
+               KTWideBandList = ChartData.getWideBandList('KT', chartData);
+               KTWideBandChartList = _.pluck(KTWideBandList,'price');
 
-               A_list = ChartData.getWideBandList('priceA', chartData);
-               A_ChartList = _.pluck(A_list,'price');
+               console.log(KTWideBandList)
 
-               B_list = ChartData.getWideBandList('priceB', chartData);
-               B_ChartList = _.pluck(B_list,'price');
+               KTNarrowList = ChartData.getNarrowList('KT',chartData);
+               KTNarrowChartList = _.pluck(KTNarrowList,'price');
 
-               C_list = ChartData.getWideBandList('priceC', chartData);
-               C_ChartList = _.pluck(C_list,'price');
+               SKTWideBandList = ChartData.getWideBandList('SK', chartData);
+               SKTWideBandChartList = _.pluck(SKTWideBandList,'price');
 
-               D_list = ChartData.getWideBandList('priceD', chartData);
-               D_ChartList = _.pluck(D_list,'price');
+               SKTNarrowList = ChartData.getNarrowList('SK',chartData);
+               SKTNarrowChartList = _.pluck(SKTNarrowList,'price');
 
-               E_list = ChartData.getWideBandList('priceE',chartData);
-               E_ChartList = _.pluck(E_list,'price');
+               LGUWideBandList = ChartData.getWideBandList('LG', chartData);
+               LGUWideBandChartList = _.pluck(LGUWideBandList,'price');
+
+               LGUNarrowList = ChartData.getNarrowList('LG',chartData);
+               LGUNarrowChartList = _.pluck(LGUNarrowList,'price');
 
                this.patternChart.series[1].update({
-                   data : A_ChartList,
+                   data : KTWideBandChartList,
                    dataLabels : {
-                       align : 'left',
                        allowOverlap : true,
-                       formatter: function(){
-                           return (Function.prototype.bind.call(self.formatter,this))(A_list)
-                           //return Auction.chart.formatter(D_list, this);
-                       },
-                       useHTML:true
+                       formatter: function () {
+                           var round = KTWideBandList[this.point.index].round;
+                           return '<span style="color:rgba(237, 31, 39, 1)">' + round + '</span>/' + this.y;
+                       }
                    }
                });
 
                this.patternChart.series[2].update({
-                   data : B_ChartList,
+                   data : KTNarrowChartList,
                    dataLabels : {
-                       align : 'left',
                        allowOverlap : true,
-                       formatter: function(){
-                           return (Function.prototype.bind.call(self.formatter,this))(B_list)
-                           //return Auction.chart.formatter(D_list, this);
+                       formatter: function () {
+                           var round = KTNarrowList[this.point.index].round;
+                           return '<span style="color:rgba(237, 31, 39, 1)">' + round + '</span>/' + this.y;
                        },
-                       useHTML:true
                    }
                });
 
                this.patternChart.series[3].update({
-                   data : C_ChartList,
+                   data : SKTWideBandChartList,
                    dataLabels : {
-                       align : 'left',
                        allowOverlap : true,
-                       formatter: function(){
-                           return (Function.prototype.bind.call(self.formatter,this))(C_list)
-                           //return Auction.chart.formatter(D_list, this);
-                       },
-                       useHTML:true
+                       formatter: function () {
+                           var round = SKTWideBandList[this.point.index].round;
+                           return '<span style="color:rgba(0, 114, 255, 1)">' + round + '</span>/' + this.y;
+                       }
                    }
                });
 
                this.patternChart.series[4].update({
-                   data : D_ChartList,
+                   data : SKTNarrowChartList,
                    dataLabels : {
-                       align : 'left',
                        allowOverlap : true,
-                       formatter: function(){
-                           return (Function.prototype.bind.call(self.formatter,this))(D_list)
-                           //return Auction.chart.formatter(D_list, this);
+                       formatter: function () {
+                           var round = SKTNarrowList[this.point.index].round;
+                           return '<span style="color:rgba(0, 114, 255, 1)">' + round + '</span>/' + this.y;
                        },
-                       useHTML:true
                    }
                });
 
                this.patternChart.series[5].update({
-                   data : E_ChartList,
+                   data : LGUWideBandChartList,
                    dataLabels : {
-                       align : 'left',
                        allowOverlap : true,
-                       formatter: function(){
-                           return (Function.prototype.bind.call(self.formatter,this))(E_list)
-                           //return Auction.chart.formatter(D_list, this);
-                       },
-                       useHTML:true
+                       formatter: function () {
+                           var round = LGUWideBandList[this.point.index].round;
+                           return '<span style="color:rgba(46, 181, 2, 1)">' + round + '</span>/' + this.y;
+                       }
                    }
                });
 
-
+               this.patternChart.series[6].update({
+                   data : LGUNarrowChartList,
+                   dataLabels : {
+                       allowOverlap : true,
+                       formatter: function () {
+                           var round = LGUNarrowList[this.point.index].round;
+                           return '<span style="color:rgba(46, 181, 2, 1)">' + round + '</span>/' + this.y;
+                       },
+                   }
+               });
 
                this.$el.find('#biddingPattern').show();
 
@@ -144,20 +141,7 @@ define([
                // 차트에서 광대역과 협대역을 하나로 표시 하기 위해 협대역 삭제
                this.$el.find('#biddingPattern .highcharts-legend .highcharts-legend-item:odd').remove();
            },
-
            setBiddingPattern:function(){
-
-               var plotBands = [];
-
-               for(var i=0; i< 6; ++i){
-                   var num = 3000;
-                   var plotBand = {
-                       color: '#ECECEC',
-                       from: num + (500*i*2),
-                       to: num + (500*i*2) + 500
-                   }
-                   plotBands.push(plotBand);
-               }
 
                var options = {
                    chart: {
@@ -176,12 +160,12 @@ define([
                    xAxis: {
                        tickInterval:1,
                        plotLines: [
-                           { color: '#AAAAAA', width: 2, value: 0.5, zIndex:5 },
-                           { color: '#AAAAAA', width: 2, value: 3.5, zIndex:5 },
-                           { color: '#AAAAAA', width: 2, value: 6.5, zIndex:5 },
-                           { color: '#AAAAAA', width: 2, value: 9.5, zIndex:5 },
-                           { color: '#AAAAAA', width: 2, value: 12.5, zIndex:5 },
-                           { color: '#AAAAAA', width: 2, value: 15.5, zIndex:5 }
+                           { color: '#C9D405', width: 1, value: 0.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 3.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 6.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 9.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 12.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 15.5, zIndex:5 }
                        ],
                        plotBands: [
                            {
@@ -267,8 +251,7 @@ define([
                    yAxis: {
                        title: { text: '입찰액' },
                        tickInterval:500,
-                       min: 3277,
-                       plotBands: plotBands
+                       min: 3277
                    },
                    tooltip: { enabled:false },
                    plotOptions: {
@@ -278,11 +261,11 @@ define([
                            },
                            dataLabels: {
                              enabled: true,
-                             style:{'fontSize':'18px'},
+                             style:{'fontSize':'14px'},
                              crop: false,
                              overflow: 'none',
-                             x:5,
-                             y:16
+                             x:35,
+                             y:13
                            },
                            states: {
                                hover: {

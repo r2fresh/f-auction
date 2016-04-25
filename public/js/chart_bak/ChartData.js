@@ -48,38 +48,25 @@ define([
 
                        frequencyName = frequency.name;
 
-                       if(frequencyName == company){
+                       if(frequency.type == 'wideBand'){
                            _.each(frequency.bidders,function(bidder){
-                               if(bidder.price != '' && bidder.vs == 'win'){
+                               if(bidder.name == company && bidder.price != '' && bidder.vs == 'win'){
 
-                                  var minusNum = (bidder.name == 'KT') ? 2 : (bidder.name == 'SK') ? 1 : 0;
+                                   var minusNum = (company == 'KT') ? 2 : (company == 'SK') ? 1 : 0
 
-                                  var fillColor = (bidder.name == 'KT') ? 'rgba(237, 31, 39, 1)' : (bidder.name == 'SK') ? 'rgba(0, 114, 255, 1)' : 'rgba(46, 181, 2, 1)'
+                                   var x = (parseInt(priceArr.indexOf(frequencyName),10) + 1)*3-minusNum;
 
-                                   var x = ((parseInt(priceArr.indexOf(company),10) + 1)*3-minusNum)-0.2;
-
-                                   chartList.push({
-                                       'round':(roundNum).toString(),
-                                       'name':(bidder.name).toString(),
-                                       'price':{
-                                           x:x,
-                                           y:parseInt(bidder.price,10),
-                                           marker:{
-                                               fillColor:fillColor
-                                           }
-                                       }
-                                   })
+                                   chartList.push({'round':(roundNum).toString(), 'price':{
+                                       x:x,
+                                       y:parseInt(bidder.price,10)
+                                   }})
                                };
                            });
                        };
                    });
                });
 
-              var wideBandList = this.deleteOverlap(chartList);
-
-              console.table(wideBandList)
-
-               return this.changeSymbol(wideBandList);
+               return this.changeSymbol( this.deleteOverlap(chartList) );
            },
 
            changeSymbol:function(data){
@@ -87,10 +74,7 @@ define([
                var roundData = JSON.parse(JSON.stringify(data));
                //var lastRoundData = _.last(roundData);
 
-               if(roundData.length > 0){
-                   roundData[roundData.length-1].price.marker.symbol = 'triangle';
-                   roundData[roundData.length-1].price.marker.radius = 16
-               }
+               roundData[roundData.length-1].price.marker = {'symbol' : 'triangle'}
 
                return roundData
            },
