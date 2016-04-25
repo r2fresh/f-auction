@@ -209,6 +209,8 @@ io.on('connection', function(socket){
 
         if(pathName != '') return;
 
+        if(this.handshake.headers.cookie == null || this.handshake.headers.cookie == undefined) return;
+
         var cookieData = cookieParser.get( this.handshake.headers.cookie );
 
         // cookieData 없을 경우 리턴

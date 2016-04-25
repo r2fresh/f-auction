@@ -44,8 +44,9 @@ define([
         },
         getRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-                //this.roundList = JSON.parse(JSON.stringify(data));
-                this.setRoundList(data);
+                //var roundList = store.get('roundList')
+                var roundList = data;
+                this.setRoundList(roundList);
             }
         },
         setRoundList:function(data){
@@ -225,7 +226,7 @@ define([
             // }
             return roundList;
         },
-    
+
         /**
          * 라운드별 주파수 정보를 저장
          */
@@ -247,6 +248,8 @@ define([
          */
         postRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
+
+                store.set('roundList',data)
 
                 R2Alert.render({
                     'msg':'모든 라운드 정보를 입력 하셨습니다.',
