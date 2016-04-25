@@ -179,7 +179,7 @@ app.get('/chart_win',function(req, res){
  * 통신사 구분없이 승자만을 보여주는 차트
  */
 app.get('/chart',function(req, res){
-    res.sendFile(__dirname + '/chart.html')
+    res.sendFile(__dirname + '/src/html/chart.html')
 })
 /**
  * index.html router

@@ -50,7 +50,7 @@ define([
 
                        if(frequency.type == 'wideBand'){
                            _.each(frequency.bidders,function(bidder){
-                               if(bidder.name == company && bidder.price != ''){
+                               if(bidder.name == company && bidder.price != '' && bidder.vs == 'win'){
 
                                    var minusNum = (company == 'KT') ? 2 : (company == 'SK') ? 1 : 0
 

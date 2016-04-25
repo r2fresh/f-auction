@@ -14,7 +14,7 @@ requirejs.config({
 
 requirejs([
 	'socketio',
-	'js/line_chart/Chart'
+	'js/chart/Chart'
 ],
 function(io, Chart){
 	/**

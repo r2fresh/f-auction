@@ -1,6 +1,6 @@
 define([
    'module',
-   'js/line_chart/ChartData'
+   'js/chart/ChartData'
    ],
    function(module, ChartData){
 
@@ -148,138 +148,91 @@ define([
                        renderTo:$('#biddingPattern')[0],
                        type: 'line',
                        spacingRight: 0,
+                       zoomType:'xy'
                    },
                    exporting:{
                        enabled:false,
                        sourceWith:775,
                        sourceHeight:1277
                    },
-                   credits:{
-                       enabled:false
-                   },
-                   title: {
-                       text: '입찰 패턴 분석'
-                   },
+                   credits: { enabled:false },
+                   title: { text: '입찰 패턴 분석' },
                    xAxis: {
-                       //type: 'datetime',
-                       /*dateTimeLabelFormats: { // don't display the dummy year
-                           month: '%e. %b',
-                           year: '%b'
-                       },*/
-                  		tickInterval:1,
-                       title: {
-                           //text: '주파수'
-                       },
-
-
+                       tickInterval:1,
                        plotLines: [
-                       {
-                           color: '#C9D405',
-                           width: 1,
-                           value: 0.5,
-                           zIndex:5
-                       },
-                       {
-                           color: '#C9D405',
-                           width: 1,
-                           value: 3.5,
-                           zIndex:5
-                       },
-                       {
-                           color: '#C9D405',
-                           width: 1,
-                           value: 6.5,
-                           zIndex:5
-                       },
-                       {
-                           color: '#C9D405',
-                           width: 1,
-                           value: 9.5,
-                           zIndex:5
-                       },
-                       {
-                           color: '#C9D405',
-                           width: 1,
-                           value: 12.5,
-                           zIndex:5
-                       },
-                       {
-                           color: '#C9D405',
-                           width: 1,
-                           value: 15.5,
-                           zIndex:5
-                       }
+                           { color: '#C9D405', width: 1, value: 0.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 3.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 6.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 9.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 12.5, zIndex:5 },
+                           { color: '#C9D405', width: 1, value: 15.5, zIndex:5 }
                        ],
-
-
-                       plotBands: [{ // mark the weekend
-                           color: '#FCFFC5',
-                           from: 0.5,
-                           to: 3.5,
-                           label: {
-                               verticalAlign:'bottom',
-                               text: 'A 700MHz(광)',
-                               rotation: 0,
-                               textAlign: 'center',
-                               y:40
+                       plotBands: [
+                           {
+                               //color: '#FCFFC5',
+                               from: 0.5,
+                               to: 3.5,
+                               label: {
+                                   verticalAlign:'bottom',
+                                   text: 'A 700MHz(광)',
+                                   rotation: 0,
+                                   textAlign: 'center',
+                                   y:40
+                               }
                            }
-                       }
-                       ,{ // mark the weekend
-                           color: '#FFFFFF',
-                           from: 3.5,
-                           to: 6.5,
-                           label: {
-                               verticalAlign:'bottom',
-                               text: 'B 1.8MHz(협)',
-                               rotation: 0,
-                               textAlign: 'center',
-                               y:40
+                           ,{
+                               //color: '#FFFFFF',
+                               from: 3.5,
+                               to: 6.5,
+                               label: {
+                                   verticalAlign:'bottom',
+                                   text: 'B 1.8MHz(협)',
+                                   rotation: 0,
+                                   textAlign: 'center',
+                                   y:40
+                               }
                            }
-                       }
-                       ,{ // mark the weekend
-                           color: '#FCFFC5',
-                           from: 6.5,
-                           to: 9.5,
-                           label: {
-                               verticalAlign:'bottom',
-                               text: 'C 2.1MHz(광)',
-                               rotation: 0,
-                               textAlign: 'center',
-                               y:40
+                           ,{
+                               //color: '#FCFFC5',
+                               from: 6.5,
+                               to: 9.5,
+                               label: {
+                                   verticalAlign:'bottom',
+                                   text: 'C 2.1MHz(광)',
+                                   rotation: 0,
+                                   textAlign: 'center',
+                                   y:40
+                               }
                            }
-                       }
-                       ,{ // mark the weekend
-                           color: '#FFFFFF',
-                           from: 9.5,
-                           to: 12.5,
-                           label: {
-                               verticalAlign:'bottom',
-                               text: 'D 2.6MHz(광)',
-                               rotation: 0,
-                               textAlign: 'center',
-                               y:40
+                           ,{
+                               //color: '#FFFFFF',
+                               from: 9.5,
+                               to: 12.5,
+                               label: {
+                                   verticalAlign:'bottom',
+                                   text: 'D 2.6MHz(광)',
+                                   rotation: 0,
+                                   textAlign: 'center',
+                                   y:40
+                               }
                            }
-                       }
-                       ,{ // mark the weekend
-                           color: '#FCFFC5',
-                           from: 12.5,
-                           to: 15.5,
-                           label: {
-                               verticalAlign:'bottom',
-                               text: 'E 2.6MHz(협)',
-                               rotation: 0,
-                               textAlign: 'center',
-                               y:40
+                           ,{ // mark the weekend
+                               //color: '#FCFFC5',
+                               from: 12.5,
+                               to: 15.5,
+                               label: {
+                                   verticalAlign:'bottom',
+                                   text: 'E 2.6MHz(협)',
+                                   rotation: 0,
+                                   textAlign: 'center',
+                                   y:40
+                               }
                            }
-                       }],
+                       ],
                        labels: {
                            formatter: function () {
                                var company = '';
-
-                               //console.log(this.value%3)
-
                                var account = this.value%3;
-
                                switch(account){
                                    case 1:
                                        company = 'KT';
@@ -292,39 +245,23 @@ define([
                                    break;
                                }
                                return company;
-                               //console.log(this)
-                               //return 'A'
                            }
                        }
                    },
                    yAxis: {
-                       title: {
-                           text: '입찰액'
-                       },
-                       tickInterval:100,
-                       //max: 6800,
-                       min: 3277,
-
+                       title: { text: '입찰액' },
+                       tickInterval:500,
+                       min: 3277
                    },
-                   tooltip: {
-                       enabled:false,
-                       headerFormat: '<b>{series.name}</b><br>',
-                       pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-                   },
-
+                   tooltip: { enabled:false },
                    plotOptions: {
                        line: {
                            marker: {
                                enabled: true
                            },
-
                            dataLabels: {
                              enabled: true,
-                           //  formatter: function () {
-                           //     var round = KTWideBandList[this.point.index].round;
-                           //     return '(' + round + ')' + this.y;
-                           //   },
-                             style:{'fontSize':'6px'},
+                             style:{'fontSize':'14px'},
                              crop: false,
                              overflow: 'none',
                              x:35,
@@ -335,13 +272,15 @@ define([
                                    enabled: false
                                }
                            }
+                       },
+                       series: {
+                           lineWidth: 0,
+                           marker: {
+                               radius: 8
+                           },
                        }
                    },
-
-                   legend: {
-                       itemMarginTop: 15
-                   },
-
+                   legend: { itemMarginTop: 15 },
                    series: [
                        {
                            name: '가이드',
@@ -364,46 +303,46 @@ define([
                            color:'rgba(237, 31, 39, 1)',
                            data:[]
                        }
-                   ,{
-                       name: 'KT 협대역',
-                       marker:{
-                           symbol:'circle'
-                       },
-                       color:'rgba(237, 31, 39, 1)',
-                       data: []
-                   }
-                   ,{
-                       name: 'SKT',
-                       marker:{
-                           symbol:'circle'
-                       },
-                       color:'rgba(0, 114, 255, 1)',
-                       data: []
-                   }
-                   ,{
-                       name: 'SKT 협대역',
-                       marker:{
-                           symbol:'circle'
-                       },
-                       color:'rgba(0, 114, 255, 1)',
-                       data: []
-                   }
-                   ,{
-                       name: 'LGU+',
-                       marker:{
-                           symbol:'circle'
-                       },
-                       color:'rgba(46, 181, 2, 1)',
-                       data: []
-                   }
-                   ,{
-                       name: 'LGU+ 협대역',
-                       marker:{
-                           symbol:'circle'
-                       },
-                       color:'rgba(46, 181, 2, 1)',
-                       data: []
-                   }
+                       ,{
+                           name: 'KT 협대역',
+                           marker:{
+                               symbol:'circle'
+                           },
+                           color:'rgba(237, 31, 39, 1)',
+                           data: []
+                       }
+                       ,{
+                           name: 'SKT',
+                           marker:{
+                               symbol:'circle'
+                           },
+                           color:'rgba(0, 114, 255, 1)',
+                           data: []
+                       }
+                       ,{
+                           name: 'SKT 협대역',
+                           marker:{
+                               symbol:'circle'
+                           },
+                           color:'rgba(0, 114, 255, 1)',
+                           data: []
+                       }
+                       ,{
+                           name: 'LGU+',
+                           marker:{
+                               symbol:'circle'
+                           },
+                           color:'rgba(46, 181, 2, 1)',
+                           data: []
+                       }
+                       ,{
+                           name: 'LGU+ 협대역',
+                           marker:{
+                               symbol:'circle'
+                           },
+                           color:'rgba(46, 181, 2, 1)',
+                           data: []
+                       }
                    ]
                };
 
