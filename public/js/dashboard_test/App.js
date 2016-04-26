@@ -14,7 +14,7 @@ requirejs.config({
 
 requirejs([
 	'socketio',
-	'js/dashboard/Dashboard'
+	'js/dashboard_test/Dashboard'
 ],
 function(io, Dashboard){
 	/**

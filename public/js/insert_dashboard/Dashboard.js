@@ -184,10 +184,13 @@ define([
                 tempBidderList = RoundRateIncrease.getRoundHistoryPrice(tempRoundList);
                 tempMaxList = RoundRateIncrease.getRoundMaxPrice(tempBidderList);
 
+                console.log(tempMaxList)
+
                 // 각 라운드 별 입찰자에 해당하는 가격리스트와 미신청 주파수 설정
                 for(var j=0; j<roundList[i].frequency.length; ++j){
                     for(var k=0; k<roundList[i].frequency[j].bidders.length; ++k){
                         roundList[i].frequency[j].bidders[k].rateIncrease = parseFloat(tempMaxList[k].rateIncreaseList[j].rateIncrease)
+                        roundList[i].frequency[j].bidders[k].nowRateIncrease = parseFloat(tempMaxList[k].rateIncreaseList[j].nowRateIncrease)
                     }
                 }
 
