@@ -1,6 +1,6 @@
 define([
    'module',
-   'js/chart/ChartData'
+   'js/chart_price/ChartData'
    ],
    function(module, ChartData){
 
@@ -42,10 +42,10 @@ define([
 
                //var label = '<span class="label label-' + name + '-s">' + companyName + '</span>';
                var companyNameElement = '<span class="text-' + name + '">' + companyName + '</span>';
-               var roundElement = '<span class="text-' + name + '">' + round + '</span>';
+               var roundElement = '<span class="text-' + name + '">(R' + round + ')</span>';
                var priceElement = '<span class="text-' + name + '">' + Auction.numberic.get(this.y) + '</span>';
 
-               return roundElement + '/' + priceElement
+               return (list.length-1 == this.point.index) ? roundElement + priceElement : '';
            },
            setChartDataList:function(data){
 
@@ -172,7 +172,7 @@ define([
                        sourceHeight:1277
                    },
                    credits: { enabled:false },
-                   title: { text: '입찰 패턴 분석' },
+                   title: { text: '' },
                    xAxis: {
                        tickInterval:1,
                        plotLines: [
@@ -190,11 +190,17 @@ define([
                                to: 3.5,
                                label: {
                                    verticalAlign:'bottom',
-                                   text: 'A 700MHz(광)',
+                                   style: {
+                                        color: '#CCCCCC',
+                                        fontSize:'30px'
+                                    },
+                                   text: 'A',
                                    rotation: 0,
+                                   userHTML:false,
                                    textAlign: 'center',
-                                   y:40
-                               }
+                                   y:-10
+                               },
+                               zIndex:3
                            }
                            ,{
                                //color: '#FFFFFF',
@@ -202,11 +208,17 @@ define([
                                to: 6.5,
                                label: {
                                    verticalAlign:'bottom',
-                                   text: 'B 1.8MHz(협)',
+                                   style: {
+                                        color: '#CCCCCC',
+                                        fontSize:'30px'
+                                    },
+                                   text: 'B',
                                    rotation: 0,
+                                   userHTML:false,
                                    textAlign: 'center',
-                                   y:40
-                               }
+                                   y:-10
+                               },
+                               zIndex:3
                            }
                            ,{
                                //color: '#FCFFC5',
@@ -214,11 +226,17 @@ define([
                                to: 9.5,
                                label: {
                                    verticalAlign:'bottom',
-                                   text: 'C 2.1MHz(광)',
+                                   style: {
+                                        color: '#CCCCCC',
+                                        fontSize:'30px'
+                                    },
+                                   text: 'C',
                                    rotation: 0,
+                                   userHTML:false,
                                    textAlign: 'center',
-                                   y:40
-                               }
+                                   y:-10
+                               },
+                               zIndex:3
                            }
                            ,{
                                //color: '#FFFFFF',
@@ -226,11 +244,17 @@ define([
                                to: 12.5,
                                label: {
                                    verticalAlign:'bottom',
-                                   text: 'D 2.6MHz(광)',
+                                   style: {
+                                        color: '#CCCCCC',
+                                        fontSize:'30px'
+                                    },
+                                   text: 'D',
                                    rotation: 0,
+                                   userHTML:false,
                                    textAlign: 'center',
-                                   y:40
-                               }
+                                   y:-10
+                               },
+                               zIndex:3
                            }
                            ,{ // mark the weekend
                                //color: '#FCFFC5',
@@ -238,30 +262,37 @@ define([
                                to: 15.5,
                                label: {
                                    verticalAlign:'bottom',
-                                   text: 'E 2.6MHz(협)',
+                                   style: {
+                                        color: '#CCCCCC',
+                                        fontSize:'30px'
+                                    },
+                                   text: 'E',
                                    rotation: 0,
+                                   userHTML:false,
                                    textAlign: 'center',
-                                   y:40
-                               }
+                                   y:-10
+                               },
+                               zIndex:3
                            }
                        ],
                        labels: {
-                           formatter: function () {
-                               var company = '';
-                               var account = this.value%3;
-                               switch(account){
-                                   case 1:
-                                       company = 'KT';
-                                   break;
-                                   case 2:
-                                       company = 'SKT';
-                                   break;
-                                   case 0:
-                                       company = 'LGU+';
-                                   break;
-                               }
-                               return company;
-                           }
+                           enabled:false,
+                        //    formatter: function () {
+                        //        var company = '';
+                        //        var account = this.value%3;
+                        //        switch(account){
+                        //            case 1:
+                        //                company = 'KT';
+                        //            break;
+                        //            case 2:
+                        //                company = 'SKT';
+                        //            break;
+                        //            case 0:
+                        //                company = 'LGU+';
+                        //            break;
+                        //        }
+                        //        return company;
+                        //    }
                        }
                    },
                    yAxis: {
@@ -272,32 +303,34 @@ define([
                    },
                    tooltip: { enabled:false },
                    plotOptions: {
-                       line: {
-                           marker: {
-                               enabled: true
-                           },
-                           dataLabels: {
-                             enabled: true,
-                             style:{'fontSize':'18px'},
-                             crop: false,
-                             overflow: 'none',
-                             x:5,
-                             y:16
-                           },
-                           states: {
-                               hover: {
-                                   enabled: false
-                               }
-                           }
-                       },
-                       series: {
-                           lineWidth: 0,
-                           marker: {
-                               radius: 8
-                           },
-                       }
+                        line: {
+
+                            marker: {
+                                enabled: true
+                            },
+                            dataLabels: {
+                                align:'center',
+                                enabled: true,
+                                style:{'fontSize':'18px'},
+                                crop: false,
+                                overflow: 'none',
+                                x:-50,
+                                y:-10
+                            },
+                            states: {
+                                hover: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        series: {
+                            lineWidth: 0,
+                            marker: {
+                                radius: 8
+                            }
+                        }
                    },
-                   legend: { itemMarginTop: 15 },
+                   legend: { enabled:false,itemMarginTop: 15 },
                    series: [
                        {
                            name: '가이드',

@@ -185,8 +185,8 @@ app.get('/chart_win',function(req, res){
 /**
  * 통신사를 구분하여 승자 리스트만 보여주는 차트
  */
-app.get('/chart',function(req, res){
-    res.sendFile(__dirname + '/src/html/chart.html')
+app.get('/chart_price',function(req, res){
+    res.sendFile(__dirname + '/src/html/chart_price.html')
 })
 
 /**

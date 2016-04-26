@@ -56,7 +56,7 @@ define([
 
                                   var fillColor = (bidder.name == 'KT') ? 'rgba(237, 31, 39, 1)' : (bidder.name == 'SK') ? 'rgba(0, 114, 255, 1)' : 'rgba(46, 181, 2, 1)'
 
-                                   var x = ((parseInt(priceArr.indexOf(company),10) + 1)*3-minusNum)-0.2;
+                                   var x = ((parseInt(priceArr.indexOf(company),10) + 1)*3-minusNum);
 
                                    chartList.push({
                                        'round':(roundNum).toString(),
@@ -88,8 +88,8 @@ define([
                //var lastRoundData = _.last(roundData);
 
                if(roundData.length > 0){
-                   roundData[roundData.length-1].price.marker.symbol = 'triangle';
-                   roundData[roundData.length-1].price.marker.radius = 16
+                   //roundData[roundData.length-1].price.marker.symbol = 'triangle';
+                   roundData[roundData.length-1].price.marker.radius = 16;
                }
 
                return roundData
@@ -145,12 +145,16 @@ define([
                    } else {
                        if(temp.price.y == item.price.y){
                           var roundArr = temp.round.split('~');
+                        //   if( roundArr.length > 1 ){
+                        //       temp.round = roundArr[0] + '~' + item.round;
+                        //   } else {
+                        //       temp.round = temp.round + '~' + item.round;
+                        //   }
                           if( roundArr.length > 1 ){
-                              temp.round = roundArr[0] + '~' + item.round;
+                              temp.round = roundArr[0]// + '~' + item.round;
                           } else {
-                              temp.round = temp.round + '~' + item.round;
+                              temp.round = temp.round// + '~' + item.round;
                           }
-
 
                       } else {
                           priceChartList.push(temp);
