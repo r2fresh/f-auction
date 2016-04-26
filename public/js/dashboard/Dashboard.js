@@ -12,13 +12,13 @@ define([
         startPriceListTpl:null,
         roundListTpl:null,
         initialize:function(){
-            //this.setTpl();
+            this.setTpl();
         },
         render:function(){
-            //this.setStartPriceList();
-            //this.getRoundList();
+            this.setStartPriceList();
+            this.getRoundList();
 
-            //Auction.io.on('DASHBOARD', Function.prototype.bind.call(this.getRoundList,this) );
+            Auction.io.on('DASHBOARD', Function.prototype.bind.call(this.getRoundList,this) );
         },
         getRoundList:function(){
             Model.getRoundList({
