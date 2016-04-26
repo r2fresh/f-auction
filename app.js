@@ -190,6 +190,13 @@ app.get('/chart_price',function(req, res){
 })
 
 /**
+ * 통신사를 구분하여 승자 리스트만 보여주는 차트
+ */
+app.get('/chart_rate',function(req, res){
+    res.sendFile(__dirname + '/src/html/chart_rate.html')
+})
+
+/**
  * index.html router
  */
 app.get('/',function(req, res){
