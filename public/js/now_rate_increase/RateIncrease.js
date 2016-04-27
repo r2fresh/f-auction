@@ -66,8 +66,6 @@ define([
                     })
                 })
 
-                console.log(bidderList)
-
                 var template = Handlebars.compile(this.bidderListTpl);
                 this.$el.find('._bidder_list').html(template({'bidderList':bidderList}));
 
