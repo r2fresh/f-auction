@@ -264,6 +264,7 @@ io.on('connection', function(socket){
 
             _.each(companyInfoList,function(item){
                 item.hertzList = null;
+                item.strategy = '';
             })
         }
 
@@ -411,12 +412,11 @@ io.on('connection', function(socket){
     socket.on('BIDDING_STRATEGY', function(msg){
         var data = JSON.parse(msg);
         _.each(companyInfoList,function(item){
-            if(item.name == (data.user).toUpperCase()){
+            if(item.name == (data.name).toUpperCase()){
                 item.strategy = data.strategy;
             }
         })
-        logger.log(companyInfoList)
-        io.emit('BIDDING_STRATEGY',JSON.stringify(companyInfoList))
+        io.emit('BIDDING_STRATEGY',JSON.stringify(companyInfoList));
     })
 
     socket.on('BANDWIDTH',function(msg){

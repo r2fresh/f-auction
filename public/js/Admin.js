@@ -121,6 +121,7 @@ define([
                 this.$el.html(Admin);
                 this.getHertzList();
                 this.getBandWidth();
+                this.getBiddingStrategy();
                 this.getBiddingDelayCount();
                 this.setTpl();
                 this.setSocketReceiveEvent();
@@ -929,7 +930,11 @@ define([
 
             onBiddingStrategy:function(msg){
                 var biddingStrategyList = JSON.parse(msg);
-                console.log(biddingStrategyList)
+
+                _.each(biddingStrategyList,function(item){
+                    item.companyName = (item.name == 'SK') ? 'SKT' : (item.name == 'LG') ? 'LGU+' : item.name;
+                })
+
                 var template = Handlebars.compile(this.adminBiddingStrategyTpl);
                 this.$el.find('._bidding_strategy').html(template({'biddingStrategyList':biddingStrategyList}));
             },
