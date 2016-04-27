@@ -10,7 +10,7 @@ define([
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
-        el:'._dashboard',
+        el:'#insert_dashboard',
         roundList:null,
         roundListTpl:null,
         startPriceListTpl:null,
@@ -44,8 +44,8 @@ define([
         },
         getRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-                var roundList = store.get('roundList')
-                //var roundList = data;
+                //var roundList = store.get('roundList')
+                var roundList = data;
                 this.setRoundList(roundList);
             }
         },

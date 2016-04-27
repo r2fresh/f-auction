@@ -5,7 +5,7 @@
 }
 
 #dashboard .dashboard_header {
-    margin-right: 5px;
+    margin-right: 6px;
 }
 
 #dashboard .dashboard_header span {
@@ -70,8 +70,8 @@
 */
 #dashboard ._last_round_block th{
     font-size:200%;
-    border: 3px solid #455C68!important;
-    border-right: 10px solid #455C68!important;
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
 }
 
 /**
@@ -79,8 +79,8 @@
 */
 #dashboard ._start_price_list td{
     font-size:200%;
-    border: 3px solid #455C68!important;
-    border-right: 10px solid #455C68!important;
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
 }
 
 /**
@@ -88,8 +88,8 @@
 */
 #dashboard ._last_round_price_list td{
     font-size:200%;
-    border: 3px solid #455C68!important;
-    border-right: 10px solid #455C68!important;
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
 }
 
 /**
@@ -97,8 +97,8 @@
 */
 #dashboard ._last_round_company_list td {
     font-size:200%;
-    border: 3px solid #455C68!important;
-    border-right: 10px solid #455C68!important;
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
 }
 
 /**
@@ -107,22 +107,87 @@
 #dashboard ._last_round_lowest_bidding_price_list td {
     font-size:200%;
     vertical-align: middle;
-    border: 3px solid #455C68!important;
-    border-right: 10px solid #455C68!important;
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
 }
 
 #dashboard ._round_list tr td:first-child{
-    width:212px;
+    width:214px;
 }
 #dashboard ._round_list tr td:nth-child(2){
-    width:98px;
+    width:100px;
 }
-#dashboard ._round_list tr td:nth-child3){
+#dashboard ._round_list tr td:nth-child(3){
     width:98px;
 }
 #dashboard ._round_list tr td:nth-child(4){
-    width:97px;
+    width:93px;
 }
 #dashboard ._round_list tr td:nth-child(5){
-    width:97px;
+    width:93px;
+}
+#dashboard ._round_list tr td:nth-child(6){
+    width:100px;
+}
+#dashboard ._round_list tr td:nth-child(7){
+    width:98px;
+}
+#dashboard ._round_list tr td:nth-child(8){
+    width:93px;
+}
+#dashboard ._round_list tr td:nth-child(9){
+    width:93px;
+}
+#dashboard ._round_list tr td:nth-child(10){
+    width:100px;
+}
+#dashboard ._round_list tr td:nth-child(11){
+    width:98px;
+}
+#dashboard ._round_list tr td:nth-child(12){
+    width:93px;
+}
+#dashboard ._round_list tr td:nth-child(13){
+    width:93px;
+}
+#dashboard ._round_list tr td:nth-child(14){
+    width:100px;
+}
+#dashboard ._round_list tr td:nth-child(15){
+    width:98px;
+}
+#dashboard ._round_list tr td:nth-child(16){
+    width:93px;
+}
+#dashboard ._round_list tr td:nth-child(17){
+    width:93px;
+}
+
+
+
+#dashboard .dashboard_round_header thead th,
+#dashboard .dashboard_round_header thead td {
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
+}
+#dashboard .dashboard_round_header thead td:last-child {
+    border: 1px solid #455C68!important;
+    border-right: 0px solid #455C68!important;
+}
+#dashboard .dashboard_round_header tbody td{
+    border: 1px solid #455C68!important;
+    border-right: 0px solid #455C68!important;
+}
+
+
+
+
+#dashboard .dashboard_round tbody td{
+    border: 1px solid #455C68!important;
+    border-right: 6px solid #455C68!important;
+}
+
+#dashboard .dashboard_round tbody td:last-child{
+    border: 1px solid #455C68!important;
+    border-right: 0px solid #455C68!important;
 }

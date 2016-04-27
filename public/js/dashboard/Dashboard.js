@@ -55,7 +55,7 @@ define([
         setCountDown:function(){
             //var data = JSON.parse(msg);
             var TIMER = 2400000
-            var now = moment('2016-04-28 05:30:00').valueOf();
+            var now = moment('2016-04-28 09:30:00').valueOf();
             //var countDown = now + TIMER;
             //var timer = countDown//data.countdown_timer;
 
@@ -63,20 +63,20 @@ define([
             var b = moment(new Date());
             var time = a.diff(b) // 86400000
 
-            this.countDown = this.$el.find('.count_down').FlipClock(time/1000, {
-                autoStart: true,
-                countdown: true,
-                clockFace: 'HourCounter',
-                callbacks: {
-                    stop:function(e){
-                        console.log(this)
-                        //alert('stop')
-                    }
-                }
-            });
-
-            //this.countDown.setTime(time/1000);
-            this.countDown.start();
+            // this.countDown = this.$el.find('.count_down').FlipClock(time/1000, {
+            //     autoStart: true,
+            //     countdown: true,
+            //     clockFace: 'HourCounter',
+            //     callbacks: {
+            //         stop:function(e){
+            //             console.log(this)
+            //             //alert('stop')
+            //         }
+            //     }
+            // });
+            //
+            // //this.countDown.setTime(time/1000);
+            // this.countDown.start();
 
             this.clock = this.$el.find('.clock').FlipClock(this.TIMER, {
                 clockFace: 'TwentyFourHourClock'
@@ -101,6 +101,11 @@ define([
         */
         getRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
+                if(data.length == 0) {
+                    this.$el.removeClass('displayNone');
+                    return;
+                }
+
                 var roundList = this.setRoundList(JSON.parse(JSON.stringify(data)));
                 this.setRoundListUI(JSON.parse(JSON.stringify(roundList)));
 

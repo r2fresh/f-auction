@@ -1,0 +1,17 @@
+#insert_dashboard {
+    padding:0;
+}
+
+#insert_dashboard .dashboard_header {
+    margin: 10px 0;
+}
+
+#insert_dashboard .dashboard_header .header_hour {
+    display:inline-block;
+    width:100px;
+}
+
+#insert_dashboard .dashboard_header .header_min {
+    display:inline-block;
+    width:100px;
+}

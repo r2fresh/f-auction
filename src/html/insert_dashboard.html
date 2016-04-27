@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
 
         <link rel="stylesheet" href="/css/common.css" charset="utf-8">
+        <link rel="stylesheet" href="/css/insert_dashboard.css" charset="utf-8">
 
         <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
@@ -23,85 +24,81 @@
         <script src="/lib/requirejs/require.js" data-main="/js/insert_dashboard/App.js" charset="utf-8"></script>
     </head>
     <body style="overflow:hidden;">
-        <div class="container-fluid _dashboard _p0 displayNone">
+        <div class="container-fluid displayNone" id="insert_dashboard">
 
-            <nav class="navbar navbar-default navbar-fixed-top" style="background-color:#fff;border-color:#fff;">
-                <div class="container-fluid">
-                    <div class="row _m10_b _m10_t">
-                        <div class="col-md-6">
-                            <input class="form-control" style="display:inline-block;width:50px;" type="text" placeholder=""> 시
-                            <input class="form-control" style="display:inline-block;width:50px;" type="text" placeholder=""> 분
-                            <button class="btn btn-primary">라운드마감시간입력하기</button>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <button class="btn btn-primary _save_btn">적용하기</button>
-                            <button class="btn btn-warning _save_btn">전체리셋</button>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <div class="col-md-12" style="padding:0px 15px 0px 0px;">
-                            <div class="panel panel-navy _m0">
-                                <!-- <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div> -->
-                                <table class="table table-bordered">
-                                    <thead style="padding-right:10px;">
-                                        <tr>
-                                            <th class="text-center">구분</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
-                                            <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
-                                        </tr>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr class="bidder_list">
-                                            <td class="text-center"><strong>사업자</strong></td>
-                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
-                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
-                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
-
-                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
-                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
-                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
-
-                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
-                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
-                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
-
-                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
-                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
-                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
-
-                                            <td class="text-center"><span class="label label-KT-l">KT</span></td>
-                                            <td class="text-center"><span class="label label-SK-l">SKT</span></td>
-                                            <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
-
-                                        </tr>
-
-                                        <!-- 시작가 -->
-                                        <tr class="_start_price_list">
-                                            <script class="_start_price_list_tpl" type="text/x-handlebars-template">
-                                                <td class="text-center" style="width:100px;"><strong class="">시작가</strong></td>
-                                                {{#startPriceList}}
-                                                <td class="text-center" colspan=3>
-                                                    <strong class="_start_price">{{price}}</strong>
-                                                </td>
-                                                {{/startPriceList}}
-                                            </script>
-                                        </tr><!--/ 시작가 -->
-                                    </tbody>
-
-                                </table>
-                            </div><!--/ panel -->
-                        </div><!--/ col-md-12 -->
-
-                    </div>
+            <div class="row dashboard_header">
+                <div class="col-md-6">
+                    <!-- <input class="form-control header_hour"type="text" placeholder=""> 시
+                    <input class="form-control header_min" type="text" placeholder=""> 분
+                    <button class="btn btn-primary _timer_btn"><strong>라운드마감시간입력하기</strong></button> -->
                 </div>
-            </nav>
+                <div class="col-md-6 text-right">
+                    <button class="btn btn-primary _save_btn"><strong>적용하기</strong></button>
+                    <!-- <button class="btn btn-warning _all_reset_btn"><strong>전체리셋</strong></button> -->
+                </div>
+            </div>
+            <div class="row">
 
-            <div class="row" style="margin-top:159px;">
+                <div class="col-md-12" style="padding:0px 15px 0px 0px;">
+                    <div class="panel panel-navy _m0">
+                        <!-- <div class="panel-heading"><i class="fa fa-arrow-circle-right"></i><strong> 오름입찰</strong></div> -->
+                        <table class="table table-bordered">
+                            <thead style="padding-right:10px;">
+                                <tr>
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">A</span> - 700MHz (광)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">B</span> - 1.8GHz (협)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">C</span> - 2.1GHz (광)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">D</span> - 2.6GHz (광)</th>
+                                    <th class="text-center" colspan=3><span class="label label-default" style="font-size:100%">E</span> - 2.6GHz (협)</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr class="bidder_list">
+                                    <td class="text-center"><strong>사업자</strong></td>
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                    <td class="text-center"><span class="label label-KT-l">KT</span></td>
+                                    <td class="text-center"><span class="label label-SK-l">SKT</span></td>
+                                    <td class="text-center"><span class="label label-LG-l">LGU+</span></td>
+
+                                </tr>
+
+                                <!-- 시작가 -->
+                                <tr class="_start_price_list">
+                                    <script class="_start_price_list_tpl" type="text/x-handlebars-template">
+                                        <td class="text-center" style="width:100px;"><strong class="">시작가</strong></td>
+                                        {{#startPriceList}}
+                                        <td class="text-center" colspan=3>
+                                            <strong class="_start_price">{{price}}</strong>
+                                        </td>
+                                        {{/startPriceList}}
+                                    </script>
+                                </tr><!--/ 시작가 -->
+                            </tbody>
+
+                        </table>
+                    </div><!--/ panel -->
+                </div><!--/ col-md-12 -->
+
+            </div>
+
+            <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-navy _m0">
                         <div style="overflow-y:scroll;overflow-x:hidden;height:620px;">
