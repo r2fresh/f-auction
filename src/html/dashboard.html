@@ -28,17 +28,17 @@
             <div class="row" style="margin-right:5px;">
                 <div class="col-md-12">
                     <div class="panel panel-navy">
-                        <div class="panel-heading"><h2><i class="fa fa-arrow-circle-right"></i> 현황</h2></div>
-                        <table class="table table-bordered">
+                        <div class="panel-heading"><span style="font-size:200%"><i class="fa fa-arrow-circle-right"></i> 현황</span></div>
+                        <table class="table table-bordered" style="table-layout:fixed;">
                             <thead>
                                 <tr class="_last_round_block">
-                                    <th class="text-center" style="width:100px;">블록</th>
-                                    <th class="text-center" style="width:370px;"><span class="label label-default" style="font-size:100%;">A</span> - 700MHz <sup>40Hz</sup> (광)</th>
-                                    <th class="text-center" style="width:357px;"><span class="label label-default" style="font-size:100%;">B</span> - 1.8GHz (협)</th>
-                                    <th class="text-center" style="width:357px;"><span class="label label-default" style="font-size:100%;">C</span> - 2.1GHz (광)</th>
-                                    <th class="text-center" style="width:358px;"><span class="label label-default" style="font-size:100%;">D</span> - 2.6GHz (광)</th>
-                                    <th class="text-center" style="width:356px;"><span class="label label-default" style="font-size:100%;">E</span> - 2.6GHz (협)</th>
-                                </tr>
+                                    <th class="text-center" style="width:10%">블록</th>
+                                    <th class="text-center" style="width:18%"><span>A</span></th>
+                                    <th class="text-center" style="width:18%"><span>B</span></th>
+                                    <th class="text-center" style="width:18%"><span>C</span></th>
+                                    <th class="text-center" style="width:18%"><span>D</span></th>
+                                    <th class="text-center" style="width:18%"><span>E</span></th>
+                                </18>
                                 <tr class="_start_price_list">
                                     <script class="_start_price_list_tpl" type="text/x-handlebars-template">
                                         <td class="text-center"><strong class="">시작가</strong></td>
@@ -67,7 +67,7 @@
                                         {{/companyList}}
                                     </tr>
                                     <tr class="_last_round_lowest_bidding_price_list">
-                                        <td class="text-center"><strong>최소<br>입찰액</strong></td>
+                                        <td class="text-center"><strong>최소입찰액</strong></td>
                                         {{#lowestBiddingPriceList}}
                                         <td class="text-center"><strong>{{lowestBiddingPrice}}</strong></td>
                                         {{/lowestBiddingPriceList}}
@@ -79,57 +79,58 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-top:10px;margin-right:5px;">
+            <div class="row" style="margin-top:10px;margin-right:7px;">
 
                 <div class="col-md-12">
                     <div class="panel panel-navy _m0">
-                        <table class="table table-bordered">
+                        <div class="panel-heading"><span style="font-size:200%"><i class="fa fa-arrow-circle-right"></i> 현황</span></div>
+                        <table class="table table-bordered" style="table-layout:fixed;">
                             <thead style="padding-right:10px;">
                                 <tr>
-                                    <th class="text-center" style="width:100px;padding:0;height:1px;"></th>
-                                    <th class="text-center" style="width:370px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:357px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:357px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:358px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:356px;padding:0;height:1px;" colspan="4"></th>
+                                    <th class="text-center" style="width:10%;padding:0;height:1px;"></th>
+                                    <th class="text-center" style="width:18%;padding:0;height:1px;" colspan="4"><span></span></th>
+                                    <th class="text-center" style="width:18%;padding:0;height:1px;" colspan="4"><span></span></th>
+                                    <th class="text-center" style="width:18%;padding:0;height:1px;" colspan="4"><span></span></th>
+                                    <th class="text-center" style="width:18%;padding:0;height:1px;" colspan="4"><span></span></th>
+                                    <th class="text-center" style="width:18%;padding:0;height:1px;" colspan="4"><span></span></th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center" style="font-size:17px;" rowspan="2">라운드</th>
-                                    <th class="text-center" style="font-size:17px;width:73px;" rowspan="2"><strong>입찰액</strong></th>
-                                    <th class="text-center" style="font-size:17px;width:101px" rowspan="2"><strong>승자</strong></th>
+                                    <th class="text-center" style="font-size:17px;width:213px;" rowspan="2">라운드</th>
+                                    <th class="text-center" style="font-size:17px;width:96px;" rowspan="2"><strong>입찰액</strong></th>
+                                    <th class="text-center" style="font-size:17px;width:88px;" rowspan="2"><strong>승자</strong></th>
+                                    <th class="text-center" style="font-size:17px;width:92px;" colspan="2"><strong>증분</strong></th>
+
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>입찰액</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>승자</strong></th>
                                     <th class="text-center" style="font-size:17px;" colspan="2"><strong>증분</strong></th>
 
-                                    <th class="text-center" style="font-size:17px;width:70px;" rowspan="2"><strong>입찰액</strong></th>
-                                    <th class="text-center" style="font-size:17px;width:98px;" rowspan="2"><strong>승자</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>입찰액</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>승자</strong></th>
                                     <th class="text-center" style="font-size:17px;" colspan="2"><strong>증분</strong></th>
 
-                                    <th class="text-center" style="font-size:17px;width:70px;" rowspan="2"><strong>입찰액</strong></th>
-                                    <th class="text-center" style="font-size:17px;width:98px;" rowspan="2"><strong>승자</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>입찰액</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>승자</strong></th>
                                     <th class="text-center" style="font-size:17px;" colspan="2"><strong>증분</strong></th>
 
-                                    <th class="text-center" style="font-size:17px;width:71px;" rowspan="2"><strong>입찰액</strong></th>
-                                    <th class="text-center" style="font-size:17px;width:98px;" rowspan="2"><strong>승자</strong></th>
-                                    <th class="text-center" style="font-size:17px;" colspan="2"><strong>증분</strong></th>
-
-                                    <th class="text-center" style="font-size:17px;width:70px;" rowspan="2"><strong>입찰액</strong></th>
-                                    <th class="text-center" style="font-size:17px;width:99px;" rowspan="2"><strong>승자</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>입찰액</strong></th>
+                                    <th class="text-center" style="font-size:17px;" rowspan="2"><strong>승자</strong></th>
                                     <th class="text-center" style="font-size:17px;" colspan="2"><strong>증분</strong></th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:98px;"> 누적</th>
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:98px;"> 해당R</th>
-
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:94px;"> 누적</th>
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:95px;"> 해당R</th>
-
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:94px;"> 누적</th>
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:95px;"> 해당R</th>
-
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:94px;"> 누적</th>
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:95px;"> 해당R</th>
-
                                     <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:95px;"> 누적</th>
-                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:96px;"> 해당R</th>
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;width:95px;"> 해당R</th>
+
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 누적</th>
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 해당R</th>
+
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 누적</th>
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 해당R</th>
+
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 누적</th>
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 해당R</th>
+
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 누적</th>
+                                    <th class="text-center"  style="font-size:17px;padding-left:0px;padding-right:0px;"> 해당R</th>
                                 </tr>
                             </thead>
                         </table>
@@ -139,44 +140,34 @@
 
             </div>
 
-            <div class="row" style="margin-top:10px;">
+            <div class="row">
 
                 <div class="col-md-12">
                     <div style="overflow-y:scroll;overflow-x:hidden;height:620px;">
-                        <table class="table table-bordered">
-                            <thead style="padding-right:10px;">
-                                <tr>
-                                    <th class="text-center" style="width:100px;padding:0;height:1px;"></th>
-                                    <th class="text-center" style="width:370px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:357px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:357px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:358px;padding:0;height:1px;" colspan="4"></th>
-                                    <th class="text-center" style="width:356px;padding:0;height:1px;" colspan="4"></th>
-                                </tr>
-                            </thead>
+                        <table class="table table-bordered" style="table-layout:fixed;">
                             <tbody class="_round_list">
 
                                 <script class="_round_list_tpl" type="text/x-handlebars-template">
                                 {{#roundList}}
                                 <tr class="_round_{{name}}">
-                                    <td class="text-center" style="font-size:200%;width:100px;vertical-align:middle;padding:0;">
+                                    <td class="text-center" style="font-size:180%;vertical-align:middle;padding:0;">
                                         <strong>{{name}}</strong>
                                     </td>
                                     {{#frequency}}
-                                        <td class="text-center" style="font-size:20px;padding:10px 0px;vertical-align:middle;">
+                                        <td class="text-center" style="font-size:180%;padding:10px 0px;vertical-align:middle;">
                                             <span>{{wonWinPrice}}</span>
                                         </td>
-                                        <td class="text-center" style="font-size:18px;padding:10px 0px;vertical-align:middle;">
+                                        <td class="text-center" style="font-size:150%;padding:10px 0px;vertical-align:middle;">
                                             <span class="label label-{{winBidder}}-l">{{winCompanyName}}</span>
                                         </td>
-                                        <td class="text-center" style="font-size:20px;padding:10px 0px;vertical-align:middle;">
-                                            <span>{{winRate}}</span>
-                                            <!-- <span>88.88%</span> -->
+                                        <td class="text-center" style="font-size:160%;padding:10px 0px;vertical-align:middle;">
+                                            <!-- <span>{{winRate}}</span> -->
+                                            <span>88.88%</span>
                                         </td>
-                                        <td class="text-center" style="font-size:20px;padding:10px 0px;vertical-align:middle;">
+                                        <td class="text-center" style="font-size:160%;padding:10px 0px;vertical-align:middle;">
                                             <!-- <span>{{winNowRate}}-{{bidderWinNowRate}}</span> -->
-                                            <span>{{winNowRate}}</span>
-                                            <!-- <span>88.88%</span> -->
+                                            <!-- <span>{{winNowRate}}</span> -->
+                                            <span>88.88%</span>
                                         </td>
 
                                     {{/frequency}}

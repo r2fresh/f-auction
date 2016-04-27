@@ -4,6 +4,8 @@
 */
 ._dashboard ._last_round_block th{
     font-size:200%;
+    border: 3px solid #455C68!important;
+    border-right: 10px solid #455C68!important;
 }
 
 /**
@@ -11,6 +13,8 @@
 */
 ._dashboard ._start_price_list td{
     font-size:200%;
+    border: 3px solid #455C68!important;
+    border-right: 10px solid #455C68!important;
 }
 
 /**
@@ -18,6 +22,8 @@
 */
 ._dashboard ._last_round_price_list td{
     font-size:200%;
+    border: 3px solid #455C68!important;
+    border-right: 10px solid #455C68!important;
 }
 
 /**
@@ -25,6 +31,8 @@
 */
 ._dashboard ._last_round_company_list td {
     font-size:200%;
+    border: 3px solid #455C68!important;
+    border-right: 10px solid #455C68!important;
 }
 ._dashboard ._last_round_company_list ._last_winCompany_KT,
 ._dashboard ._last_round_company_list ._last_winCompany_SK,
@@ -47,4 +55,22 @@
 ._dashboard ._last_round_lowest_bidding_price_list td {
     font-size:200%;
     vertical-align: middle;
+    border: 3px solid #455C68!important;
+    border-right: 10px solid #455C68!important;
+}
+
+._dashboard ._round_list tr td:first-child{
+    width:212px;
+}
+._dashboard ._round_list tr td:nth-child(2){
+    width:98px;
+}
+._dashboard ._round_list tr td:nth-child3){
+    width:98px;
+}
+._dashboard ._round_list tr td:nth-child(4){
+    width:97px;
+}
+._dashboard ._round_list tr td:nth-child(5){
+    width:97px;
 }
