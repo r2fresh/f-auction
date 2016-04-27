@@ -152,7 +152,7 @@ app.get('/biddingDelayCount', function(req, res) {
 * 현황판 입력 화면
 */
 app.get('/insert_dashboard',function(req, res){
-    res.sendFile(__dirname + '/insert_dashboard.html')
+    res.sendFile(__dirname + '/src/html/insert_dashboard.html')
 })
 
 /**
@@ -178,7 +178,7 @@ app.get('/dashboard_bak',function(req, res){
  * 현 증분율 표시
  */
 app.get('/now_rate_increase',function(req, res){
-    res.sendFile(__dirname + '/now_rate_increase.html')
+    res.sendFile(__dirname + '/src/html/now_rate_increase.html')
 })
 /**
  * 통신사 구분하여 전체 리스트를 보여주는 차트

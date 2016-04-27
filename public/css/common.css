@@ -52,9 +52,12 @@
 
 ._m10_t { margin-top:10px;}
 ._m10_b { margin-bottom:10px;}
+._m10_r { margin-right:10px;}
 
 ._m20_t { margin-top:20px;}
 ._m20_b { margin-bottom:20px;}
+._m20_r { margin-right:20px;}
+._m20_l { margin-left:20px;}
 
 ._m30_t { margin-top:30px;}
 
@@ -189,29 +192,6 @@
     text-align:center;
     color : #fff;
     font-size : 14px;
-}
-
-
-.clock {
-    zoom:0.4;
-    -moz-transform: scale(0.4)
-}
-
-.flip-clock-wrapper {
-  /* text-align: center; */
-  /* position: relative; */
-  /* width: 100%; */
-  margin: 0 auto;
-  max-width: 300px;
-  margin-top: 2em;
-}
-
-.clock {
-    margin-top:0px;
-}
-
-.flip-clock-label {
-    display:none;
 }
 
 

@@ -79,3 +79,25 @@
 .bidder .table-bordered>tbody>tr>th{
     border: 1px solid #7A919C;
 }
+
+.bidder .clock {
+    zoom:0.4;
+    -moz-transform: scale(0.4)
+}
+
+.bidder .flip-clock-wrapper {
+  /* text-align: center; */
+  /* position: relative; */
+  /* width: 100%; */
+  margin: 0 auto;
+  max-width: 300px;
+  margin-top: 2em;
+}
+
+.bidder .clock {
+    margin-top:0px;
+}
+
+.bidder .flip-clock-label {
+    display:none;
+}

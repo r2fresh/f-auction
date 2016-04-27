@@ -63,3 +63,25 @@
     text-align: center;
     padding-bottom: 20px;
 }*/
+
+.admin .clock {
+    zoom:0.4;
+    -moz-transform: scale(0.4)
+}
+
+.admin .flip-clock-wrapper {
+  /* text-align: center; */
+  /* position: relative; */
+  /* width: 100%; */
+  margin: 0 auto;
+  max-width: 300px;
+  margin-top: 2em;
+}
+
+.admin .clock {
+    margin-top:0px;
+}
+
+.admin .flip-clock-label {
+    display:none;
+}

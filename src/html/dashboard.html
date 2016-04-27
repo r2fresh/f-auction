@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
         <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
 
+        <link rel="stylesheet" href="/lib/flipclock/compiled/flipclock.css" charset="utf-8">
+
         <link rel="stylesheet" href="/css/common.css" charset="utf-8">
         <link rel="stylesheet" href="/css/dashboard.css" charset="utf-8">
 
@@ -17,13 +19,37 @@
         <script src="/lib/underscore/underscore.js" charset="utf-8"></script>
         <script src="/lib/backbone/backbone.js" charset="utf-8"></script>
         <script src="/lib/handlebars/handlebars.min.js" charset="utf-8"></script>
+        <script src="/lib/moment/moment.js" charset="utf-8"></script>
+
+        <script src="/lib/flipclock/compiled/flipclock.js" charset="utf-8"></script>
 
         <script src="/js/common.js" charset="utf-8"></script>
         <script src="/js/r2/r2Common.js" charset="utf-8"></script>
         <script src="/lib/requirejs/require.js" data-main="/js/dashboard/App.js" charset="utf-8"></script>
     </head>
     <body style="overflow:hidden">
-        <div class="container-fluid _dashboard _p0">
+        <div id="dashboard" class="container-fluid displayNone">
+
+            <!--  Round 정보 표시 및 카우트다운 기능 추가-->
+            <div class="row dashboard_header">
+                <div class="col-md-12">
+                    <div class="panel panel-navy">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span class="round">1</span><span> ROUND</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="clock"></div>
+                                    <div class="_m20_l _m10_r" style="float:right"><span style="font-size:250%;">현재시간</span></div>
+                                    <div class="count_down"></div>
+                                    <div class="_m10_r" style="float:right"><span style="font-size:250%;">남은시간</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row" style="margin-right:5px;">
                 <div class="col-md-12">
@@ -55,7 +81,9 @@
                                     <tr class="_last_round_price_list">
                                         <td class="text-center"><strong>현재가</strong></td>
                                         {{#priceList}}
-                                        <td class="text-center"><strong>{{price}}{{#if rateIncrease}} ({{rateIncrease}}) {{/if}}</strong></td>
+                                        <td class="text-center _last_winCompany_{{companyName}}">
+                                            <strong>{{price}}{{#if rateIncrease}} ({{rateIncrease}}) {{/if}}</strong>
+                                        </td>
                                         {{/priceList}}
                                     </tr>
                                     <tr class="_last_round_company_list">

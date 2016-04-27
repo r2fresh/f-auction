@@ -1,8 +1,74 @@
 
+
+#dashboard {
+    padding:0px;
+}
+
+#dashboard .dashboard_header {
+    margin-right: 5px;
+}
+
+#dashboard .dashboard_header span {
+    font-size:250%;
+}
+
+#dashboard .clock,
+#dashboard .count_down {
+    zoom:0.5;
+    -moz-transform: scale(0.4);
+    float:right;
+}
+
+#dashboard .flip-clock-wrapper {
+  /* text-align: center; */
+  /* position: relative; */
+  /* width: 100%; */
+  margin: 0 auto;
+  max-width: 500px;
+  margin-top: 2em;
+}
+
+#dashboard .clock,
+#dashboard .count_down {
+    margin-top:0px;
+}
+
+#dashboard .flip-clock-label {
+    display:none;
+}
+
+#dashboard .flip-clock-wrapper ul li a div div.inn {
+    background-color: #FFF;
+    color:#000;
+}
+
+#dashboard .flip-clock-divider .flip-clock-dot {
+    background-color: #FFF;
+}
+
+
+/**
+* 대시보드에서 공통적으로 사용하는 스타일 시트
+*/
+#dashboard ._last_winCompany_KT,
+#dashboard ._last_winCompany_SK,
+#dashboard ._last_winCompany_LG {
+    color:#FFF;
+}
+#dashboard ._last_winCompany_KT {
+    background-color: #ED1F27;
+}
+#dashboard ._last_winCompany_SK {
+    background-color: #0072FF;
+}
+#dashboard ._last_winCompany_LG  {
+    background-color: #2EB502;
+}
+
 /**
 * 대시보드 상단의 마지막 라운드 블록 관련 스타일 시트
 */
-._dashboard ._last_round_block th{
+#dashboard ._last_round_block th{
     font-size:200%;
     border: 3px solid #455C68!important;
     border-right: 10px solid #455C68!important;
@@ -11,7 +77,7 @@
 /**
 * 대시보드 상단의 마지막 라운드 시작가 관련 스타일 시트
 */
-._dashboard ._start_price_list td{
+#dashboard ._start_price_list td{
     font-size:200%;
     border: 3px solid #455C68!important;
     border-right: 10px solid #455C68!important;
@@ -20,7 +86,7 @@
 /**
 * 대시보드 상단의 마지막 라운드 현재가 관련 스타일 시트
 */
-._dashboard ._last_round_price_list td{
+#dashboard ._last_round_price_list td{
     font-size:200%;
     border: 3px solid #455C68!important;
     border-right: 10px solid #455C68!important;
@@ -29,48 +95,34 @@
 /**
 * 대시보드 상단의 마지막 라운드 승자 관련 스타일 시트
 */
-._dashboard ._last_round_company_list td {
+#dashboard ._last_round_company_list td {
     font-size:200%;
     border: 3px solid #455C68!important;
     border-right: 10px solid #455C68!important;
-}
-._dashboard ._last_round_company_list ._last_winCompany_KT,
-._dashboard ._last_round_company_list ._last_winCompany_SK,
-._dashboard ._last_round_company_list ._last_winCompany_LG {
-    color:#FFF;
-}
-._dashboard ._last_round_company_list ._last_winCompany_KT {
-    background-color: #ED1F27;
-}
-._dashboard ._last_round_company_list ._last_winCompany_SK {
-    background-color: #0072FF;
-}
-._dashboard ._last_round_company_list ._last_winCompany_LG  {
-    background-color: #2EB502;
 }
 
 /**
 * 대시보드 상단의 마지막 라운드 최소입찰액 스타일 시트
 */
-._dashboard ._last_round_lowest_bidding_price_list td {
+#dashboard ._last_round_lowest_bidding_price_list td {
     font-size:200%;
     vertical-align: middle;
     border: 3px solid #455C68!important;
     border-right: 10px solid #455C68!important;
 }
 
-._dashboard ._round_list tr td:first-child{
+#dashboard ._round_list tr td:first-child{
     width:212px;
 }
-._dashboard ._round_list tr td:nth-child(2){
+#dashboard ._round_list tr td:nth-child(2){
     width:98px;
 }
-._dashboard ._round_list tr td:nth-child3){
+#dashboard ._round_list tr td:nth-child3){
     width:98px;
 }
-._dashboard ._round_list tr td:nth-child(4){
+#dashboard ._round_list tr td:nth-child(4){
     width:97px;
 }
-._dashboard ._round_list tr td:nth-child(5){
+#dashboard ._round_list tr td:nth-child(5){
     width:97px;
 }
