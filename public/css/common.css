@@ -107,6 +107,19 @@
      color: #C1C1C1;
 }
 
+.text-gray {
+     color: #C1C1C1;
+}
+
+.text-darkslategrey {
+     color: #2F4F4F;
+}
+
+
+.text-default {
+     color: #000000;
+}
+
 .text-KT {
     color:#ED1F27;
 }

@@ -22,7 +22,7 @@
         <script src="/js/r2/r2Common.js" charset="utf-8"></script>
         <script src="/lib/requirejs/require.js" data-main="/js/now_rate_increase/App.js" charset="utf-8"></script>
     </head>
-    <body>
+    <body style="overflow:hidden">
         <div class="container-fluid _now_rate_increase displayNone">
             <div class="row">
                 <div class="col-md-12 text-center _round_number">
@@ -32,7 +32,7 @@
 
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 _p0">
                     <div class="panel panel-default">
                         <table class="table table-bordered">
                             <thead>
@@ -47,11 +47,11 @@
                                 <!-- 시작가 -->
                                 <tr class="_start_price_list">
                                     <script class="_start_price_list_tpl" type="text/x-handlebars-template">
-                                        <th class="text-center"><strong class="">시작가</strong></th>
+                                        <td class="text-center"><span class="">시작가</span></td>
                                         <{{#startPriceList}}
-                                        <th class="text-center">
-                                            <strong class="_start_price">{{wonPrice}}</strong>
-                                        </th>
+                                        <td class="text-center">
+                                            <span class="_start_price">{{wonPrice}}</span>
+                                        </td>
                                         {{/startPriceList}}
                                     </script>
                                 </tr><!--/ 시작가 -->
@@ -63,8 +63,8 @@
                                         <td class="text-{{name}}">{{companyName}}</td>
                                         {{#rateIncreaseList}}
                                             <td class="text-center">
-                                                <span class="_won_price">{{wonPrice}}</span><br>
-                                                <span class="_rate_increase">({{rateIncrease}}%)</span>
+                                                <span class="_won_price text-{{className}}">{{wonPrice}}</span><br>
+                                                <span class="_rate_increase text-{{className}}">({{rateIncrease}}%)</span>
                                             </td>
                                         {{/rateIncreaseList}}
                                     </tr>

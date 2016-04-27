@@ -60,9 +60,13 @@ define([
                 _.each(bidderList,function(bidder){
                     bidder.companyName = (bidder.name == 'SK')?'SKT':(bidder.name == 'LG')?'LGU+':bidder.name;
                     _.each(bidder.rateIncreaseList,function(rateIncrease){
-                        rateIncrease.wonPrice = Auction.numberic.get(rateIncrease.ratePrice)
+                        rateIncrease.wonPrice = Auction.numberic.get(rateIncrease.ratePrice);
+                        if(rateIncrease.winBidder == bidder.name){}
+                        rateIncrease.className = (rateIncrease.winBidder == bidder.name) ? rateIncrease.winBidder : 'darkslategrey';
                     })
                 })
+
+                console.log(bidderList)
 
                 var template = Handlebars.compile(this.bidderListTpl);
                 this.$el.find('._bidder_list').html(template({'bidderList':bidderList}));
@@ -78,6 +82,7 @@ define([
             var bidderList       = [{'name':'KT'},{'name':'SK'},{'name':'LG'}];
             var roundNumber      = 1;
 
+            console.log(roundList)
             // 기본 변수 설정
             // _.each(rateIncreaseList,function(item){
             //     item.priceList = [];
@@ -106,9 +111,11 @@ define([
 
                         var rateIncrease = roundData.frequency[j].bidders[k].rateIncrease;
                         var startPrice = startPriceList[j].price;
+                        var winBidder = roundData.frequency[j].winBidder;
 
                         bidderList[k].rateIncreaseList[j].ratePrice = parseInt(startPrice,10) + Math.round(startPrice*rateIncrease/100);
                         bidderList[k].rateIncreaseList[j].rateIncrease = rateIncrease;
+                        bidderList[k].rateIncreaseList[j].winBidder = winBidder;
                     }
                 }
 

@@ -1,17 +1,23 @@
 ._round_number span {
-    font-size:500%;
+    font-size:1000%;
 }
 
 ._round_number strong {
-    font-size:300%;
+    font-size:500%;
 }
 
 ._frequency th{
     font-size : 200%;
+    background-color: #455C68;
+    color:#fff;
+    padding:20px!important;
 }
 
-._start_price_list th{
-    font-size : 200%;
+._start_price_list td{
+    font-size : 500%;
+    background-color: #455C68;
+    color:#fff;
+    padding:20px!important;
 }
 
 ._bidder td:first-child {
