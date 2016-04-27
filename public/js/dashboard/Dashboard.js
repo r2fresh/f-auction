@@ -73,6 +73,8 @@ define([
 
             //console.log(roundList)
 
+            console.log(roundList)
+
             _.each(roundList,function(roundData){
                 _.each(roundData.frequency, function(frequency){
                     _.each(frequency.bidders, function(bidder){
@@ -176,7 +178,7 @@ define([
 
             _.each(lastRoundData.frequency,Function.prototype.bind.call(function(frequency){
                 priceList.push({'price' : Auction.numberic.get(frequency.winPrice), 'rateIncrease':frequency.winRate});
-                companyList.push({'companyName':frequency.winBidder});
+                companyList.push({'companyName':frequency.winBidder,'winCompanyName':frequency.winCompanyName});
 
                 if(frequency.winPrice != ''){
                     var winPrice = parseInt(frequency.winPrice,10);

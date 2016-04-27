@@ -1,0 +1,50 @@
+
+/**
+* 대시보드 상단의 마지막 라운드 블록 관련 스타일 시트
+*/
+._dashboard ._last_round_block th{
+    font-size:200%;
+}
+
+/**
+* 대시보드 상단의 마지막 라운드 시작가 관련 스타일 시트
+*/
+._dashboard ._start_price_list td{
+    font-size:200%;
+}
+
+/**
+* 대시보드 상단의 마지막 라운드 현재가 관련 스타일 시트
+*/
+._dashboard ._last_round_price_list td{
+    font-size:200%;
+}
+
+/**
+* 대시보드 상단의 마지막 라운드 승자 관련 스타일 시트
+*/
+._dashboard ._last_round_company_list td {
+    font-size:200%;
+}
+._dashboard ._last_round_company_list ._last_winCompany_KT,
+._dashboard ._last_round_company_list ._last_winCompany_SK,
+._dashboard ._last_round_company_list ._last_winCompany_LG {
+    color:#FFF;
+}
+._dashboard ._last_round_company_list ._last_winCompany_KT {
+    background-color: #ED1F27;
+}
+._dashboard ._last_round_company_list ._last_winCompany_SK {
+    background-color: #0072FF;
+}
+._dashboard ._last_round_company_list ._last_winCompany_LG  {
+    background-color: #2EB502;
+}
+
+/**
+* 대시보드 상단의 마지막 라운드 최소입찰액 스타일 시트
+*/
+._dashboard ._last_round_lowest_bidding_price_list td {
+    font-size:200%;
+    vertical-align: middle;
+}

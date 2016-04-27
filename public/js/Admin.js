@@ -755,6 +755,8 @@ define([
 
                 if(biddingTypeList.length == 0){
                     this.biddingTypeCount+=1;
+                } else {
+                    this.biddingTypeCount=0;
                 }
 
                 return this.biddingTypeCount == 2;

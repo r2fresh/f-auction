@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" charset="utf-8">
 
         <link rel="stylesheet" href="/css/common.css" charset="utf-8">
+        <link rel="stylesheet" href="/css/dashboard.css" charset="utf-8">
 
         <script src="/lib/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="/lib/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
@@ -27,9 +28,10 @@
             <div class="row" style="margin-right:5px;">
                 <div class="col-md-12">
                     <div class="panel panel-navy">
+                        <div class="panel-heading"><h2><i class="fa fa-arrow-circle-right"></i> 현황</h2></div>
                         <table class="table table-bordered">
                             <thead>
-                                <tr>
+                                <tr class="_last_round_block">
                                     <th class="text-center" style="width:100px;">블록</th>
                                     <th class="text-center" style="width:370px;"><span class="label label-default" style="font-size:100%;">A</span> - 700MHz <sup>40Hz</sup> (광)</th>
                                     <th class="text-center" style="width:357px;"><span class="label label-default" style="font-size:100%;">B</span> - 1.8GHz (협)</th>
@@ -59,11 +61,13 @@
                                     <tr class="_last_round_company_list">
                                         <td class="text-center"><strong>승자</strong></td>
                                         {{#companyList}}
-                                        <td class="text-center"><strong>{{companyName}}</strong></td>
+                                        <td class="text-center _last_winCompany_{{companyName}}">
+                                            <strong>{{winCompanyName}}</strong>
+                                        </td>
                                         {{/companyList}}
                                     </tr>
                                     <tr class="_last_round_lowest_bidding_price_list">
-                                        <td class="text-center"><strong>최소입찰액</strong></td>
+                                        <td class="text-center"><strong>최소<br>입찰액</strong></td>
                                         {{#lowestBiddingPriceList}}
                                         <td class="text-center"><strong>{{lowestBiddingPrice}}</strong></td>
                                         {{/lowestBiddingPriceList}}
