@@ -9,6 +9,51 @@ define([
            /**
            * 각 주파수 가격 히스토리를 구하는 함수
            */
+           getRoundWinHistoryPrice:function(data){
+               var roundList        = JSON.parse(JSON.stringify(data));
+               var startPriceList   = JSON.parse(JSON.stringify(AuctionData.startPriceList));
+
+               // 각 라운드 별 입찰자에 해당하는 가격리스트와 미신청 주파수 설정
+               for(var i=0; i<roundList.length; ++i){
+                   for(var j=0; j<roundList[i].frequency.length; ++j){
+                       for(var k=0; k<roundList[i].frequency[j].bidders.length; ++k){
+                          if(roundList[i].frequency[j].bidders[k].vs == 'win'){
+
+                               var nowWinPrice = parseInt(roundList[i].frequency[j].winPrice,10);
+
+                               var price = null;
+                               var nowPercent = null;
+                               var winNowRateIncrease = null
+
+                               if(i==0){
+                                   price = parseInt(startPriceList[j].price,10);
+                                   nowPercent = ( (nowWinPrice - price)/price )*100;
+                                   winNowRateIncrease = Math.round(nowPercent * 100)/100;
+                               } else {
+                                   if(roundList[i-1].frequency[j].winPrice == ''){
+                                       price = parseInt(startPriceList[j].price,10);
+                                       nowPercent = ( (nowWinPrice - price)/price )*100;
+                                       winNowRateIncrease = Math.round(nowPercent * 100)/100;
+                                   } else {
+                                       price = parseInt(roundList[i-1].frequency[j].winPrice,10);
+                                       nowPercent = ( (nowWinPrice - price)/price )*100;
+                                       winNowRateIncrease = Math.round(nowPercent * 100)/100;
+                                   }
+                               }
+
+                           }
+
+                       }
+
+                       roundList[i].frequency[j].winNowRateIncrease = winNowRateIncrease;
+                   }
+               }
+
+               return roundList;
+           },
+           /**
+           * 각 입찰자 별주파수 가격 히스토리를 구하는 함수
+           */
            getRoundHistoryPrice:function(data){
                var roundList        = JSON.parse(JSON.stringify(data));
                var rateIncreaseList = JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
@@ -123,7 +168,7 @@ define([
 
                    var secondMaxPrice = _.max(tempHistoryPriceList);
 
-                   console.log(secondMaxPrice)
+                   //console.log(secondMaxPrice)
 
                    if(secondMaxPrice == 0){
                         nowPercent = ( (maxPrice - startPrice)/startPrice )*100;
@@ -133,9 +178,9 @@ define([
                         nowRateIncrease = Math.round(nowPercent * 100)/100;
                    }
 
-                   console.log(nowRateIncrease)
+                   //console.log(nowRateIncrease)
 
-                   console.log('==========================================')
+                   //console.log('==========================================')
                } else {
                    nowRateIncrease = 0;
                }

@@ -151,17 +151,22 @@ app.get('/insert_dashboard',function(req, res){
 })
 
 /**
- * 총 현황판
+ * 총 가격, 누적, 현증분율 표시
+ */
+app.get('/dashboard',function(req, res){
+    res.sendFile(__dirname + '/src/html/dashboard.html')
+})
+/**
+ * 총 가격, 누적, 현증분율(잘못되어 수정해서 사용안함) 표시
  */
 app.get('/dashboard_test',function(req, res){
     res.sendFile(__dirname + '/src/html/dashboard_test.html')
 })
-
 /**
- * 총 현황판
+ * 처음 현황판 (사용안함)
  */
-app.get('/dashboard',function(req, res){
-    res.sendFile(__dirname + '/src/html/dashboard.html')
+app.get('/dashboard_bak',function(req, res){
+    res.sendFile(__dirname + '/src/html/dashboard_bak.html')
 })
 
 /**
@@ -183,14 +188,14 @@ app.get('/chart_win',function(req, res){
     res.sendFile(__dirname + '/src/html/chart_win.html')
 })
 /**
- * 통신사를 구분하여 승자 리스트만 보여주는 차트
+ * 통신사를 구분하여 승자 입찰액 리스트만 보여주는 차트
  */
 app.get('/chart_price',function(req, res){
     res.sendFile(__dirname + '/src/html/chart_price.html')
 })
 
 /**
- * 통신사를 구분하여 승자 리스트만 보여주는 차트
+ * 통신사를 구분하여 승자 누적 증분율 리스트만 보여주는 차트
  */
 app.get('/chart_rate',function(req, res){
     res.sendFile(__dirname + '/src/html/chart_rate.html')

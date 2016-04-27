@@ -44,8 +44,8 @@ define([
         },
         getRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-                var roundList = store.get('roundList')
-                //var roundList = data;
+                //var roundList = store.get('roundList')
+                var roundList = data;
                 this.setRoundList(roundList);
             }
         },
@@ -171,7 +171,7 @@ define([
         },
         getRoundRateIncreaseList:function(data){
 
-            var roundList = JSON.parse(JSON.stringify(data));
+            var roundList = JSON.parse(JSON.stringify( this.getRoundWinRateIncreaseList(data) ));
             var tempRoundList = null, tempBidderList = null, tempMaxList = null;
 
             for(var i=0; i<roundList.length; ++i){
@@ -183,8 +183,6 @@ define([
 
                 tempBidderList = RoundRateIncrease.getRoundHistoryPrice(tempRoundList);
                 tempMaxList = RoundRateIncrease.getRoundMaxPrice(tempBidderList);
-
-                console.log(tempMaxList)
 
                 // 각 라운드 별 입찰자에 해당하는 가격리스트와 미신청 주파수 설정
                 for(var j=0; j<roundList[i].frequency.length; ++j){
@@ -227,7 +225,13 @@ define([
             //
             //     }
             // }
+
+            console.log(roundList);
             return roundList;
+        },
+        getRoundWinRateIncreaseList:function(data){
+            var roundList = JSON.parse(JSON.stringify(data))
+            return RoundRateIncrease.getRoundWinHistoryPrice(roundList)
         },
 
         /**
