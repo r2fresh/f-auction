@@ -777,7 +777,7 @@ define([
                 });
 
                 var template = Handlebars.compile(this.roundPriceListTpl);
-                this.$el.find('.round_price_list').last().html(template( roundPriceList ));
+                this.$el.find('.round_price_list').first().html(template( roundPriceList ));
             },
 
             /**
@@ -912,7 +912,7 @@ define([
                 var roundData = JSON.parse( JSON.stringify(AuctionData.roundData));
                 this.roundData = null;
                 this.roundData = _.extend(JSON.parse( JSON.stringify(roundData)),{'name':this.roundNum});
-                this.$el.find('._ascending_bidding_auction tbody').append($roundPriceList);
+                this.$el.find('._ascending_bidding_auction tbody').prepend($roundPriceList);
                 this.setRoundUI(this.roundData);
             },
             /**

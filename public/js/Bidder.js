@@ -957,7 +957,7 @@ define([
         setRoundWinPrice:function(data){
             console.log(data)
             var template = Handlebars.compile(this.roundResultTpl);
-            this.$el.find('._ascending_bid').append(template(data));
+            this.$el.find('._ascending_bid').prepend(template(data));
         },
         /**
          * 승자패자를 표시해 주는 함수
