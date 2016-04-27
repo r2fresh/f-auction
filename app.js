@@ -28,9 +28,9 @@ var roundList = [];
 
 // 입찰자 정보
 var companyInfoList = [
-    {'name':'KT','hertzList':null,'bandWidth':null,'biddingDelayCount':0},
-    {'name':'SK','hertzList':null,'bandWidth':null,'biddingDelayCount':0},
-    {'name':'LG','hertzList':null,'bandWidth':null,'biddingDelayCount':0},
+    {'name':'KT','hertzList':null,'bandWidth':null,'biddingDelayCount':0,'strategy':''},
+    {'name':'SK','hertzList':null,'bandWidth':null,'biddingDelayCount':0,'strategy':''},
+    {'name':'LG','hertzList':null,'bandWidth':null,'biddingDelayCount':0,'strategy':''},
 ];
 
 var pwd = 'wnvktnrudao';
@@ -128,6 +128,11 @@ app.get('/roundList', function(req, res) {
 
 
 app.get('/hertzList', function(req, res) {
+    var bodyData = req.body;
+    res.send(companyInfoList)
+})
+
+app.get('/biddingStrategy', function(req, res) {
     var bodyData = req.body;
     res.send(companyInfoList)
 })
@@ -399,6 +404,30 @@ io.on('connection', function(socket){
 
         io.emit('HERTZ_LIST',JSON.stringify(companyInfoList));
     });
+
+    /**
+    * 입찰전략을 관리자에게 전달
+    */
+    socket.on('BIDDING_STRATEGY', function(msg){
+        var data = JSON.parse(msg);
+        _.each(companyInfoList,function(item){
+            if(item.name == (data.user).toUpperCase()){
+                item.strategy = data.strategy;
+            }
+        })
+        logger.log(companyInfoList)
+        io.emit('BIDDING_STRATEGY',JSON.stringify(companyInfoList))
+    })
+
+    socket.on('BANDWIDTH',function(msg){
+        var data = JSON.parse(msg);
+        _.each(companyInfoList,function(item){
+            if(item.name == (data.user).toUpperCase()){
+                item.bandWidth = data.bandwidth;
+            }
+        })
+        io.emit('BANDWIDTH',JSON.stringify(companyInfoList))
+    })
 
     socket.on('AGAIN_SEAL_BID',function(msg){
         io.emit('AGAIN_SEAL_BID',msg);

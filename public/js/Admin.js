@@ -4,6 +4,7 @@ define([
     'text!tpl/adminRound.html',
     'text!tpl/adminBandWidth.html',
     'text!tpl/adminBiddingDelayCount.html',
+    'text!tpl/adminBiddingStrategy.html',
     'js/Model',
     'js/Process',
     'js/AuctionData',
@@ -12,7 +13,7 @@ define([
     'js/RoundRateIncrease2',
     'js/r2/r2Alert'
     ],
-    function(module,Admin, AdminRound, AdminBandWidth, AdminBiddingDelayCount,
+    function(module,Admin, AdminRound, AdminBandWidth, AdminBiddingDelayCount, AdminBiddingStrategy,
         Model, Pro, AuctionData, SealBidCombination, BiddingResult, RoundRateIncrease2, R2Alert){
 
         'use strict'
@@ -186,6 +187,27 @@ define([
             /**
             * 각 입찰자 대역폭 리스트 호출
             */
+            getBiddingStrategy:function(){
+                Model.getBiddingStrategy({
+                     url: '/biddingStrategy',
+                     method : 'GET',
+                     contentType:"application/json; charset=UTF-8",
+                     success : Function.prototype.bind.call(this.getBiddingStrategySuccess,this),
+                     error : function(){}
+                 })
+            },
+            /**
+            * 각 입찰자 대역폭 리스트 호출 성공
+            */
+            getBiddingStrategySuccess:function(data, textStatus, jqXHR){
+                if(textStatus == 'success'){
+                    this.onBiddingStrategy(JSON.stringify(data));
+                }
+            },
+
+            /**
+            * 각 입찰자 대역폭 리스트 호출
+            */
             getBiddingDelayCount:function(){
                 Model.getBiddingDelayCount({
                      url: '/biddingDelayCount',
@@ -218,6 +240,9 @@ define([
                 // 유예 리스트 쳄플릿
                 this.adminBiddingDelayCountTpl = AdminBiddingDelayCount;
 
+                // 유예 리스트 쳄플릿
+                this.adminBiddingStrategyTpl = AdminBiddingStrategy;
+
                 // 밀봉입찰액 템플릿
                 this.sealBidPriceListTpl = this.$el.find("._seal_bid_price_list_tpl").html();
                 this.$el.find("._seal_bid_price_list_tpl").remove();
@@ -242,6 +267,7 @@ define([
                 Auction.io.on('SEAL_BID_PRICE', Function.prototype.bind.call(this.onSealBidPrice,this) );
                 Auction.io.on('ROUND_RESULT_CHECK', Function.prototype.bind.call(this.onRoundResultCheck,this) );
                 Auction.io.on('HERTZ_LIST', Function.prototype.bind.call(this.onHertzList,this) );
+                Auction.io.on('BIDDING_STRATEGY', Function.prototype.bind.call(this.onBiddingStrategy,this) );
 
                 Auction.io.on('COUNTDOWN_START', Function.prototype.bind.call(this.onCountDownStart,this) );
                 Auction.io.on('COUNTDOWN_STOP', Function.prototype.bind.call(this.onCountDownStop,this) );
@@ -899,6 +925,13 @@ define([
 
                 var template = Handlebars.compile(this.adminBiddingDelayCountTpl);
                 this.$el.find('._bid_biddingDelayCount').html(template({'biddingDelayCountList':biddingDelayCountList}));
+            },
+
+            onBiddingStrategy:function(msg){
+                var biddingStrategyList = JSON.parse(msg);
+                console.log(biddingStrategyList)
+                var template = Handlebars.compile(this.adminBiddingStrategyTpl);
+                this.$el.find('._bidding_strategy').html(template({'biddingStrategyList':biddingStrategyList}));
             },
 
             //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////

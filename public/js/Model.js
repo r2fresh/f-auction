@@ -49,6 +49,10 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function getBiddingStrategy(data){
+		$.ajax(data);
+	}
+
 	module.exports = new (Backbone.Model.extend({
 		postLogin:postLogin,
 
@@ -60,6 +64,7 @@ define(function(require, exports, module){
 
 		getHertzList:getHertzList,
 		getBandWidth:getBandWidth,
+		getBiddingStrategy:getBiddingStrategy,
 		getBiddingDelayCount:getBiddingDelayCount,
 
 		postBid:postBid,

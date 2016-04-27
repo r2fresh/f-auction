@@ -150,7 +150,11 @@ define([
         setBidStrategy : function(){
             var userInfo = Auction.session.get('user_info');
             var strategy = (userInfo.strategy == '') ? '입력한 입찰전략이 없습니다.' : userInfo.strategy;
-            this.$el.find('._bid_strategy pre').text(strategy)
+            this.$el.find('._bid_strategy pre').text(strategy);
+
+            console.log(strategy)
+
+            Auction.io.emit('BIDDING_STRATEGY',JSON.stringify({'name':this.bidder_company,'strategy':strategy}))
         },
         /**
          * 입찰 회사 제한 대역폭 설정
@@ -218,7 +222,6 @@ define([
          * 입찰한 주파수만 입력 필드를 활성화 시키는 함수
          */
         setInsertHertzUI:function(){
-            console.log(this.hertzList);
             _.each( this.$el.find('._bid_price') ,Function.prototype.bind.call( function(element, index){
                 if(this.hertzList[index].hertzFlag){
                     $(element).attr('hertz_flag',true).prop('disabled',false);
