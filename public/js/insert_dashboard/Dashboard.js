@@ -126,8 +126,7 @@ define([
         },
         onRoundReset:function(e){
             e.preventDefault();
-
-            var $roundData = $(e.currentTarget).parent().parent();
+            var $roundData = $(e.currentTarget).parent().parent().parent();
 
             $roundData.find('input[type=radio]').removeAttr("checked");
             $roundData.find('._bidder_price').val('');
