@@ -44,7 +44,8 @@ define([
         //입찰수 주파수 리스트
         hertzList : null,
         // 카운트다운 시간
-        TIMER : 2400,
+        //TIMER : 2400,
+        TIMER : 300,
         // 입찰유형
         biddingType : '',
         //라운드 리스트 탬플릿
@@ -230,6 +231,18 @@ define([
                 }
             },this))
         },
+        intervalCountDown:function(){
+            var time = (Math.round(this.countDown.time * 100)) / 100;
+            console.log(time)
+            if(time < 0) {
+                this.countDown.stop();
+            } else if(Math.round(time) == 60) {
+                R2Alert.render({'msg':'1분 남았습니다.^^','w':350})
+            }
+        },
+        stopCountDown:function(){
+            this.setCountDown();
+        },
 
         setCountDown:function(){
             this.countDown = this.$el.find('.clock').FlipClock(this.TIMER, {
@@ -237,10 +250,8 @@ define([
         		countdown: true,
         		clockFace: 'MinuteCounter',
                 callbacks: {
-                    stop:function(e){
-                        console.log(this)
-                        //alert('stop')
-                    }
+                    interval:Function.prototype.bind.call(this.intervalCountDown,this),
+                    stop:Function.prototype.bind.call(this.stopCountDown,this)
                 }
         	});
 
@@ -598,7 +609,8 @@ define([
 
         onCountDownStop:function(msg){
             this.countDown.stop();
-            this.countDown.setTime(this.TIMER);
+            //this.countDown.setTime(this.TIMER);
+            this.setCountDown();
         },
         //////////////////////////////////////////////////////////// socket on Event End////////////////////////////////////////////////////////////
 

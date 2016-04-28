@@ -53,6 +53,27 @@ define([
             this.$el.find('._start_price_list').html(template({'startPriceList':startPriceList}));
         },
 
+
+
+        intervalCountDown:function(){
+            var time = (Math.round(this.countDown.time * 100)) / 100;
+            console.log(time)
+            if(time < 0) {
+                this.countDown.stop();
+            }
+        },
+        stopCountDown:function(){
+            this.countDown = this.$el.find('.count_down').FlipClock(0, {
+                autoStart: false,
+                countdown: true,
+                clockFace: 'HourCounter',
+                callbacks: {
+                    interval: Function.prototype.bind.call(this.intervalCountDown,this),
+                    stop:Function.prototype.bind.call(this.stopCountDown,this)
+                }
+            });
+        },
+
         /**
         * 타이머 설정
         */
@@ -69,41 +90,13 @@ define([
 
             var self = this;
 
-            countDown = this.$el.find('.count_down').FlipClock(0, {
+            this.countDown = this.$el.find('.count_down').FlipClock(0, {
                 autoStart: false,
                 countdown: true,
                 clockFace: 'HourCounter',
                 callbacks: {
-                    interval: function () {
-
-                        var time = (Math.round(this.factory.time * 100)) / 100
-                        if(time < 0) {
-                            countDown.stop();
-                        }
-                        //    if (time % 60 == 0) {
-                        //        //Change element
-                        //    }
-                        // console.log(parseFloat(this.factory.time))
-                        //
-                        // if(this.factory.time < 0) {
-                        //     countDown.setTime(0);
-                        //     countDown.stop();
-                        // }
-                        //console.log(self)
-                        //console.log(this)
-                        // var time = clock.getTime().time;
-                        // alert(time);
-                        // if (time % 60 == 0) {
-                        //     //Change element
-                        // }
-                    },
-                    stop:function(e){
-                        countDown.setTime(1);
-                        // R2Alert.render({
-                        //     'msg':'해당 라운드가 종료되었습니다.',
-                        //     'w':400
-                        // });
-                    }
+                    interval: Function.prototype.bind.call(this.intervalCountDown,this),
+                    stop:Function.prototype.bind.call(this.stopCountDown,this)
                 }
             });
 
@@ -128,8 +121,8 @@ define([
             var b = moment(new Date());
             var time = a.diff(b)
             console.log(time/1000)
-            countDown.setTime(time/1000);
-            countDown.start();
+            this.countDown.setTime(time/1000);
+            this.countDown.start();
         },
 
         /**

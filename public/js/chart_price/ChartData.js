@@ -89,7 +89,7 @@ define([
 
                if(roundData.length > 0){
                    //roundData[roundData.length-1].price.marker.symbol = 'triangle';
-                   roundData[roundData.length-1].price.marker.radius = 16;
+                   roundData[roundData.length-1].price.marker.radius = 12;
                }
 
                return roundData

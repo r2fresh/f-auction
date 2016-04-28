@@ -110,8 +110,17 @@
                                     {{#roundList}}
                                     <tr class="_round_{{name}}">
                                         <td class="text-center" style="width:100px;vertical-align:middle;padding:0;">
-                                            <strong>{{name}}</strong><br>
-                                            <button class="btn btn-warning btn-xs _round_reset"><strong>리셋</strong></button>
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <strong>{{name}}</strong><br>
+                                                    <button class="btn btn-warning btn-xs _round_reset"><strong>리셋</strong></button>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <input type="checkbox" class="_hertz" value="KT"> A 700Mhz(광)
+                                                    <input type="checkbox" class="_hertz" value="SK"> A 700Mhz(광)
+                                                    <input type="checkbox" class="_hertz" value="LG"> A 700Mhz(광)
+                                                </div>
+                                            </div>
                                         </td>
                                         {{#frequency}}
                                             {{#bidders}}

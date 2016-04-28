@@ -91,8 +91,8 @@ define([
             //     {'name':'LG','companyName':'LGU+','bandWidth':null},
             // ],
             //
-            TIMER:2400,
-
+            //TIMER:2400,//40
+            TIMER:300,//40
 
      		el: '.admin',
      		events :{

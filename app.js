@@ -37,7 +37,8 @@ var pwd = 'wnvktnrudao';
 var rate = 0;
 
 var countDown = null;
-var TIMER = 2400000;
+//var TIMER = 2400000;//40분
+var TIMER = 300000;
 
 /**
  * 로그인 함수
@@ -328,7 +329,7 @@ io.on('connection', function(socket){
         }
 
         io.emit('ROUND_START', JSON.stringify(data))
-        //io.emit('COUNTDOWN_START', JSON.stringify(data))
+        io.emit('COUNTDOWN_START', JSON.stringify(data))
     })
 
     socket.on('COUNTDOWN_STOP',function(msg){

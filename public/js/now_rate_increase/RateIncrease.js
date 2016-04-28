@@ -107,8 +107,8 @@ define([
                 _.each(bidderList,function(bidder){
                     _.each(bidder.rateIncreaseList,function(rateIncrease, index){
                         var startPrice = startPriceList[index].price;
-                        rateIncrease.ratePrice = parseInt(startPrice,10);
-                        rateIncrease.rateIncrease = '-';
+                        rateIncrease.ratePrice = '';//parseInt(startPrice,10);
+                        rateIncrease.rateIncrease = '';
                     })
                 })
             } else {
@@ -126,7 +126,13 @@ define([
                         bidderList[k].rateIncreaseList[j].ratePrice = parseInt(startPrice,10) + Math.round(startPrice*rateIncrease/100);
 
                         if(biddingVisibleList[k].biddingVisibleList[j].visible == false){
-                            bidderList[k].rateIncreaseList[j].rateIncrease = '-';
+                            bidderList[k].rateIncreaseList[j].ratePrice = '-'
+                        } else {
+                            bidderList[k].rateIncreaseList[j].ratePrice = parseInt(startPrice,10) + Math.round(startPrice*rateIncrease/100);
+                        }
+
+                        if(biddingVisibleList[k].biddingVisibleList[j].visible == false){
+                            bidderList[k].rateIncreaseList[j].rateIncrease = '';
                         } else {
                             bidderList[k].rateIncreaseList[j].rateIncrease = '(' + rateIncrease + '%)';
                         }
