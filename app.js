@@ -444,4 +444,8 @@ io.on('connection', function(socket){
     socket.on('DASHBOARD',function(msg){
         io.emit('DASHBOARD',msg);
     });
+
+    socket.on('COUNTDOWN',function(msg){
+        io.emit('COUNTDOWN',msg);
+    })
 });

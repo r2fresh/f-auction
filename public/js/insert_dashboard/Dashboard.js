@@ -16,7 +16,8 @@ define([
         startPriceListTpl:null,
         events :{
             'click ._save_btn' : 'onSave',
-            'click ._round_reset' : 'onRoundReset'
+            'click ._round_reset' : 'onRoundReset',
+            'click ._timer_btn' : 'onTimer'
         },
         initialize:function(){
             this.setTpl();
@@ -25,6 +26,10 @@ define([
             this.setStartPriceList();
             this.setDashBoardUI();
             this.getRoundList();
+
+            VMasker(document.querySelectorAll('.header_hour')).maskNumber();
+            VMasker(document.querySelectorAll('.header_min')).maskNumber();
+            VMasker(document.querySelectorAll('._bidder_price')).maskNumber();
         },
         setTpl:function(){
             this.roundListTpl = this.$el.find('._round_list_tpl').html();
@@ -118,6 +123,50 @@ define([
             var rateIncreaseList = this.getRoundRateIncreaseList(roundFormDataList);
             console.log(rateIncreaseList)
             this.postRoundList(rateIncreaseList);
+        },
+        onTimer:function(e){
+            var hour    = this.$el.find('.dashboard_header .header_hour').val();
+            var min     = this.$el.find('.dashboard_header .header_min').val();
+
+            // hour 시간체크
+            if(hour == ''){
+                R2Alert.render({
+                    'msg':'"시"를 입력하셔야 합니다.',
+                    'w':400
+                });
+                return;
+            }
+
+            // hour 시간체크
+            if(min == ''){
+                R2Alert.render({
+                    'msg':'"분"을 입력하셔야 합니다.',
+                    'w':400
+                });
+                return;
+            }
+
+            if(parseInt(hour,10) > 23) {
+                R2Alert.render({
+                    'msg':'시간은 0~23시까지 입력이 가능합니다.',
+                    'w':400
+                });
+                return;
+            }
+
+            if(parseInt(min,10) > 59) {
+                R2Alert.render({
+                    'msg':'시간은 0~59시까지 입력이 가능합니다.',
+                    'w':400
+                });
+                return;
+            }
+
+            var hourAtr =(parseInt(hour,10) < 10) ? '0' + hour : hour;
+            var minAtr =(parseInt(min,10) < 10) ? '0' + min : min;
+
+            Auction.io.emit('COUNTDOWN', hourAtr + '|' + minAtr );
+
         },
         getRoundFormDataList:function(){
             var $roundList = this.$el.find('._round_list');

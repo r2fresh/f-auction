@@ -17,6 +17,7 @@
         <script src="/lib/underscore/underscore.js" charset="utf-8"></script>
         <script src="/lib/backbone/backbone.js" charset="utf-8"></script>
         <script src="/lib/handlebars/handlebars.min.js" charset="utf-8"></script>
+        <script src="/lib/vanilla-masker/lib/vanilla-masker.js" charset="utf-8"></script>
         <script src="/lib/store-js/store.min.js" charset="utf-8"></script>
 
         <script src="/js/common.js" charset="utf-8"></script>
@@ -28,13 +29,13 @@
 
             <div class="row dashboard_header">
                 <div class="col-md-6">
-                    <!-- <input class="form-control header_hour"type="text" placeholder=""> 시
-                    <input class="form-control header_min" type="text" placeholder=""> 분
-                    <button class="btn btn-primary _timer_btn"><strong>라운드마감시간입력하기</strong></button> -->
+                    <input class="form-control header_hour" type="text" maxlength="2" placeholder=""> 시
+                    <input class="form-control header_min" type="text" maxlength="2" placeholder=""> 분
+                    <button class="btn btn-primary _timer_btn"><strong>라운드마감시간입력하기</strong></button>
                 </div>
                 <div class="col-md-6 text-right">
                     <button class="btn btn-primary _save_btn"><strong>적용하기</strong></button>
-                    <!-- <button class="btn btn-warning _all_reset_btn"><strong>전체리셋</strong></button> -->
+                    <button class="btn btn-warning _all_reset_btn"><strong>전체리셋</strong></button>
                 </div>
             </div>
             <div class="row">
@@ -116,7 +117,7 @@
                                             {{#bidders}}
                                             <td class="text-center">
                                                 <input type="radio" name="_radio_{{round}}_{{frequency}}" value="{{value}}"><br>
-                                                <input class="_bidder_price _input_{{round}}_{{frequency}}" type="text" style="margin-top:5px;margin-top:5px;width:50px;" placeholder="">
+                                                <input class="_bidder_price _input_{{round}}_{{frequency}}" type="text" maxlength="5" style="margin-top:5px;margin-top:5px;width:50px;" placeholder="">
                                             </td>
                                             {{/bidders}}
                                         {{/frequency}}

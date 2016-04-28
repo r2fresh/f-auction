@@ -1,11 +1,14 @@
 define([
    'module',
    'js/Model',
-   'js/AuctionData'
+   'js/AuctionData',
+   'js/r2/r2Alert',
    ],
-   function(module, Model, AuctionData){
+   function(module, Model, AuctionData, R2Alert){
 
 	'use strict'
+
+    var countDown = null;
 
  	module.exports = new (Backbone.View.extend({
         el:'#dashboard',
@@ -22,6 +25,7 @@ define([
             this.getRoundList();
 
             Auction.io.on('DASHBOARD', Function.prototype.bind.call(this.getRoundList,this) );
+            Auction.io.on('COUNTDOWN', Function.prototype.bind.call(this.onCountDown,this) );
         },
         /**
         * 탬플릿 설정
@@ -55,7 +59,7 @@ define([
         setCountDown:function(){
             //var data = JSON.parse(msg);
             var TIMER = 2400000
-            var now = moment('2016-04-28 09:30:00').valueOf();
+            var now = moment('2016-04-28 11:30:00').valueOf();
             //var countDown = now + TIMER;
             //var timer = countDown//data.countdown_timer;
 
@@ -63,24 +67,69 @@ define([
             var b = moment(new Date());
             var time = a.diff(b) // 86400000
 
-            // this.countDown = this.$el.find('.count_down').FlipClock(time/1000, {
-            //     autoStart: true,
-            //     countdown: true,
-            //     clockFace: 'HourCounter',
-            //     callbacks: {
-            //         stop:function(e){
-            //             console.log(this)
-            //             //alert('stop')
-            //         }
-            //     }
-            // });
-            //
-            // //this.countDown.setTime(time/1000);
-            // this.countDown.start();
+            var self = this;
+
+            countDown = this.$el.find('.count_down').FlipClock(0, {
+                autoStart: false,
+                countdown: true,
+                clockFace: 'HourCounter',
+                callbacks: {
+                    interval: function () {
+
+                        var time = (Math.round(this.factory.time * 100)) / 100
+                        if(time < 0) {
+                            countDown.stop();
+                        }
+                        //    if (time % 60 == 0) {
+                        //        //Change element
+                        //    }
+                        // console.log(parseFloat(this.factory.time))
+                        //
+                        // if(this.factory.time < 0) {
+                        //     countDown.setTime(0);
+                        //     countDown.stop();
+                        // }
+                        //console.log(self)
+                        //console.log(this)
+                        // var time = clock.getTime().time;
+                        // alert(time);
+                        // if (time % 60 == 0) {
+                        //     //Change element
+                        // }
+                    },
+                    stop:function(e){
+                        countDown.setTime(1);
+                        // R2Alert.render({
+                        //     'msg':'해당 라운드가 종료되었습니다.',
+                        //     'w':400
+                        // });
+                    }
+                }
+            });
+
+            //console.log(this.countDown)
 
             this.clock = this.$el.find('.clock').FlipClock(this.TIMER, {
                 clockFace: 'TwentyFourHourClock'
             });
+        },
+
+        onCountDown:function(msg){
+
+            var timeData = msg.split('|');
+
+            var hour = timeData[0];
+            var min = timeData[1];
+
+            var day = moment(new Date()).format("YYYY-MM-DD") + ' ' + hour + ':' + min +':00';
+            var now = moment(day).valueOf();
+
+            var a = moment(moment.unix(parseInt(now,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
+            var b = moment(new Date());
+            var time = a.diff(b)
+            console.log(time/1000)
+            countDown.setTime(time/1000);
+            countDown.start();
         },
 
         /**
