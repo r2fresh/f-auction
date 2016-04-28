@@ -87,28 +87,40 @@
 * 대시보드 상단의 마지막 라운드 현재가 관련 스타일 시트
 */
 #dashboard ._last_round_price_list td{
-    font-size:200%;
+    font-size:300%;
     border: 1px solid #455C68!important;
     border-right: 6px solid #455C68!important;
+    vertical-align: middle;
+}
+#dashboard ._last_round_price_list td:first-child {
+    font-size:200%;
 }
 
 /**
 * 대시보드 상단의 마지막 라운드 승자 관련 스타일 시트
 */
 #dashboard ._last_round_company_list td {
-    font-size:200%;
+    font-size:300%;
     border: 1px solid #455C68!important;
     border-right: 6px solid #455C68!important;
+    vertical-align: middle;
+}
+#dashboard ._last_round_company_list td:first-child {
+    font-size:200%;
 }
 
 /**
 * 대시보드 상단의 마지막 라운드 최소입찰액 스타일 시트
 */
 #dashboard ._last_round_lowest_bidding_price_list td {
-    font-size:200%;
+    font-size:300%;
     vertical-align: middle;
     border: 1px solid #455C68!important;
     border-right: 6px solid #455C68!important;
+    vertical-align: middle;
+}
+#dashboard ._last_round_lowest_bidding_price_list td:first-child {
+    font-size:200%;
 }
 
 #dashboard ._round_list tr td:first-child{
