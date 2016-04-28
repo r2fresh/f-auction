@@ -185,6 +185,7 @@
 #dashboard .dashboard_round tbody td{
     border: 1px solid #455C68!important;
     border-right: 6px solid #455C68!important;
+    height:70px;
 }
 
 #dashboard .dashboard_round tbody td:last-child{
