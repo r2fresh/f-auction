@@ -93,7 +93,7 @@ define([
             this.countDown = this.$el.find('.count_down').FlipClock(0, {
                 autoStart: false,
                 countdown: true,
-                clockFace: 'HourCounter',
+                clockFace: 'MinuteCounter',
                 callbacks: {
                     interval: Function.prototype.bind.call(this.intervalCountDown,this),
                     stop:Function.prototype.bind.call(this.stopCountDown,this)
@@ -102,7 +102,12 @@ define([
 
             //console.log(this.countDown)
 
-            this.clock = this.$el.find('.clock').FlipClock(this.TIMER, {
+            this.clock = this.$el.find('.clock').FlipClock({
+                clockFace: 'TwentyFourHourClock'
+            });
+
+            this.lastClock = this.$el.find('.last_clock').FlipClock({
+                autoStart: false,
                 clockFace: 'TwentyFourHourClock'
             });
         },

@@ -177,8 +177,11 @@ define([
                 return;
             }
 
-            var hourAtr =(parseInt(hour,10) < 10) ? '0' + hour : hour;
-            var minAtr =(parseInt(min,10) < 10) ? '0' + min : min;
+            var hourAtr =(parseInt(hour,10) < 10) ? '0' + (parseInt(hour,10)).toString() : hour;
+            var minAtr =(parseInt(min,10) < 10) ? '0' + (parseInt(min,10)).toString() : min;
+
+            console.log(hourAtr)
+            console.log(minAtr)
 
             Auction.io.emit('COUNTDOWN', hourAtr + '|' + minAtr );
 

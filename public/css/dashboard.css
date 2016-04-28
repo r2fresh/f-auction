@@ -13,7 +13,8 @@
 }
 
 #dashboard .clock,
-#dashboard .count_down {
+#dashboard .count_down,
+#dashboard .last_clock {
     zoom:0.5;
     -moz-transform: scale(0.4);
     float:right;
@@ -28,8 +29,18 @@
   margin-top: 2em;
 }
 
-#dashboard .clock,
 #dashboard .count_down {
+  /* text-align: center; */
+  /* position: relative; */
+  /* width: 100%; */
+  margin: 0 auto;
+  max-width: 350px;
+  margin-top: 2em;
+}
+
+#dashboard .clock,
+#dashboard .count_down,
+#dashboard .last_clock {
     margin-top:0px;
 }
 
