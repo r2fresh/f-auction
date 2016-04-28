@@ -74,11 +74,12 @@ define([
         },
         getNowRateIncrease:function(data){
 
-            var roundList = JSON.parse(JSON.stringify(data));
-            var startPriceList   = JSON.parse(JSON.stringify(AuctionData.startPriceList));
-            var rateIncreaseList = JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
-            var bidderList       = [{'name':'KT'},{'name':'SK'},{'name':'LG'}];
-            var roundNumber      = 1;
+            var roundList           =   JSON.parse(JSON.stringify(data));
+            var startPriceList      =   JSON.parse(JSON.stringify(AuctionData.startPriceList));
+            var rateIncreaseList    =   JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
+            var bidderList          =   [{'name':'KT'},{'name':'SK'},{'name':'LG'}];
+            var biddingVisibleList  =   this.getBiddingVisibleList(roundList)
+            var roundNumber         = 1;
 
             console.log(roundList)
             // 기본 변수 설정
@@ -86,6 +87,17 @@ define([
             //     item.priceList = [];
             //     item.hertzFlag = null;
             // })
+
+            // for(var i=0; i<roundList.length; ++i){
+            //     for(var j=0; j<roundList[i].frequency.length; ++j){
+            //         for(var k=0; k<roundList[i].frequency[j].bidders.length; ++k){
+            //             var bidderPrice = roundList[i].frequency[j].bidders[k].price;
+            //             var price = (bidderPrice == '') ? 0 : parseInt(bidderPrice);
+            //             bidderList[k].rateIncreaseList[j].historyPriceList.push(price);
+            //         }
+            //     }
+            // }
+
 
             _.each(bidderList, function(item){
                 item.rateIncreaseList = JSON.parse(JSON.stringify(rateIncreaseList));
@@ -96,7 +108,7 @@ define([
                     _.each(bidder.rateIncreaseList,function(rateIncrease, index){
                         var startPrice = startPriceList[index].price;
                         rateIncrease.ratePrice = parseInt(startPrice,10);
-                        rateIncrease.rateIncrease = 0;
+                        rateIncrease.rateIncrease = '-';
                     })
                 })
             } else {
@@ -112,7 +124,14 @@ define([
                         var winBidder = roundData.frequency[j].winBidder;
 
                         bidderList[k].rateIncreaseList[j].ratePrice = parseInt(startPrice,10) + Math.round(startPrice*rateIncrease/100);
-                        bidderList[k].rateIncreaseList[j].rateIncrease = rateIncrease;
+
+                        if(biddingVisibleList[k].biddingVisibleList[j].visible == false){
+                            bidderList[k].rateIncreaseList[j].rateIncrease = '-';
+                        } else {
+                            bidderList[k].rateIncreaseList[j].rateIncrease = '(' + rateIncrease + '%)';
+                        }
+
+                        // bidderList[k].rateIncreaseList[j].rateIncrease = (roundData.frequency[j].bidders[k].price == '') ? '-' : '(' + rateIncrease + '%)';
                         bidderList[k].rateIncreaseList[j].winBidder = winBidder;
                     }
                 }
@@ -124,6 +143,48 @@ define([
 
             return bidderList;
 
+        },
+        getBiddingVisibleList:function(data){
+            var roundList           =   JSON.parse(JSON.stringify(data));
+            //var biddingVisibleList  =   [{'visible':false},{'visible':false},{'visible':false},{'visible':false},{'visible':false}];
+
+            var biddingVisibleList  =   JSON.parse(JSON.stringify(AuctionData.defaultPriceList));
+            var bidderList          =   [{'name':'KT'},{'name':'SK'},{'name':'LG'}];
+
+            _.each(biddingVisibleList, function(item){
+                item.priceList = [];
+            })
+
+            _.each(bidderList, function(item){
+                item.biddingVisibleList = JSON.parse(JSON.stringify(biddingVisibleList));
+            })
+
+            for(var i=0; i<roundList.length; ++i){
+                for(var j=0; j<roundList[i].frequency.length; ++j){
+                    for(var k=0; k<roundList[i].frequency[j].bidders.length; ++k){
+                        var bidderPrice = roundList[i].frequency[j].bidders[k].price;
+                        //var price = (bidderPrice == '') ? 0 : parseInt(bidderPrice);
+                        bidderList[k].biddingVisibleList[j].priceList.push(bidderPrice);
+                    }
+                }
+            }
+
+
+            _.each(bidderList, function(bidder){
+                _.each(bidder.biddingVisibleList,function(biddingVisible){
+                    var flag = _.every(biddingVisible.priceList,function(price){
+                        return price == '';
+                    })
+
+                    if(flag == true) {
+                        biddingVisible.visible = false;
+                    } else {
+                        biddingVisible.visible = true;
+                    }
+                })
+            })
+
+            return bidderList;
         }
  	}))
 })

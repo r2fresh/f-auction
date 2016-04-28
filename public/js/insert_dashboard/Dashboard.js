@@ -205,7 +205,7 @@ define([
                                 bidder.vs = 'win';
                                 bidder.className = 'label label-' + bidder.name + '-l';
                             } else {
-                                bidder.lose = 'lose';
+                                bidder.vs = 'lose';
                                 bidder.className = 'text-gray';
                             }
                         }

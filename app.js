@@ -206,6 +206,10 @@ app.get('/chart_rate',function(req, res){
     res.sendFile(__dirname + '/src/html/chart_rate.html')
 })
 
+app.get('/start',function(req, res){
+    res.sendFile(__dirname + '/src/html/start.html')
+})
+
 /**
  * index.html router
  */
