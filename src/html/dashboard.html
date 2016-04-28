@@ -181,6 +181,15 @@
                                 <tr class="_round_{{name}}">
                                     <td class="text-center" style="font-size:180%;vertical-align:middle;padding:0;">
                                         <strong>{{name}}</strong>
+                                        <div class="row">
+                                            <div class="col-md-12 _m10_b">
+                                                {{#company}}
+                                                    {{#isBiddingType}}
+                                                    <span class="label label-{{name}}-s">유예</span>
+                                                    {{/isBiddingType}}
+                                                {{/company}}
+                                            </div>
+                                        </div>
                                     </td>
                                     {{#frequency}}
                                         <td class="text-center" style="font-size:180%;padding:10px 0px;vertical-align:middle;">

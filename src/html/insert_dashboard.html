@@ -109,22 +109,25 @@
                                     <script class="_round_list_tpl" type="text/x-handlebars-template">
                                     {{#roundList}}
                                     <tr class="_round_{{name}}">
-                                        <td class="text-center" style="width:100px;vertical-align:middle;padding:0;">
-                                            <div class="row">
-                                                <div class="col-xs-6">
-                                                    <strong>{{name}}</strong><br>
-                                                    <button class="btn btn-warning btn-xs _round_reset"><strong>리셋</strong></button>
+                                        <td style="width:100px;vertical-align:middle;padding:0;">
+                                            <div style="border-bottom:1px solid #cdcdcd;padding-left:16px">
+                                                <strong >{{name}}</strong>
+                                                <button class="btn btn-warning btn-xs _round_reset _m10_t _m10_b"><strong>리셋</strong></button><br>
+                                            </div>
+                                            <div class="text-center">
+                                                {{#company}}
+                                                <div class="checkbox">
+                                                  <label>
+                                                    <!-- <input type="checkbox" name="_checkbox_{{round}}" value="{{name}}"><strong class="text-{{name}}"> 입찰유예</strong> -->
+                                                    <input type="checkbox" class="_bidding_type" value="{{name}}"><strong class="text-{{name}}"> 입찰유예</strong>
+                                                  </label>
                                                 </div>
-                                                <div class="col-xs-6">
-                                                    <input type="checkbox" class="_hertz" value="KT"> A 700Mhz(광)
-                                                    <input type="checkbox" class="_hertz" value="SK"> A 700Mhz(광)
-                                                    <input type="checkbox" class="_hertz" value="LG"> A 700Mhz(광)
-                                                </div>
+                                                {{/company}}
                                             </div>
                                         </td>
                                         {{#frequency}}
                                             {{#bidders}}
-                                            <td class="text-center">
+                                            <td class="text-center" style="vertical-align:middle">
                                                 <input type="radio" name="_radio_{{round}}_{{frequency}}" value="{{value}}"><br>
                                                 <input class="_bidder_price _input_{{round}}_{{frequency}}" type="text" maxlength="5" style="margin-top:5px;margin-top:5px;width:50px;" placeholder="">
                                             </td>

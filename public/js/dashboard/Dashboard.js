@@ -211,6 +211,15 @@ define([
         * 가공된 라운드 정보를 UI 반영
         */
         setRoundListUI:function(data){
+
+            Handlebars.registerHelper('isBiddingType', function(options) {
+              if(this.biddingType == true){
+                  return options.fn(this);
+              } else {
+                  return options.inverse(this);
+              }
+            });
+
             var template = Handlebars.compile(this.roundListTpl);
             this.$el.find('._round_list').html(template({'roundList':data.reverse()}));
         },

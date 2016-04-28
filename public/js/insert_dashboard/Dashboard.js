@@ -63,6 +63,14 @@ define([
                 var roundNum = i + 1;
                 var $roundData = $roundList.find('._round_' + roundNum);
 
+                // 입찰자 입찰 타입 정보에 따라 UI 설정
+                _.each(roundList[i].company,function(item){
+                    if(item.biddingType == true){
+                        $roundData.find('._bidding_type:input:checkbox[value='+item.name+']').prop('checked',true);
+                    }
+                })
+
+                // 주파수 정보에 따라 UI 설정
                 for(var j=0; j<roundList[i].frequency.length ;++j){
                     var frequencyNum = j + 1;
                     var $radioList = $roundData.find('input[name=_radio_' + roundNum + '_' + frequencyNum + ']');
@@ -94,6 +102,14 @@ define([
             for(var i=0; i<50; ++i){
                 var roundData = {};
                 roundData.name = i + 1;
+
+                // 입찰자정보 설정
+                roundData.company = JSON.parse(JSON.stringify(AuctionData.bidderList));
+                _.each(roundData.company,function(company, index){
+                    company.round = i + 1;
+                });
+
+                // 주파수정보 설정
                 roundData.frequency = [];
                 for(var j=0; j<5; ++j){
                     var bidders = JSON.parse(JSON.stringify(AuctionData.bidderList));
@@ -121,7 +137,7 @@ define([
 
             var roundFormDataList = this.getRoundFormDataList();
             var rateIncreaseList = this.getRoundRateIncreaseList(roundFormDataList);
-            console.log(rateIncreaseList)
+            //console.log(rateIncreaseList)
             this.postRoundList(rateIncreaseList);
         },
         onTimer:function(e){
@@ -186,6 +202,13 @@ define([
 
                 if(flag == true) break;
 
+                // 입찰자 입찰 타입을 저장
+                _.each(defaultRoundData.company,function(item){
+                    var flag = $roundData.find('._bidding_type:input:checkbox[value='+item.name+']').prop('checked');
+                    item.biddingType = flag;
+                })
+
+                // 주파수 정보 저장
                 for(var j=0; j<5; ++j){
                     var frequencyNum = j + 1;
                     //console.log($roundData)
@@ -275,7 +298,7 @@ define([
             //     }
             // }
 
-            console.log(roundList);
+            //console.log(roundList);
             return roundList;
         },
         getRoundWinRateIncreaseList:function(data){
