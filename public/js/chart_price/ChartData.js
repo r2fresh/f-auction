@@ -53,10 +53,11 @@ define([
                                if(bidder.price != '' && bidder.vs == 'win'){
 
                                   var minusNum = (bidder.name == 'KT') ? 2 : (bidder.name == 'SK') ? 1 : 0;
+                                  var rotaionX = (bidder.name == 'KT') ? -(0.3) : (bidder.name == 'SK') ? 0 : 0.3;
 
                                   var fillColor = (bidder.name == 'KT') ? 'rgba(237, 31, 39, 1)' : (bidder.name == 'SK') ? 'rgba(0, 114, 255, 1)' : 'rgba(46, 181, 2, 1)'
 
-                                   var x = ((parseInt(priceArr.indexOf(company),10) + 1)*3-minusNum);
+                                   var x = ((parseInt(priceArr.indexOf(company),10) + 1)*3-minusNum)- rotaionX;
 
                                    chartList.push({
                                        'round':(roundNum).toString(),

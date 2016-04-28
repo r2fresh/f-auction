@@ -12,11 +12,15 @@ define([
     	module.exports = new (Backbone.View.extend({
            el:'._chart',
            patternChart:null,
+           $chartEl:null,
+           initialize:function(){
+               this.$chartEl = this.$el.find('#biddingPattern')
+           },
            render:function(){
                this.setBiddingPattern();
                //this.setBiddingIncrease();
 
-               this.$el.find('#biddingPattern').hide();
+               this.$chartEl.hide();
 
                this.getChartData();
 
@@ -24,7 +28,7 @@ define([
 
            },
            getChartData:function(){
-               this.$el.find('#biddingPattern').hide();
+               this.$chartEl.hide();
                ChartData.getRoundList(Function.prototype.bind.call(this.setChartDataList,this));
            },
            formatter: function (list) {
@@ -135,14 +139,14 @@ define([
 
 
 
-               this.$el.find('#biddingPattern').show();
+               this.$chartEl.show();
 
                // 차트에서 가이드 관련 정보 삭제
-               this.$el.find('#biddingPattern .highcharts-series-group .highcharts-series-0').remove();
-               this.$el.find('#biddingPattern .highcharts-legend .highcharts-legend-item:eq(0)').remove();
+               this.$chartEl.find('.highcharts-series-group .highcharts-series-0').remove();
+               this.$chartEl.find('.highcharts-legend .highcharts-legend-item:eq(0)').remove();
 
                // 차트에서 광대역과 협대역을 하나로 표시 하기 위해 협대역 삭제
-               this.$el.find('#biddingPattern .highcharts-legend .highcharts-legend-item:odd').remove();
+               this.$chartEl.find('.highcharts-legend .highcharts-legend-item:odd').remove();
            },
 
            setBiddingPattern:function(){
@@ -161,7 +165,7 @@ define([
 
                var options = {
                    chart: {
-                       renderTo:$('#biddingPattern')[0],
+                       renderTo:this.$chartEl[0],
                        type: 'line',
                        spacingRight: 0,
                        zoomType:'xy'
@@ -172,7 +176,7 @@ define([
                        sourceHeight:1277
                    },
                    credits: { enabled:false },
-                   title: { text: '' },
+                   title: { text: '입찰금액차트' },
                    xAxis: {
                        tickInterval:1,
                        plotLines: [

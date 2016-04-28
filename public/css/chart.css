@@ -1,0 +1,5 @@
+@media (min-width: 600px) {
+    ._chart .col-md-12 {
+        width: 100%;
+    }
+}
