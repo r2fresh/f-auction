@@ -207,6 +207,13 @@ app.get('/chart_rate',function(req, res){
     res.sendFile(__dirname + '/src/html/chart_rate.html')
 })
 
+/**
+ * 입찰가와 증분율을 한번에 보여주는 차트
+ */
+app.get('/chart',function(req, res){
+    res.sendFile(__dirname + '/src/html/chart.html')
+})
+
 app.get('/start',function(req, res){
     res.sendFile(__dirname + '/src/html/start.html')
 })
