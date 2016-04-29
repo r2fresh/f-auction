@@ -137,7 +137,7 @@ define([
                    }
                });
 
-
+               //this.setResize();
 
                this.$chartEl.show();
 
@@ -147,6 +147,14 @@ define([
 
                // 차트에서 광대역과 협대역을 하나로 표시 하기 위해 협대역 삭제
                this.$chartEl.find('.highcharts-legend .highcharts-legend-item:odd').remove();
+           },
+
+           setResize:function(){
+
+               var w = this.$el.find('.col-md-6').width();
+               var h = $( window ).height();
+
+               this.patternChart.setSize(w,h-300)
            },
 
            setBiddingPattern:function(){
@@ -168,7 +176,10 @@ define([
                        renderTo:this.$chartEl[0],
                        type: 'line',
                        spacingRight: 0,
-                       zoomType:'xy'
+                       zoomType:'xy',
+                       animation:false,
+                       width:$( window ).width()/2-40,
+                       height:$( window ).height()
                    },
                    exporting:{
                        enabled:false,

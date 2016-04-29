@@ -168,7 +168,10 @@ define([
                        renderTo:this.$chartEl[0],
                        type: 'line',
                        spacingRight: 0,
-                       zoomType:'xy'
+                       zoomType:'xy',
+                       animation:false,
+                       width:$( window ).width()/2-40,
+                       height:$( window ).height()
                    },
                    exporting:{
                        enabled:false,
