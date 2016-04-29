@@ -300,7 +300,7 @@ define([
                        }
                    },
                    yAxis: {
-                       title: { text: '입찰액' },
+                       title: { text: '증분율' },
                        tickInterval:5,
                        min: 0,
                        plotBands: plotBands
