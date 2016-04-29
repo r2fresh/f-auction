@@ -329,7 +329,6 @@ define([
          */
         postRoundListSuccess:function(data, textStatus, jqXHR){
             if(textStatus === 'success'){
-
                 store.set('roundList',data)
 
                 R2Alert.render({

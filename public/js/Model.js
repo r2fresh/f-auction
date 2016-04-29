@@ -53,6 +53,10 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
+	function getLastTime(data){
+		$.ajax(data);
+	}
+
 	module.exports = new (Backbone.Model.extend({
 		postLogin:postLogin,
 
@@ -61,6 +65,8 @@ define(function(require, exports, module){
 		putAuction:putAuction,
 
 		postRound:postRound,
+
+		getLastTime:getLastTime,
 
 		getHertzList:getHertzList,
 		getBandWidth:getBandWidth,

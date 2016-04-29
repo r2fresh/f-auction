@@ -8,7 +8,7 @@ define([
 
 	'use strict'
 
-    var countDown = null;
+    //var countDown = null;
 
  	module.exports = new (Backbone.View.extend({
         el:'#dashboard',
@@ -16,12 +16,17 @@ define([
         roundListTpl:null,
         lastRoundTpl:null,
         lowestBidAdd:0.75,
+        lastClock:null,
+        clock:null,
+        countDown:null,
+        lastTime:null,
         initialize:function(){
             this.setTpl();
         },
         render:function(){
             this.setStartPriceList();
-            this.setCountDown();
+
+            this.getLastTime();
             this.getRoundList();
 
             Auction.io.on('DASHBOARD', Function.prototype.bind.call(this.getRoundList,this) );
@@ -53,11 +58,27 @@ define([
             this.$el.find('._start_price_list').html(template({'startPriceList':startPriceList}));
         },
 
+        getLastTime:function(){
+            Model.getLastTime({
+                 url: '/lastTime',
+                 method : 'GET',
+                 contentType:"application/json; charset=UTF-8",
+                 success : Function.prototype.bind.call(this.getLastTimeSuccess,this),
+                 error : function(jsXHR, textStatus, errorThrown){}
+             })
+        },
+        getLastTimeSuccess:function(data, textStatus, jqXHR){
+
+            if(textStatus === 'success'){
+                this.lastTime = data;
+                this.setCountDown();
+            }
+        },
+
 
 
         intervalCountDown:function(){
             var time = (Math.round(this.countDown.time * 100)) / 100;
-            console.log(time)
             if(time < 0) {
                 this.countDown.stop();
             }
@@ -79,16 +100,16 @@ define([
         */
         setCountDown:function(){
             //var data = JSON.parse(msg);
-            var TIMER = 2400000
-            var now = moment('2016-04-28 11:30:00').valueOf();
+            //var TIMER = 2400000
+            //var now = moment('2016-04-28 11:30:00').valueOf();
             //var countDown = now + TIMER;
             //var timer = countDown//data.countdown_timer;
 
-            var a = moment(moment.unix(parseInt(now,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
-            var b = moment(new Date());
-            var time = a.diff(b) // 86400000
-
-            var self = this;
+            // var a = moment(moment.unix(parseInt(now,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
+            // var b = moment(new Date());
+            // var time = a.diff(b) // 86400000
+            //
+            // var self = this;
 
             this.countDown = this.$el.find('.count_down').FlipClock(0, {
                 autoStart: false,
@@ -106,28 +127,58 @@ define([
                 clockFace: 'TwentyFourHourClock'
             });
 
-            this.lastClock = this.$el.find('.last_clock').FlipClock({
-                autoStart: false,
-                clockFace: 'TwentyFourHourClock'
-            });
+            // var lastTime = null;
+            //
+            // if(this.lastTime == ''){
+            //     lastTime = 0;
+            // } else {
+            //     var timeData = this.lastTime.split('|');
+            //     var hour = timeData[0];
+            //     var min = timeData[1];
+            //     lastTime = (parseInt(min,10) + parseInt(hour,10)*60) * 60;
+            // }
+            //
+            // this.lastClock = this.$el.find('.last_clock').FlipClock(lastTime,{
+            //     autoStart:false
+            // });
+
+            this.onCountDown(this.lastTime)
+
+            //this.lastClock.setTime(60);
         },
 
         onCountDown:function(msg){
 
-            var timeData = msg.split('|');
+            var listTime = null;
 
-            var hour = timeData[0];
-            var min = timeData[1];
+            if(msg == ''){
+                listTime = 0;
+            } else {
+                var timeData = msg.split('|');
 
-            var day = moment(new Date()).format("YYYY-MM-DD") + ' ' + hour + ':' + min +':00';
-            var now = moment(day).valueOf();
+                var hour = timeData[0];
+                var min = timeData[1];
 
-            var a = moment(moment.unix(parseInt(now,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
-            var b = moment(new Date());
-            var time = a.diff(b)
-            console.log(time/1000)
-            this.countDown.setTime(time/1000);
-            this.countDown.start();
+                var day = moment(new Date()).format("YYYY-MM-DD") + ' ' + hour + ':' + min +':00';
+                var now = moment(day).valueOf();
+
+                var a = moment(moment.unix(parseInt(now,10)/1000).format("YYYY-MM-DD HH:mm:ss") )
+                var b = moment(new Date());
+                var time = a.diff(b)
+
+                if(time<0){
+                    this.countDown.setTime(0);
+                } else {
+                    this.countDown.setTime(time/1000);
+                }
+                this.countDown.start();
+
+                listTime = (parseInt(min,10) + parseInt(hour,10)*60) * 60;
+            }
+
+            this.lastClock = this.$el.find('.last_clock').FlipClock(listTime,{
+                autoStart:false
+            });
         },
 
         /**
@@ -150,6 +201,7 @@ define([
             if(textStatus === 'success'){
                 if(data.length == 0) {
                     this.$el.removeClass('displayNone');
+                    this.resetLastRoundUI();
                     return;
                 }
 
@@ -162,8 +214,12 @@ define([
 
                 this.setRoundNumber(_.last(lastRoundList).name);
 
-                this.$el.removeClass('displayNone')
+                this.$el.removeClass('displayNone');
             }
+        },
+        resetLastRoundUI:function(){
+            this.$el.find('._round_list').empty();
+            this.$el.find('._last_round').empty();
         },
 
         /**
@@ -226,7 +282,7 @@ define([
             });
 
             var template = Handlebars.compile(this.roundListTpl);
-            this.$el.find('._round_list').html(template({'roundList':data.reverse()}));
+            this.$el.find('._round_list').empty().html(template({'roundList':data.reverse()}));
         },
 
         /**

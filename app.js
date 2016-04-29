@@ -40,6 +40,8 @@ var countDown = null;
 //var TIMER = 2400000;//40분
 var TIMER = 300000;
 
+var lastTime = '';
+
 /**
  * 로그인 함수
  */
@@ -146,6 +148,11 @@ app.get('/bandWidth', function(req, res) {
 app.get('/biddingDelayCount', function(req, res) {
     var bodyData = req.body;
     res.send(companyInfoList);
+})
+
+app.get('/lastTime', function(req, res) {
+    var bodyData = req.body;
+    res.send(lastTime);
 })
 
 
@@ -457,7 +464,12 @@ io.on('connection', function(socket){
         io.emit('DASHBOARD',msg);
     });
 
+    /**
+    * 실전 총 현황에서 카운트다운
+    */
     socket.on('COUNTDOWN',function(msg){
+        //마감시간 저장
+        lastTime = msg;
         io.emit('COUNTDOWN',msg);
     })
 });
